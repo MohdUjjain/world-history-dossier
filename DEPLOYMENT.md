@@ -8,42 +8,28 @@ Pages branch: `main` / `/(root)` — **already enabled**; do not change Pages se
 
 1. Download and extract `World_History_Dossier_Web_Upload.zip` (do **not** upload the ZIP itself).
 2. Open https://github.com/MohdUjjain/world-history-dossier/upload/main.
-3. Upload **only the two files that do not already exist**: `og-image.jpg` and `World_History_Dossier.pdf`. Commit to `main`.
-4. The existing `index.html` and `README.md` must also be replaced; GitHub's browser uploader may reject a file whose path already exists. For those updates, use the GitHub code editor (copy the full corrected files) or, preferably, **Option B** below. The source tree is also best added with Option B.
+3. The published repository already contains `og-image.jpg` and `20th-Century International History.pdf`; do not upload renamed duplicates. To make future changes, use Git CLI as described in Option B.
+4. The website, modular source, PDF, and preview image are already present. Use Option B below when updating existing files rather than re-uploading the original package.
 
-**Simplest complete method if you dislike the terminal:** Use **GitHub Desktop**. Clone `MohdUjjain/world-history-dossier`, copy the *contents* of the extracted complete-repo package into the local clone (overwriting `index.html` and `README.md`), then click **Commit to main** and **Push origin**.
+**Important:** The original ZIP is a historic release snapshot. Do not overwrite the live repository with it; pull the latest repository changes first.
 
 ## Option B — Git on your computer (recommended, one complete update)
 
-Download and extract `World_History_Dossier_Complete_Repo.zip`. Open a terminal in the extracted directory and run:
+Open a terminal in your existing local repository (or clone it if you have not yet done so), then run:
 
 ```bash
-git clone https://github.com/MohdUjjain/world-history-dossier.git current-repo
-# Copy the EXTRACTED package contents — index.html, og-image.jpg, PDF, src/, README.md,
-# DEPLOYMENT.md and .nojekyll — into current-repo/ (overwriting old files).
-cd current-repo
+git pull --ff-only origin main
+# Make your intended source or content edits
 git add -A
-git commit -m "Publish full dossier source, PDF and social sharing preview"
+git commit -m "Update dossier"
 git push origin main
 ```
-
-Alternatively, from within the repository clone, copy in the package using:
-
-**macOS / Linux** (with the extracted full package at `../World_History_Dossier_GitHub_Repo_Ready`):
-```bash
-cp -R ../World_History_Dossier_GitHub_Repo_Ready/. .
-git add -A
-git commit -m "Publish full dossier source, PDF and social sharing preview"
-git push origin main
-```
-
-**Windows**: use File Explorer to copy the contents of `World_History_Dossier_GitHub_Repo_Ready` into your cloned `current-repo` folder, agreeing to replace `index.html` and `README.md`, then run the three `git` commands above.
 
 ## Confirm publication
 
 - Reader: https://mohdujjain.github.io/world-history-dossier/
 - Preview image: https://mohdujjain.github.io/world-history-dossier/og-image.jpg
-- PDF: https://mohdujjain.github.io/world-history-dossier/World_History_Dossier.pdf
+- PDF: https://mohdujjain.github.io/world-history-dossier/20th-Century%20International%20History.pdf
 - Source: https://github.com/MohdUjjain/world-history-dossier/tree/main/src
 
 Open the image URL directly to make sure it loads. Share the exact website root URL on WhatsApp to test its link preview. If WhatsApp shows a previously cached thumbnail, try appending `?v=2` temporarily.
