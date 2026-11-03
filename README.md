@@ -2,7 +2,7 @@
 
 An interactive Imperial Archive reading companion to **20th-century international history**: **33 chapters (00–32)**, timelines, comparisons, section-linked learning aids, and end-of-chapter revision sections.
 
-**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](World_History_Dossier.pdf)** · **[View the social-preview image](og-image.jpg)**
+**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](20th-Century%20International%20History.pdf)** · **[View the social-preview image](og-image.jpg)**
 
 ## Online reader
 
