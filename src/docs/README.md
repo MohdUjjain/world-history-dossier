@@ -15,6 +15,7 @@ All non-code project documentation is organized here. The source directory's own
 ## Reference
 
 - [Official chapter titles and completion status](reference/CHAPTER_TITLES.md)
+- [Full-book PDF navigation and bookmarks](reference/PDF_NAVIGATION.md)
 
 ## Editorial notes
 

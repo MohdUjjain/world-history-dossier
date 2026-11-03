@@ -4,7 +4,7 @@
 Uses the book's *own JavaScript pagination engine* to construct the exact
 # printView used by the in-browser Export command. Saves that DOM, prints it
 in small Chromium batches, merges the pages and reconstructs clickable TOC
-links to pages across batch boundaries. No JS or CSS production changes.
+links to pages across batch boundaries. Adds native chapter/section PDF bookmarks.
 
 Requires: playwright, beautifulsoup4, PyMuPDF (fitz), local Chromium.
 Typical use:
@@ -12,8 +12,8 @@ Typical use:
   python src/tools/export_full_pdf.py --chromium /usr/bin/chromium
   python src/tools/export_full_pdf.py --batch-size 16 --out my-book.pdf
 
-Note: The resulting PDF has clickable page destinations but does not contain
-native PDF outline/bookmark objects. The HTML's dynamic export control is
+The result has chapter-only clickable printed contents AND a native
+chapter/section bookmark hierarchy. The HTML's dynamic export control is
 unchanged. Always visually inspect representative pages after exporting.
 """
 from __future__ import annotations
@@ -36,7 +36,8 @@ def main() -> None:
     ap.add_argument('--book', type=Path, default=ROOT / 'book.html')
     ap.add_argument('--out', type=Path, default=ROOT / 'book.pdf')
     ap.add_argument('--batch-size', type=int, default=20)
-    ap.add_argument('--chromium', type=str, default='/usr/bin/chromium')
+    ap.add_argument('--chromium', type=str, default='/usr/bin/chromium',
+                    help='Path to system Chromium, or auto for Playwright-managed Chromium')
     ap.add_argument('--qa', type=Path, default=ROOT / 'PDF_MERGE_QA.json')
     args = ap.parse_args()
     if args.batch_size < 1:
@@ -45,7 +46,7 @@ def main() -> None:
     css = (SRC / 'styles.css').read_text(encoding='utf8')
     book = args.book.read_text(encoding='utf8')
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(executable_path=args.chromium,
+        browser = pw.chromium.launch(executable_path=None if args.chromium == 'auto' else args.chromium,
                                      args=['--no-sandbox', '--disable-dev-shm-usage'])
         page = browser.new_page(viewport={'width': 1440, 'height': 900})
         errors = []
@@ -76,6 +77,45 @@ def main() -> None:
               from:i,to:Number(a.getAttribute('href').slice(4))-1,
               box:[r.left-b.left,r.top-b.top,r.right-b.left,r.bottom-b.top]
             }})})''')
+        # Build a native outline using the actual paginated print DOM.
+        # Rows in the visible print TOC now show chapters only; retaining
+        # section-head nodes here gives readers fine-grained PDF navigation.
+        outline = page.evaluate(r'''() => {
+          const slots=[...document.querySelectorAll('#printView > .page-slot')];
+          const entries=[];
+          slots.forEach((slot, i) => {
+            const hero=slot.querySelector('.page.type-hero .hero-title');
+            if (hero) {
+              const kicker=slot.querySelector('.page.type-hero .hero-kicker');
+              const m=(kicker ? kicker.textContent : '').match(/CHAPTER\s*(\d+)/i);
+              const num=m ? m[1].padStart(2, '0')+' · ' : '';
+              entries.push([1,num+hero.textContent.trim().replace(/\s+/g,' '),i+1]);
+            }
+            [...slot.querySelectorAll('.page.type-content .col-main [data-kind="section-head"]')]
+              .forEach(el => {
+                if (!entries.length) return;
+                const label=el.getAttribute('data-title') || el.textContent || '';
+                const title=label.trim().replace(/\s+/g,' ');
+                if (title) entries.push([2,title,i+1]);
+              });
+          });
+          return entries;
+        }''')
+        if not outline or sum(row[0] == 1 for row in outline) != report['chapters']:
+            raise RuntimeError(f'Invalid chapter bookmarks: {outline[:8]}')
+        report['bookmarkChapters'] = sum(row[0] == 1 for row in outline)
+        report['bookmarkSections'] = sum(row[0] == 2 for row in outline)
+        report['tocPages'] = page.locator('#printView .page.type-toc').count()
+        report['tocChapterRows'] = page.locator('#printView .toc-row.chapter').count()
+        report['tocSectionRows'] = page.locator('#printView .toc-row.section').count()
+        report['tocLinksCaptured'] = len(links)
+        if report['tocChapterRows'] != report['chapters'] or report['tocSectionRows']:
+            raise RuntimeError(f'Printed contents must be chapter-only: {report}')
+        if report['tocLinksCaptured'] != report['tocChapterRows']:
+            raise RuntimeError(f'Contents links clipped or missing: {report}')
+        if any(l['box'][0]<0 or l['box'][1]<0 or
+               l['box'][2]>1280 or l['box'][3]>720 for l in links):
+            raise RuntimeError('Contents link extends outside a printed 1280x720 page')
         body = page.locator('#printView').inner_html()
         page.close()
         snapshot = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><style>' + css + '</style></head><body><div id="printView">' + body + '</div></body></html>'
@@ -118,20 +158,25 @@ def main() -> None:
                 out[l['from']].insert_link({'kind':fitz.LINK_GOTO,
                                             'from':rect,'page':l['to'],'to':fitz.Point(0,0)})
                 linked+=1
+            out.set_toc(outline, collapse=1)
+            out.set_pagemode('UseOutlines')
             out.set_metadata({'title':'World History Dossier',
                               'author':'Mohammed Husain Ujjainwala',
                               'subject':'Twentieth-Century International History study notes'})
             args.out.parent.mkdir(parents=True,exist_ok=True)
-            out.save(args.out, garbage=1, deflate=True)
+            out.save(args.out, garbage=4, deflate=True, deflate_images=True, deflate_fonts=True)
             out.close()
     with fitz.open(args.out) as finished:
         report['pdfPages']=len(finished)
         report['pdfLinks']=sum(len(p.get_links()) for p in finished)
+        report['pdfBookmarks']=len(finished.get_toc())
+        if report['pdfBookmarks'] != report['bookmarkChapters'] + report['bookmarkSections']:
+            raise RuntimeError(f'PDF bookmarks lost: {report}')
         report['landscape169']=all(abs(p.rect.width-960)<1 and abs(p.rect.height-540)<1 for p in finished)
         if not report['landscape169'] or report['pdfPages'] != report['pageCount']:
             raise RuntimeError(f'PDF validation failed: {report}')
-        if report['pdfLinks'] < linked:
-            raise RuntimeError('Some TOC links lost during merge')
+        if report['pdfLinks'] != report['tocChapterRows'] or linked != report['tocChapterRows']:
+            raise RuntimeError(f'Contents links lost during PDF merge: {report}')
     args.qa.write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf8')
     print('PASS',json.dumps(report,ensure_ascii=False),flush=True)
 

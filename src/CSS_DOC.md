@@ -91,18 +91,25 @@ JS_DOC.md §4).
 
 ### 3.4 Print table of contents (`.toc-row` etc.)
 Only generated when a print export spans more than one chapter (engine.js,
-`buildPrintView`). Print TOC typography was enlarged for legibility: `.toc-title` 1.2rem, `.toc-row.chapter` 1.48rem, `.toc-row.section` 1.08rem and page numbers approximately 1rem. This can increase TOC page count; `packRows()` remeasures every row and recomputes page offsets. Real baseline dot-leaders, not a per-row bottom border:
+`buildPrintView`). Print TOC typography remains legible: `.toc-title` 1.2rem, `.toc-row.chapter` 1.30rem, `.toc-row.section` 1.08rem and page numbers approximately 1rem. The printed TOC now displays chapter rows only; the hierarchical native PDF bookmark outline provides section navigation. This can increase TOC page count; `packRows()` remeasures every row and recomputes page offsets. Real baseline dot-leaders, not a per-row bottom border:
 each row is `[num badge?] [official chapter title, wrapping as necessary] [.leader, flex:1,
 dotted bottom border] [.pg, page number]` — the leader is what visually
 connects title to number, sized by flexbox to fill whatever gap is left.
 Chapter rows get `--chapter-color` inline (from `paletteFor()` in
-engine.js) driving the circular number badge, the top divider rule, and
-the (bold) page number color; section rows inherit the same variable for
-their (unbolded, muted) page number so a chapter's whole TOC block reads
-as one color family. `.toc-row.chapter:first-of-type` strips the top
-rule/margin — this correctly re-triggers per TOC *page* (each page's
-`.col-full` is a fresh flex parent), which is what you want: a chapter
-that happens to start a fresh TOC page doesn't need the extra rule either.
+engine.js) driving the circular number badge, the divider rule, and
+the colored page number. The old `.toc-row.chapter:first-of-type`
+exception was removed: every individually measured row matched that selector,
+but only the first printed row on each page did. Keeping all rows styled
+identically makes measurements reflect their actual printed height.
+
+**Critical measured-row rule:** `.toc-row.chapter` uses **padding, not a
+positive margin** (`margin-top:0; padding-top:9px; padding-bottom:6px`).
+`packRows()` measures each row with `heightOf()`, which does not include an
+element's own margins. With 33 large chapter rows, old `margin-top:14px`
+caused hidden vertical overflow and missing clickable rows in exported PDF
+pages. Keep row spacing inside the measured box. The 1.30rem chapter font
+retains legibility and allows the complete chapter-only TOC to fit on three
+properly paginated pages.
 
 ## 4. Shared component library (used by BOTH screen and print)
 
@@ -180,7 +187,7 @@ Print has no responsive breakpoints — it's always exactly 1280×720.
 ## 8. November 2026 relaunch adjustments
 
 - **Preserved theme, changed information layout:** narrative concepts are now sidebar notes, not main-column interruptions. The `.concept` colour itself is unchanged; placement is governed by semantic `data-kind`, not by CSS alone.
-- **Index legibility:** on-screen drawer chapter links are 16px / section links ~15px; print index chapter headings ~23.7px and section labels ~17.3px at the current base font. This is a deliberate legibility improvement even if TOC grows an extra page.
+- **Index legibility:** on-screen drawer chapter links are 16px / section links ~15px; print index chapter headings ~20.8px at the current base font. The printed index deliberately omits individual section entries; see the native PDF bookmarks for those.
 - **Navigation stacking:** `#navOverlay` z-index 108 and `#navPanel` 109 deliberately exceed the sticky `.site-header` z-index 100; previously the header intercepted the close button at the top of the drawer. Keep this ordering.
 - **Empty-book screen:** `.empty-state` renders when `chapters/` contains no files; it does not appear in print. Export is disabled with no chapters. This state is intentional while replacement notes are being supplied.
 - **Mobile:** forcing the 1-column grid to `minmax(0,1fr)` and scrollable wide tables prevents horizontal overflow without altering the fixed 16:9 PDF.
@@ -189,14 +196,14 @@ Print has no responsive breakpoints — it's always exactly 1280×720.
 
 ### 2026-11-02 — compact enlarged print contents without shrinking text
 
-The chapter and section typography in the PDF TOC remains enlarged (1.48rem chapter /
-1.08rem section). With concise chapters having 12 section entries, the previous
-26px chapter top margin, 18px top padding and 8px per-side section row padding
-left one orphaned row on an otherwise empty second TOC page. The chapter
-margin/padding are now 14px/12px; section row vertical padding is 6px.
-This preserves legibility while preventing an avoidable extra TOC page in
-the two-chapter edition. Re-run print pagination tests after changing these
-values, because every TOC row is individually measured by engine.js.
+This historical checkpoint explains why the first print TOC had enlarged
+chapter and section typography. The **current complete-edition design**
+(November 2026) supersedes these old values: printed contents contain **chapters
+only**, chapter rows use **1.30rem** with **zero margin** and 9px top/6px
+bottom padding; section links remain available in the native PDF outline.
+Every row's spacing must be captured in its bounding-box measurement, otherwise
+`packRows()` can hide rows at page boundaries. The full 33-chapter edition
+has **three print TOC pages**, all chapter rows visible and linked.
 
 ### Official chapter-title wrapping (November 2026)
 
@@ -218,4 +225,16 @@ Screen `.section-pair` is a separate grid row for each narrative section and its
 
 Print `.col-side .learning-card` has compact padding, legible type and small internal diagrams that fit 330px. **Critical:** all new mini-diagram vertical spacing uses padding, not margins on individually measured elements; do not add element margins to table caption/rows or split-list items. Preserve the current `border-collapse: separate` math and table caption padding. Cards are measured as the outer `.block` BFC by the JS engine.
 
-Companion authoring contract: `SIDEBAR_COMPONENTS.md`; regression test: `tests/smoke_sidebar_alignment.py`.
+Companion authoring contract: `docs/authoring/SIDEBAR_COMPONENTS.md`; regression test: `tests/smoke_sidebar_alignment.py`.
+
+### PDF navigation integrity (November 2026)
+
+A user-visible bug in the first chapter-only export was that 6 of the 33
+chapter links were clipped: `heightOf()` excludes element **margins**, so
+`packRows()` packed more rows than the paper height actually permitted. The
+current `.toc-row.chapter` has no vertical margin, **no positional CSS
+exception (`:first-of-type`)**, and retains all its spacing inside padding,
+matching measured and actual geometry. QA must check **33
+printed chapter entries, 33 clickable page links and zero clipped rows** in
+the final PDF, as well as a properly nested 33-chapter/section PDF bookmark
+outline. Do not undo the no-margin rule.

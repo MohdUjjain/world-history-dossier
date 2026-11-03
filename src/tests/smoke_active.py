@@ -47,6 +47,8 @@ def main():
         })''')
         assert page.locator('#printView .hero-title').all_text_contents()==TITLES
         assert page.locator('#printView .toc-row.chapter').count()==len(CHNUMS)
+        assert page.locator('#printView .toc-row.section').count()==0
+        assert page.locator('#printView .toc-row.chapter a[href^="#pg-"]').count()==len(CHNUMS)
         assert pr['rows']==src['rows'] and pr['sideConcepts']==src['concepts'] and pr['mainConcepts']==0, (src,pr)
         assert pr['overflows']==0 and pr['heroOverflows']==0,pr
         page.emulate_media(media='screen')

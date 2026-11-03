@@ -2,7 +2,7 @@
 
 **A complete 33-chapter digital companion to 20th-century international history**, presented in the Imperial Archive reading style.
 
-**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](20th-Century%20International%20History.pdf)**
+**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 245-page PDF](20th-Century%20International%20History.pdf)**
 
 ## The book
 
@@ -13,6 +13,10 @@ The single-file `index.html` works in a browser without an application server. I
 ## Install as an app
 
 In supported browsers, install the dossier on your device for a dedicated app-like window and an icon on the home screen or desktop. On Chrome or Edge, use **Install app** (usually in the address bar or browser menu). On iPhone or iPad, use **Share → Add to Home Screen**. After opening the online reader once, its chapters are available offline; the separately hosted PDF is not pre-cached. See the [PWA installation guide](src/docs/hosting/PWA.md) for details.
+
+## PDF navigation
+
+The bookmarked PDF has a concise, three-page contents listing all 33 chapters. Each chapter title is clickable, and the PDF reader's **Bookmarks / Outline** panel offers an expandable chapter-and-section hierarchy for jumping directly to any topic. See the [PDF navigation guide](src/docs/reference/PDF_NAVIGATION.md).
 
 ## Repository guide
 

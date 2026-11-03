@@ -1,0 +1,60 @@
+name: Build bookmarked history dossier PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-bookmarked-pdf.yml'
+      - 'src/engine.js'
+      - 'src/styles.css'
+      - 'src/shell.html'
+      - 'src/build.py'
+      - 'src/chapters/**'
+      - 'src/tools/export_full_pdf.py'
+      - 'src/tests/validate_pdf_navigation.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dossier-pdf-main
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF builder dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright beautifulsoup4 lxml pymupdf
+          python -m playwright install --with-deps chromium
+      - name: Verify standalone HTML build
+        run: |
+          python src/build.py -o index.html --check
+          python src/tests/validate_structure.py
+      - name: Generate chapter-indexed and bookmarked PDF
+        run: |
+          python src/tools/export_full_pdf.py --book index.html --out '20th-Century International History.pdf' --batch-size 16 --chromium auto --qa PDF_MERGE_QA.json
+          python src/tests/validate_pdf_navigation.py '20th-Century International History.pdf'
+      - name: Commit updated PDF when changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- '20th-Century International History.pdf'
+          if git diff --cached --quiet; then
+            echo 'PDF is already current.'
+          else
+            git commit -m 'Update bookmarked PDF with chapter-only index'
+            git push origin HEAD:main
+          fi

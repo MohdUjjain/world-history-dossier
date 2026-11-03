@@ -40,7 +40,7 @@ The standalone reader has no external runtime dependencies. Full-book PDF export
 python src/tools/export_full_pdf.py --chromium /usr/bin/chromium --batch-size 16
 ```
 
-The PDF exporter produces true 16:9 paginated pages and preserves clickable contents destinations, but does not generate a native PDF bookmark outline.
+The PDF exporter produces true 16:9 paginated pages, a short chapter-only printed contents, clickable chapter destinations, and a native two-level chapter/section bookmark outline. See [the PDF navigation guide](docs/reference/PDF_NAVIGATION.md).
 
 ## Working conventions
 

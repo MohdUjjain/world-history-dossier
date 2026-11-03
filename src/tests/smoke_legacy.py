@@ -43,12 +43,15 @@ def main():
         pr=page.evaluate('''() => {
           const pages=[...document.querySelectorAll('#printView .page')];
           return {pages:pages.length, tocPages:pages.filter(el=>el.classList.contains('type-toc')).length,
-            printTocFont:getComputedStyle(document.querySelector('.toc-row.section')).fontSize,
+            printTocFont:getComputedStyle(document.querySelector('.toc-row.chapter')).fontSize,
+            tocChapters:document.querySelectorAll('.toc-row.chapter').length,
+            tocSections:document.querySelectorAll('.toc-row.section').length,
             mainConcepts:document.querySelectorAll('.page.type-content .col-main [data-kind="concept"]').length,
             sideConcepts:document.querySelectorAll('.page.type-content .col-side [data-kind="concept"]').length,
             overflow:[...document.querySelectorAll('.col-main,.col-side,.col-full')].filter(c=>c.scrollHeight-c.clientHeight>2).length};
         }''')
         assert pr['mainConcepts']==0 and pr['sideConcepts']==7 and pr['overflow']==0, pr
+        assert pr['tocChapters']==2 and pr['tocSections']==0, pr
         page.emulate_media(media='screen')
         page.locator('#rangeInput').fill('1,0,1')
         page.locator('#navTab').click()

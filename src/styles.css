@@ -316,10 +316,14 @@ a{ color:var(--oxblood); text-decoration:none; }
 .toc-title{ font-family:var(--font-label); font-size:1.2rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin:0 0 22px; padding-bottom:14px; border-bottom:1px solid var(--parchment-dk); }
 .toc-row{ display:flex; align-items:baseline; gap:12px; line-height:1.38; font-size:1rem; }
 .toc-row.chapter{
-  font-family:var(--font-display); font-size:1.48rem; color:var(--ink);
-  margin-top:14px; padding-top:12px; padding-bottom:5px; border-top:2px solid var(--chapter-color, var(--gold-line));
+  font-family:var(--font-display); font-size:1.30rem; color:var(--ink);
+  /* No margins: packRows() measures each row's bounding box and would not
+     include margins, causing bottom rows to be clipped across PDF pages. */
+  margin-top:0; padding-top:9px; padding-bottom:6px; border-top:2px solid var(--chapter-color, var(--gold-line));
 }
-.toc-row.chapter:first-of-type{ margin-top:0; padding-top:0; border-top:none; }
+/* Keep every TOC row identical in both the measurement rig and the rendered
+   column: :first-of-type would match EVERY individually measured clone,
+   but only the first row of each actual page, hiding rows at page boundaries. */
 .toc-row.chapter .n{
   font-family:var(--font-mono); color:var(--chapter-color, var(--gold)); font-size:.96rem; font-weight:700;
   border:1.5px solid var(--chapter-color, var(--gold)); border-radius:50%; flex:none;

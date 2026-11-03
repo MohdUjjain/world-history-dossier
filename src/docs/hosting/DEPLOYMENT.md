@@ -19,6 +19,12 @@ https://mohdujjain.github.io/world-history-dossier/20th-Century%20International%
 
 The site is also an installable **Progressive Web App**. Its root manifest (`manifest.webmanifest`), root service worker (`service-worker.js`), and app icons (`icons/`) are published alongside `index.html`. The installation integration is maintained in `src/shell.html`. See [the PWA guide](PWA.md) for browser instructions, scope, offline caching and updates.
 
+## Bookmarked PDF
+
+The pre-rendered 245-page PDF has a three-page, chapter-only printed contents and a native outline with 33 expandable chapters and 211 section bookmarks. See the [PDF navigation guide](../reference/PDF_NAVIGATION.md).
+
+Print-source changes trigger the `.github/workflows/build-bookmarked-pdf.yml` workflow, which validates the HTML, regenerates the PDF and commits it under the existing filename. A direct browser **Print → Save as PDF** export may lack native PDF bookmarks; use the pre-rendered file for the best navigation.
+
 ## Making a change
 
 From your locally cloned repository:

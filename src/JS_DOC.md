@@ -113,6 +113,29 @@ itself to find out how many pages IT needs (`T`), (3) go back and add `T`
 already printed into TOC row text. TOC is only generated at all when more
 than one chapter is in the current export (a single chapter doesn't need one).
 
+**Chapter-only print index (November 2026).** `collectTocEntries()` still
+collects chapter AND section metadata, but `buildTocRowNodes()` intentionally
+renders only one row per chapter for the printed contents. A complete edition
+therefore has 33 clickable chapter rows, instead of a 17-page section-by-section
+index. Do not re-add `ch.sections` to the paper TOC to provide navigation:
+the flowing screen's own `renderNavToc()` remains section-aware, and the
+full-book PDF exporter now writes native, two-level PDF bookmarks using
+print DOM chapter heroes and `data-kind="section-head"` headings. This source
+change affects only the index-generation step; body/revision pagination,
+chapter colors, section-linked sidebars, duplicate-range exports, PDF page
+numbering, and the original screen navigation remain unchanged. The number
+of printed pages will decrease because `T` is smaller, and all links are
+recomputed from `1+T+rel`.
+
+**PDF bookmarks (exporter, not engine.js).** `src/tools/export_full_pdf.py`
+collects each chapter hero and each section heading from the original
+`#printView > .page-slot` DOM before it is printed in batches. After merging,
+`fitz.Document.set_toc()` creates a chapter-first level-1 / section-level-2
+outline. On-page PDF index links and bookmark destinations are separate
+navigation systems; both must be verified. Chromium's direct browser
+print-to-PDF may not preserve those outline objects, so the pre-rendered
+PDF from the batch exporter is the reference bookmarked edition.
+
 ---
 
 ## 4. Gotchas (read before touching measuring/packing code)
@@ -379,3 +402,25 @@ For side notes that overflow the target page, the algorithm tries later pages of
 ### New test
 
 `python3 src/tests/smoke_sidebar_alignment.py` verifies meaningful component diversity, all screen aids in the correct section grid, all PDF aids on a page containing their section, zero print overflow, plus no changes to the substantive narrative text relative to the earlier four-chapter baseline. Run it together with `smoke_active.py`, `smoke_legacy.py`, and `validate_structure.py`.
+
+### Full-book PDF publication workflow (November 2026)
+
+	src/tools/export_full_pdf.py
+
+now has strict checks that the printed index contains precisely one link per
+chapter, **all link hit-boxes are on the 1280×720 page**, and all PDF links
+remain present after merge. It builds an outline with native PyMuPDF
+	toc = [[1, chapter_title, absolute_page],
+           [2, section_title, absolute_page], ...]
+
+then calls `set_toc(toc, collapse=1)` (chapter nodes open, section nodes
+initially collapsed) and `set_pagemode('UseOutlines')` to request that
+supporting PDF viewers display the Bookmarks pane. PDF page numbers are
+recalculated from the reduced paper index automatically.
+
+The repo CI workflow `.github/workflows/build-bookmarked-pdf.yml` performs
+full 16:9 regeneration, structural PDF navigation tests and commits the
+result under the existing public filename. The CLI exporter can run locally
+with `--chromium /usr/bin/chromium`, or in CI with `--chromium auto` and the
+Playwright-managed Chromium. Keep that filename synchronized with the PDF
+link in the root README.
