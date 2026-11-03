@@ -1,20 +1,30 @@
-# World History Dossier — Complete Edition
+# World History Dossier
 
-An interactive Imperial Archive reading companion to **20th-century international history**: **33 chapters (00–32)**, timelines, comparisons, section-linked learning aids, and end-of-chapter revision sections.
+**A complete 33-chapter digital companion to 20th-century international history**, presented in the Imperial Archive reading style.
 
-**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](20th-Century%20International%20History.pdf)** · **[View the social-preview image](og-image.jpg)**
+**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](20th-Century%20International%20History.pdf)**
 
-## Online reader
+## The book
 
-The published website is a **single standalone HTML file** (`index.html`), with no framework or backend. Open the table of contents using the **Contents** tab. The export drawer supports custom chapter order (e.g., `5-6,1,3,20-24`), repeat selections, and an include/exclude revision toggle. Use the reader's print/export option for a custom 16:9 landscape PDF, or download the full pre-rendered PDF above.
+The dossier covers Chapters **00–32**, from imperialism and the First World War through decolonization, the Cold War, globalization, and the consequences of September 11. Its reader includes a navigable chapter and section index, historical comparisons, timelines, thematic learning aids, and dedicated end-of-chapter revision sections.
 
-## Social-sharing preview
+The single-file `index.html` works in a browser without an application server. Its export panel supports chapter ranges such as `5-6,1,3,20-24`, preserves the specified order, and lets you include or exclude revision sections when printing to a **16:9 landscape PDF**.
 
-The `<head>` in `index.html` contains the official page title, description, canonical URL, Open Graph tags, and Twitter/X card tags. The `og:image` field points to **https://mohdujjain.github.io/world-history-dossier/og-image.jpg** (1200 × 630 JPEG). The same metadata is maintained in **`src/shell.html`** so it survives rebuilding the website. For accurate previews, the image and HTML must both be deployed to the same public site. Messaging apps may cache a prior preview; try sharing `?v=2` once if the card remains stale.
+## Repository guide
 
-## Editable source
+| Location | Purpose |
+| --- | --- |
+| [`index.html`](index.html) | Published standalone HTML reader |
+| [`20th-Century International History.pdf`](20th-Century%20International%20History.pdf) | Complete pre-rendered PDF |
+| [`src/chapters/`](src/chapters/) | All 33 editable chapter modules |
+| [`src/styles.css`](src/styles.css) and [`src/engine.js`](src/engine.js) | Shared styling and interactive/print engine |
+| [`src/build.py`](src/build.py) | Assembles the reader from modular source |
+| [`src/README.md`](src/README.md) | Developer quick start |
+| [`src/docs/README.md`](src/docs/README.md) | Organized documentation index |
 
-The canonical source lives in `src/`: 33 chapter modules, `styles.css`, `engine.js`, `shell.html`, `build.py`, test scripts, historical-editorial notes, and the two living references (`CSS_DOC.md` / `JS_DOC.md`). Build and validate it from the repository root:
+## Rebuilding
+
+From the repository root, with Python installed:
 
 ```bash
 python src/build.py -o index.html
@@ -22,12 +32,10 @@ python src/build.py -o index.html --check
 python src/tests/validate_structure.py
 ```
 
-Whenever `src/styles.css` changes, update `src/CSS_DOC.md` in the same commit. Whenever `src/engine.js` changes, update `src/JS_DOC.md` in the same commit. After editing chapters, rebuild `index.html` and regenerate the separate PDF if necessary.
+Whenever shared CSS or JavaScript changes, update its living documentation in the same commit: [`src/CSS_DOC.md`](src/CSS_DOC.md) or [`src/JS_DOC.md`](src/JS_DOC.md). The separate full-book PDF should be regenerated if the book content changes.
 
-## Hosting
-
-This public repository is published via **GitHub Pages** from **`main` → `/(root)`**. Changes to `index.html`, `og-image.jpg`, or the PDF are deployed after committing to `main`; the Pages settings do not need to be changed.
+This site is hosted on GitHub Pages from the `main` branch at the repository root.
 
 ## Editorial note
 
-These are study notes based on supplied textbook summaries and have **not been independently fact-checked**. Examine the editorial notes and confirm copyright/attribution permissions before redistributing source material.
+These are study notes prepared from supplied textbook summaries; they have **not been independently fact-checked**. See the chapter-specific editorial reports in [`src/docs/editorial/`](src/docs/editorial/) for source caveats, and review attribution/copyright permissions before redistribution.
