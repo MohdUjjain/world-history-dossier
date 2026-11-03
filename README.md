@@ -1,31 +1,33 @@
 # World History Dossier — Complete Edition
 
-A single-file interactive reading edition of **33 chapters (00–32)** of 20th-century international history study notes, using the Imperial Archive theme and Educational Sidebar V2 learning aids.
+An interactive Imperial Archive reading companion to **20th-century international history**: **33 chapters (00–32)**, timelines, comparisons, section-linked learning aids, and end-of-chapter revision sections.
 
-## Read the book
+**[Read the online book](https://mohdujjain.github.io/world-history-dossier/)** · **[Download the complete 259-page PDF](World_History_Dossier.pdf)** · **[View the social-preview image](og-image.jpg)**
 
-**[Open the online reader](https://mohdujjain.github.io/world-history-dossier/)** (after GitHub Pages is enabled).
+## Online reader
 
-The `index.html` file is self-contained: the screen reader, chapter navigation, revision controls, and print/export engine run entirely in your browser.
+The published website is a **single standalone HTML file** (`index.html`), with no framework or backend. Open the table of contents using the **Contents** tab. The export drawer supports custom chapter order (e.g., `5-6,1,3,20-24`), repeat selections, and an include/exclude revision toggle. Use the reader's print/export option for a custom 16:9 landscape PDF, or download the full pre-rendered PDF above.
 
-## Printing and chapter selection
+## Social-sharing preview
 
-Use the reader's sidebar to choose chapters (including ranges such as `5-6,1,3,20-24`), include or exclude revision sections, and export the selected content for printing as a **16:9 landscape PDF**.
+The `<head>` in `index.html` contains the official page title, description, canonical URL, Open Graph tags, and Twitter/X card tags. The `og:image` field points to **https://mohdujjain.github.io/world-history-dossier/og-image.jpg** (1200 × 630 JPEG). The same metadata is maintained in **`src/shell.html`** so it survives rebuilding the website. For accurate previews, the image and HTML must both be deployed to the same public site. Messaging apps may cache a prior preview; try sharing `?v=2` once if the card remains stale.
 
-A separate pre-rendered 259-page PDF exists in the project release package, but it has **not yet been added to this GitHub repository**. Upload `World_History_Dossier.pdf` to the repository root if you also want a direct PDF download on this site.
+## Editable source
 
-## Enable GitHub Pages
+The canonical source lives in `src/`: 33 chapter modules, `styles.css`, `engine.js`, `shell.html`, `build.py`, test scripts, historical-editorial notes, and the two living references (`CSS_DOC.md` / `JS_DOC.md`). Build and validate it from the repository root:
 
-Go to **Settings → Pages → Build and deployment**. Choose **Deploy from a branch**, select **main** and **/(root)**, and save. The site will be available at:
+```bash
+python src/build.py -o index.html
+python src/build.py -o index.html --check
+python src/tests/validate_structure.py
+```
 
-https://mohdujjain.github.io/world-history-dossier/
+Whenever `src/styles.css` changes, update `src/CSS_DOC.md` in the same commit. Whenever `src/engine.js` changes, update `src/JS_DOC.md` in the same commit. After editing chapters, rebuild `index.html` and regenerate the separate PDF if necessary.
 
-## Maintainable source
+## Hosting
 
-The full editing/rebuild archive includes `src/chapters/ch00.html` through `ch32.html`, `styles.css`, `engine.js`, `shell.html`, `build.py`, and living `CSS_DOC.md` and `JS_DOC.md`. It is available in the separate project source ZIP; it is **not yet uploaded to this repository**.
+This public repository is published via **GitHub Pages** from **`main` → `/(root)`**. Changes to `index.html`, `og-image.jpg`, or the PDF are deployed after committing to `main`; the Pages settings do not need to be changed.
 
-After adding those source files, run `python src/build.py -o index.html` when updating the book. Whenever you change CSS or the print engine, update their corresponding living documentation in the same commit.
+## Editorial note
 
-## Editorial notice
-
-These are study notes based on supplied textbook summaries, not independently fact-checked. Check copyright and attribution permissions before redistributing.
+These are study notes based on supplied textbook summaries and have **not been independently fact-checked**. Examine the editorial notes and confirm copyright/attribution permissions before redistributing source material.

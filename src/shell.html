@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A complete digital dossier of 33 chapters on 20th-century international history, featuring study notes, timelines, and thematic briefings in an elegant Imperial Archive reading experience.">
+<meta name="author" content="Mohammed Husain Ujjainwala">
+<meta name="theme-color" content="#1B2A44">
+<link rel="canonical" href="https://mohdujjain.github.io/world-history-dossier/">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="World History Dossier">
+<meta property="og:title" content="World History Dossier — 20th-Century International History">
+<meta property="og:description" content="A complete digital dossier of 33 chapters on 20th-century international history, featuring study notes, timelines, and thematic briefings in an elegant Imperial Archive reading experience.">
+<meta property="og:url" content="https://mohdujjain.github.io/world-history-dossier/">
+<meta property="og:image" content="https://mohdujjain.github.io/world-history-dossier/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:secure_url" content="https://mohdujjain.github.io/world-history-dossier/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="World History Dossier social preview card">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="World History Dossier — 20th-Century International History">
+<meta name="twitter:description" content="A complete digital dossier of 33 chapters on 20th-century international history, featuring study notes, timelines, and thematic briefings in an elegant Imperial Archive reading experience.">
+<meta name="twitter:image" content="https://mohdujjain.github.io/world-history-dossier/og-image.jpg">
+<meta name="twitter:image:alt" content="A navy-and-parchment World History Dossier cover with an antique world map and 33-chapter subtitle">
+<title>World History Dossier — 20th-Century International History</title>
+<style>
+/*__STYLES__*/
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="row">
+    <span class="title">World History Dossier</span>
+    <span class="current" id="currentChapterLabel"></span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</header>
+
+<div id="titlePage" class="title-page">
+  <div class="tp-inner">
+    <div class="tp-mark">✦</div>
+    <div class="tp-series">An Independent Study Companion</div>
+    <h1 class="tp-title">World History Dossier</h1>
+    <p class="tp-subtitle">Study Notes on Twentieth-Century International History</p>
+    <div class="tp-rule"></div>
+    <p class="tp-desc">A complete digital dossier of 33 chapters on twentieth-century international history, designed for comfortable reading, revision, and sharing.</p>
+    <div class="tp-imprint">
+      <p>Prepared by <strong>Mohammed Husain Ujjainwala</strong></p>
+      <p>TR 25368 &middot; Hadi Ashar 1448H</p>
+    </div>
+  </div>
+</div>
+
+<button id="navTab" aria-label="Open contents">Contents</button>
+<div id="navOverlay"></div>
+<nav id="navPanel">
+  <div class="nav-head">
+    <span>Contents &amp; Export</span>
+    <button id="navClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="nav-body">
+    <div class="nav-export">
+      <div class="nav-section-label">Export</div>
+      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" checked> Include chapter summaries</label>
+      <label class="nav-range-label" for="rangeInput">Chapters — e.g. 5-6,1,3,20-24</label>
+      <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
+      <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
+      <button id="printBtn">⤓ Export PDF</button>
+    </div>
+    <div class="nav-toc-wrap">
+      <div class="nav-section-label">Contents</div>
+      <div class="nav-toc" id="navToc"></div>
+    </div>
+  </div>
+</nav>
+
+<div id="screenView"></div>
+
+<div id="printView"></div>
+
+<!-- ============================================================
+     CHAPTER SOURCE DATA
+     Authoring convention (do not touch CSS/JS above when adding
+     chapters — only add another .chapter-source block below,
+     then it is picked up automatically):
+
+     <div class="chapter-source" data-chapter="N" data-title="..."
+          data-author="..." data-subtitle="...">
+       <div class="src-hero">...hero markup (see below)...</div>
+       <div class="src-main">  ...blocks with data-keep + data-kind... </div>
+       <div class="src-side">  ...blocks with data-keep="together" + data-kind (concept/def/tip/mistake/memory/hy)... </div>
+     </div>
+   ============================================================ -->
+<div id="chapterData" style="display:none">
+
+<!--__CHAPTERS__-->
+
+</div><!-- /chapterData -->
+
+<script>
+/*__SCRIPT__*/
+</script>
+</body>
+</html>
