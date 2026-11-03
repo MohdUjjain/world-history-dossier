@@ -6,6 +6,13 @@
 <meta name="description" content="A complete digital dossier of 33 chapters on 20th-century international history, featuring study notes, timelines, and thematic briefings in an elegant Imperial Archive reading experience.">
 <meta name="author" content="Mohammed Husain Ujjainwala">
 <meta name="theme-color" content="#1B2A44">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta name="application-name" content="World History Dossier">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="History Dossier">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="canonical" href="https://mohdujjain.github.io/world-history-dossier/">
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="website">
@@ -102,6 +109,15 @@
 
 <script>
 /*__SCRIPT__*/
+</script>
+<script>
+// Installable offline reader: keep registration separate from the print engine.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./service-worker.js', {scope: './'})
+      .catch(function (error) { console.warn('Offline reader unavailable:', error); });
+  });
+}
 </script>
 </body>
 </html>

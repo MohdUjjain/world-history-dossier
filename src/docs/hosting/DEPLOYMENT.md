@@ -15,6 +15,10 @@
 The book PDF is intentionally named **`20th-Century International History.pdf`**. Use this link, preserving URL encoding:  
 https://mohdujjain.github.io/world-history-dossier/20th-Century%20International%20History.pdf
 
+## Installable reader
+
+The site is also an installable **Progressive Web App**. Its root manifest (`manifest.webmanifest`), root service worker (`service-worker.js`), and app icons (`icons/`) are published alongside `index.html`. The installation integration is maintained in `src/shell.html`. See [the PWA guide](PWA.md) for browser instructions, scope, offline caching and updates.
+
 ## Making a change
 
 From your locally cloned repository:

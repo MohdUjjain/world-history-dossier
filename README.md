@@ -10,6 +10,10 @@ The dossier covers Chapters **00–32**, from imperialism and the First World Wa
 
 The single-file `index.html` works in a browser without an application server. Its export panel supports chapter ranges such as `5-6,1,3,20-24`, preserves the specified order, and lets you include or exclude revision sections when printing to a **16:9 landscape PDF**.
 
+## Install as an app
+
+In supported browsers, install the dossier on your device for a dedicated app-like window and an icon on the home screen or desktop. On Chrome or Edge, use **Install app** (usually in the address bar or browser menu). On iPhone or iPad, use **Share → Add to Home Screen**. After opening the online reader once, its chapters are available offline; the separately hosted PDF is not pre-cached. See the [PWA installation guide](src/docs/hosting/PWA.md) for details.
+
 ## Repository guide
 
 | Location | Purpose |
