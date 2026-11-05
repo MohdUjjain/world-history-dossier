@@ -65,7 +65,7 @@ python src/tests/validate_structure.py
 
 Whenever shared CSS or JavaScript changes, update its living documentation in the same commit: [`src/CSS_DOC.md`](src/CSS_DOC.md) or [`src/JS_DOC.md`](src/JS_DOC.md). The separate full-book PDF should be regenerated if the book content changes.
 
-This site is hosted on GitHub Pages from the `main` branch at the repository root.
+This site is hosted on GitHub Pages from the `main` branch at the repository root. The [Phase D release checklist](src/docs/release/RELEASE_VERIFICATION.md) describes the automated responsive, accessibility, screenshot comparison, offline, ordered-range, PDF and documentation checks that should pass before merging; require both CI jobs in branch rules for enforceable pre-deployment protection.
 
 ## Editorial note
 

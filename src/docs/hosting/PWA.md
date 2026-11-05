@@ -76,3 +76,8 @@ Because this is a project site under a github.io subpath, its robots.txt is a he
 ## Boundaries
 
 Browser PWA storage is not permanent device storage; clearing site data removes the saved reader. The separate full PDF is not precached. The update UI is hidden from printed pages and does not modify chapter modules or the 16:9 print engine.
+
+
+## Phase D automated offline verification
+
+In addition to the existing `node src/tests/test_offline_cache.mjs` worker simulation, `python src/tests/smoke_release_offline.py` uses real Chromium and a local HTTP server to verify that the installed service worker controls an offline reopening, all 33 chapters remain available, and the large PDF remains outside the precache. It then serves a changed cache revision to trigger a genuine worker install/activate/controllerchange sequence and checks that the reader shows the update notice **without forcing a refresh**. Both checks are part of the Phase D PR release verification workflow; see [the runbook](../release/RELEASE_VERIFICATION.md).

@@ -66,3 +66,10 @@ If a social app still shows an older cached thumbnail, allow its cache to refres
 ## Documentation rules
 
 Keep `src/CSS_DOC.md` synchronized with `src/styles.css`, and `src/JS_DOC.md` synchronized with `src/engine.js`, in the same commit as a corresponding edit. For other documentation, start at [the documentation index](../README.md).
+
+
+## Phase D pre-deployment review (November 2026)
+
+Before merging source changes, review the pull request's **verify** and **release-pdf** GitHub Actions checks and their uploaded screenshot/QA evidence. The release runbook is [Phase D comprehensive verification](../release/RELEASE_VERIFICATION.md). This is a **PR release candidate gate**, not a substitute for GitHub repository branch rules: because Pages currently deploys from `main`, set branch protection/rulesets to require both checks and block direct pushes if strict pre-deployment enforcement is needed. Do not claim checks run prior to a direct push to `main`.
+
+The browser job audits WCAG, section navigation, 320px–1440px responsive layouts, screenshot diffs against the PR base, realistic PWA offline/update behavior and strict range exports. The independent PR PDF job rebuilds the 16:9 book, validates native bookmarks and renders representative pages for comparison. Merge only when automated gates and manual visual review both pass. Confirm the production Pages and PDF Actions runs after merging.

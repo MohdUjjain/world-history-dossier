@@ -12,13 +12,22 @@ on:
 permissions:
   contents: read
 
+# A new revision to the same PR invalidates earlier review evidence.
+# Cancel obsolete long-running PDF/browser jobs and verify only the tip.
+concurrency:
+  group: dossier-qa-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
+    name: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout publication and source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -29,12 +38,31 @@ jobs:
         run: python src/tests/validate_structure.py
       - name: Validate publication metadata, assets and offline UI
         run: python src/tests/verify_publication.py
+      - name: Validate source-documentation coupling and release notes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -n "$BASE_SHA" ]; then
+            python src/tests/verify_docs_sync.py --base "$BASE_SHA"
+          else
+            python src/tests/verify_docs_sync.py
+          fi
       - name: Simulate offline startup, cache updates and Google Font persistence
         run: node src/tests/test_offline_cache.mjs
-      - name: Install Chromium browser test dependencies
+      - name: Install browser and image test dependencies
         run: |
-          python -m pip install playwright
+          python -m pip install playwright pillow
           python -m playwright install --with-deps chromium
+      - name: Restore pinned axe-core package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: phase-d-axe-core-4.10.3-${{ runner.os }}
+      - name: Install pinned axe-core auditing library (bounded network retries)
+        run: |
+          timeout 150s npm install --prefer-offline --fetch-timeout=45000 --fetch-retries=1 \
+            --no-save --no-package-lock --ignore-scripts --no-audit --no-fund \
+            axe-core@4.10.3
       - name: Test reader navigation, accessibility, revision, resume and printing
         run: python src/tests/smoke_reader_ui.py
       - name: Test Phase A palette contrast, PDF roles, anchors and print reuse
@@ -43,6 +71,94 @@ jobs:
         run: python src/tests/smoke_reader_interactions.py
       - name: Test Phase C publishing, sidebar geometry and mobile table affordances
         run: python src/tests/smoke_phase_c.py
+      - name: Audit WCAG accessibility in reader, chapter and mobile drawer
+        run: python src/tests/smoke_release_accessibility.py
+      - name: Test chapter-range selection, repeats, invalid input and summaries
+        run: python src/tests/smoke_release_ranges.py
+      - name: Prepare trusted PR-base HTML for screenshot comparison
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git show "$BASE_SHA:index.html" > "$RUNNER_TEMP/dossier-baseline.html"
+      - name: Inspect five responsive layouts and compare PR screenshots
+        run: |
+          if [ -f "$RUNNER_TEMP/dossier-baseline.html" ]; then
+            python src/tests/smoke_release_browser.py \
+              --baseline "$RUNNER_TEMP/dossier-baseline.html" \
+              --out ".release-evidence/screens"
+          else
+            # Branch-based Pages can already deploy on push to main. Still
+            # capture responsive evidence, but diff against the PR base only
+            # while the PR is being reviewed before its merge.
+            python src/tests/smoke_release_browser.py \
+              --out ".release-evidence/screens"
+          fi
+      - name: Test real Chromium offline startup and edition update notice
+        run: python src/tests/smoke_release_offline.py
+      - name: Upload browser, accessibility and screenshot comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-d-browser-evidence
+          path: .release-evidence/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
       - name: Check actual Pages URLs on scheduled or manual runs
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: python src/tests/verify_live_site.py
+
+  release-pdf:
+    name: release-pdf
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout source and committed PDF baseline
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install print and PDF inspection dependencies
+        run: |
+          python -m pip install playwright beautifulsoup4 lxml pymupdf pillow
+          python -m playwright install --with-deps chromium
+      - name: Confirm candidate HTML and source integrity
+        run: |
+          python src/build.py -o index.html --check
+          python src/tests/validate_structure.py
+      - name: Extract existing PDF from trusted PR base
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -n "$BASE_SHA" ]; then
+            git show "$BASE_SHA:20th-Century International History.pdf" > "$RUNNER_TEMP/pdf-baseline.pdf"
+          else
+            cp '20th-Century International History.pdf' "$RUNNER_TEMP/pdf-baseline.pdf"
+          fi
+      - name: Regenerate all 33 chapters using real 16:9 print engine
+        run: |
+          python src/tools/export_full_pdf.py \
+            --book index.html \
+            --out "$RUNNER_TEMP/dossier-candidate.pdf" \
+            --batch-size 16 --chromium auto \
+            --qa "$RUNNER_TEMP/PDF_MERGE_QA.json"
+      - name: Inspect complete PDF geometry, native bookmarks and raster deltas
+        run: |
+          python src/tests/validate_pdf_navigation.py "$RUNNER_TEMP/dossier-candidate.pdf"
+          python src/tests/inspect_pdf_release.py "$RUNNER_TEMP/dossier-candidate.pdf" \
+            --reference "$RUNNER_TEMP/pdf-baseline.pdf" \
+            --out ".release-evidence/pdf"
+          cp "$RUNNER_TEMP/PDF_MERGE_QA.json" ".release-evidence/pdf/PDF_MERGE_QA.json"
+      - name: Upload PDF render and outline review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-d-pdf-evidence
+          path: .release-evidence/pdf/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
