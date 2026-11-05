@@ -56,5 +56,16 @@ jobs:
             echo 'PDF is already current.'
           else
             git commit -m 'Update bookmarked PDF with chapter-only index'
-            git push origin HEAD:main
+            # A PDF build may overlap source/docs pushes. Rebase the PDF-only
+            # commit onto the newest main branch instead of failing the build.
+            for attempt in 1 2 3; do
+              git pull --rebase origin main
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              echo "Push raced with another commit; retrying ($attempt/3)"
+              sleep 2
+            done
+            echo 'Unable to publish the generated PDF after three attempts' >&2
+            exit 1
           fi
