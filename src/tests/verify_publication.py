@@ -123,7 +123,7 @@ def verify():
     assert ".pdf" in worker and "name.startsWith(CACHE_PREFIX)" in worker
     assert "cache.addAll(SHELL)" in worker and "self.skipWaiting()" in worker
     assert (ROOT / "src/shell.html").read_text(encoding="utf-8").count("/*__OFFLINE_READER__*/") == 1
-    assert re.search(r'\bwhd-edition-[0-9a-f]{12}\b', worker), "Worker revision not content hashed"
+    assert re.search(r"CACHE_NAME\s*=\s*CACHE_PREFIX\s*\+\s*'[0-9a-f]{12}'", worker), "Worker revision not content hashed"
 
     print("PASS: 33 chapters, source and web assets, PDF, meta tags, PWA icons, 404, sitemap, cache and update UX")
 
