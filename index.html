@@ -3173,7 +3173,17 @@ function buildNavPanel(entries){
 }
 
 function openNav(){ document.getElementById('navPanel').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); }
-function closeNav(){ document.getElementById('navPanel').classList.remove('open'); document.getElementById('navOverlay').classList.remove('open'); }
+function closeNav(){
+  var panel=document.getElementById('navPanel');
+  panel.classList.remove('open');
+  document.getElementById('navOverlay').classList.remove('open');
+  // Export invokes this legacy close path, so clean up ALL modal state;
+  // otherwise body overflow stays locked after printing in the new reader UI.
+  panel.inert=true;
+  panel.setAttribute('aria-hidden','true');
+  document.getElementById('navTab').setAttribute('aria-expanded','false');
+  document.body.classList.remove('drawer-open');
+}
 document.getElementById('navTab').addEventListener('click', openNav);
 document.getElementById('navClose').addEventListener('click', closeNav);
 document.getElementById('navOverlay').addEventListener('click', closeNav);

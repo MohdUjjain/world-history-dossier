@@ -116,6 +116,8 @@ def main():
             assert page.locator('#printBtn').is_enabled()
             page.evaluate('window.print=()=>{}')
             page.locator('#printBtn').click()
+            assert not page.evaluate("document.body.classList.contains('drawer-open')"), (
+                'Export must restore normal page scrolling')
             printed = page.locator('#printView .hero-title').all_text_contents()
             assert printed == [
                 page.locator('#chapterData .chapter-source[data-chapter="6"]').get_attribute('data-title'),

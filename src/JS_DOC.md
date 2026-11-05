@@ -506,3 +506,12 @@ exercise search and expansion, keyboard access/focus restoration, active
 reading, revision/study links, strict export order and errors, saved resume,
 re-render after revision toggles, and 390px mobile geometry. Also run the
 existing chapter/print smoke tests after any core engine change.
+
+**Drawer-close regression (November 2026):** The original export-button
+handler calls the core `closeNav()`, not the new screen module's
+`closeDrawer()`. Both paths MUST remove `body.drawer-open`, clear
+`aria-expanded`, set `aria-hidden` and `inert`, and close the backdrop.
+Otherwise the screen remains scroll-locked after a print/export operation;
+that also prevents reading position from being saved. This fix is deliberately
+in `engine.js`, not the PDF pagination helpers. The browser smoke test
+must exercise printing followed by additional scrolling.
