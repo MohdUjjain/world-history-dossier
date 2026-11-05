@@ -29,7 +29,12 @@ Tests aim to catch regressions, not introduce new content.
 `.github/workflows/verify-pages.yml` supplies:
 
 - **`verify`** — structural, PWA, live browser, axe accessibility,
-  responsive screenshots, ordered export and documentation checks.
+  responsive screenshots, ordered export and documentation checks. Ordered
+  range/screenshot tests run before the real-PWA update test, so a failed
+  update check cannot prevent collection of other regression evidence.
+  Pixel comparisons run against the PR-base HTML **on pull requests only**;
+  production pushes still capture responsive screenshots but do not
+  compare them with an arbitrarily different previous commit.
 - **`release-pdf`** — on PR/manual dispatch, regenerates the full PDF with
   the actual browser print engine, checks its outline/page geometry and
   compares rasterized representative pages with the repository's current PDF.
