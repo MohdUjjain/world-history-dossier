@@ -37,6 +37,7 @@
 </style>
 </head>
 <body>
+<a class="skip-to-content" href="#screenView">Skip to reading content</a>
 
 <header class="site-header">
   <div class="row">
@@ -84,29 +85,34 @@
   aria-hidden="true" tabindex="-1" inert>
   <div class="nav-head">
     <span id="navPanelHeading">Contents &amp; Export</span>
-    <button id="navClose" aria-label="Close">&times;</button>
+    <button id="navClose" type="button" aria-label="Close contents">&times;</button>
   </div>
   <div class="nav-body">
     <div class="nav-tools">
       <label for="tocSearch" class="nav-section-label">Find chapter or section</label>
-      <input id="tocSearch" type="search" autocomplete="off"
-        placeholder="Search chapters, sections, revision…"
-        aria-describedby="tocSearchStatus">
+      <div class="nav-search-field">
+        <input id="tocSearch" type="search" autocomplete="off"
+          placeholder="Search chapters, sections, revision…"
+          aria-controls="navToc" aria-describedby="tocSearchStatus">
+        <button type="button" id="tocClearSearch" aria-label="Clear contents search" hidden>&times;</button>
+      </div>
       <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
         <button type="button" id="tocExpandAll">Expand all</button>
         <button type="button" id="tocCollapseAll">Collapse all</button>
       </div>
       <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
+      <p id="tocNoResults" class="nav-no-results" hidden>No matches. Try another chapter title, section, or revision keyword; you can also clear your search.</p>
     </div>
     <details id="navExportPanel" class="nav-export-details">
       <summary>Print / Export PDF</summary>
       <div class="nav-export">
       <div class="nav-section-label">Export</div>
-      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" checked> Include chapter summaries</label>
+      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" aria-controls="screenView" checked> Include chapter summaries</label>
+      <p class="nav-export-explainer">This also shows or hides revision sections in the reader.</p>
       <label class="nav-range-label" for="rangeInput">Chapters — e.g. 5-6,1,3,20-24</label>
       <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
-      <button id="printBtn">⤓ Export PDF</button>
+      <button id="printBtn" type="button">⤓ Export PDF</button>
       </div>
     </details>
     <div class="nav-offline">
@@ -132,7 +138,8 @@
   </div>
 </aside>
 
-<div id="screenView"></div>
+<main id="screenView" tabindex="-1"></main>
+<noscript><p class="no-script-note">Enable JavaScript to open the interactive 33-chapter reader. The published bookmarked PDF is also available from the repository.</p></noscript>
 
 <div id="printView"></div>
 
