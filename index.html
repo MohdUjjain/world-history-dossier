@@ -14,6 +14,8 @@
 <meta name="apple-mobile-web-app-title" content="History Dossier">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="canonical" href="https://mohdujjain.github.io/world-history-dossier/">
+<link rel="alternate" type="application/pdf" title="World History Dossier — Complete Bookmarked PDF"
+  href="./20th-Century%20International%20History.pdf">
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="World History Dossier">
@@ -47,6 +49,16 @@
   --font-label: 'Trebuchet MS','Segoe UI', Helvetica, Arial, sans-serif;
   --gold-ink:#7B5320; /* accessible archival gold for small type on parchment */
   --reader-anchor-clearance:76px;
+  /* Screen-only spatial system. Keep print dimensions/measured blocks fixed. */
+  --reader-width:1200px;
+  --reader-inline-pad:clamp(18px,2.8vw,32px);
+  --reader-aside-width:clamp(264px,27vw,320px);
+  --reader-column-gap:clamp(24px,3.3vw,42px);
+  --reader-section-gap:28px;
+  --reader-first-section-gap:38px;
+  --reader-chapter-gap:52px;
+  --reader-prose-width:42rem;
+  --reader-rule:var(--parchment-dk);
   --page-scale: 1;
   /* Elevation scale — soft, layered shadows read as "lifted" rather than
      "outlined," and a consistent radius step (pill / card / panel) is what
@@ -123,6 +135,23 @@ a{ color:var(--oxblood); text-decoration:none; }
 .tp-imprint{ border-top:1px solid rgba(241,227,195,.25); padding-top:24px; font-family:var(--font-label); }
 .tp-imprint p{ margin:0 0 6px; font-size:.86rem; color:var(--parchment-dk); letter-spacing:.02em; }
 .tp-imprint strong{ color:var(--parchment-lt); font-weight:700; }
+.tp-pdf-access{position:relative;display:flex;flex-direction:column;
+  align-items:center;gap:9px;margin-top:24px;font-family:var(--font-label);}
+.tp-pdf-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  border:1px solid var(--gold-lt);border-radius:var(--r-sm);padding:11px 19px;
+  background:var(--gold-lt);color:var(--ink);font-size:.82rem;font-weight:700;
+  box-shadow:var(--sh-md);text-decoration:none;}
+.tp-pdf-link:hover{background:var(--paper);color:var(--ink);}
+.tp-pdf-link:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+.tp-pdf-note{margin:0;font-size:.72rem;line-height:1.5;color:var(--parchment-dk);max-width:45ch;}
+.nav-pdf-access{border-top:1px solid var(--reader-rule);padding-top:12px;margin-top:15px;
+  font:.78rem/1.5 var(--font-label);}
+.nav-pdf-access a{display:flex;min-height:44px;align-items:center;gap:8px;
+  color:var(--gold-ink);font-weight:700;text-decoration:underline;
+  text-underline-offset:3px;}
+.nav-pdf-access a:hover{color:var(--oxblood);}
+.nav-pdf-access a:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+.nav-pdf-access p{margin:2px 0 0;color:var(--ink-soft);font-size:.7rem;line-height:1.5;}
 
 /* ============================================================
    SIDEBAR NAVIGATION PANEL — hidden by default; a slim edge tab
@@ -389,9 +418,11 @@ body.drawer-open{overflow:hidden;}
 /* ============================================================
    FLOWING SCREEN VIEW — comfortable continuous reading layout
    ============================================================ */
-#screenView{ max-width:1200px; margin:0 auto; padding:0 32px 80px; }
-.chapter-flow{ padding-top:56px; }
-.chapter-flow + .chapter-flow{ border-top:1px solid var(--parchment-dk); margin-top:56px; }
+#screenView{max-width:var(--reader-width);margin:0 auto;
+  padding:0 var(--reader-inline-pad) 80px;}
+.chapter-flow{padding-top:52px;}
+.chapter-flow + .chapter-flow{border-top:1px solid var(--reader-rule);
+  margin-top:var(--reader-chapter-gap);}
 
 .banner{
   position:relative; background:
@@ -412,13 +443,16 @@ body.drawer-open{overflow:hidden;}
 .banner .yrs{ position:relative; display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
 .banner .yrs span{ font-family:var(--font-mono); font-size:.78rem; color:var(--parchment-dk); border:1px solid var(--chapter-color, rgba(241,227,195,.3)); border-radius:20px; padding:4px 14px; }
 
-.chapter-grid{ display:grid; grid-template-columns: minmax(0,1fr) 340px; gap:52px; margin-top:44px; align-items:start; }
-.main-flow p{ font-size:1.05rem; line-height:1.75; max-width:42rem; text-align:left; hyphens:auto; margin:0 0 20px; }
+.chapter-grid{display:grid;grid-template-columns:minmax(0,1fr) var(--reader-aside-width);
+  gap:var(--reader-column-gap);margin-top:var(--reader-section-gap);align-items:start;}
+.main-flow p{font-size:1.05rem;line-height:1.72;max-width:var(--reader-prose-width);
+  text-align:left;hyphens:auto;margin:0 0 17px;}
 .main-flow h2{ font-family:var(--font-display); font-weight:400; font-size:1.85rem; color:var(--ink); margin:0 0 6px; display:flex; align-items:baseline; gap:12px; }
 .main-flow h2 .num{ font-family:var(--font-mono); color:var(--chapter-ink, var(--gold-ink)); font-size:.86rem; border:1px solid var(--chapter-color, var(--gold)); border-radius:50%; width:1.8em; height:1.8em; display:inline-flex; align-items:center; justify-content:center; flex:none; }
 .main-flow .deck{ font-family:var(--font-display); font-style:italic; color:var(--ink-soft); font-size:1.15rem; margin:6px 0 22px; padding-bottom:16px; border-bottom:2px solid var(--chapter-color, var(--gold-line)); max-width:44rem; }
-.main-flow h3{ font-family:var(--font-label); font-size:.86rem; letter-spacing:.04em; color:var(--chapter-ink, var(--oxblood)); text-transform:uppercase; margin:36px 0 10px; }
-.main-flow .block{ padding-bottom:6px; margin-bottom:20px; }
+.main-flow h3{ font-family:var(--font-label); font-size:.86rem; letter-spacing:.04em;
+  color:var(--chapter-ink, var(--oxblood)); text-transform:uppercase; margin:30px 0 10px;}
+.main-flow .block{padding-bottom:6px;margin-bottom:16px;}
 .main-flow .block[data-kind="section-head"]{ margin-top:8px; }
 .main-flow .box{ font-size:.98rem; padding:20px 24px; max-width:44rem; }
 .main-flow .box p{ max-width:none; font-size:.98rem; }
@@ -432,7 +466,8 @@ body.drawer-open{overflow:hidden;}
 .main-flow .connector{ font-size:.82rem; margin:34px 0 18px; }
 .main-flow .further-list li, .main-flow .qbank li, .main-flow .one-pager li{ font-size:.98rem; padding-bottom:11px; line-height:1.6; }
 
-.side-flow{ position:sticky; top:76px; }
+.side-flow{position:sticky;top:var(--reader-anchor-clearance);}
+.side-flow .box:last-child{margin-bottom:0;}
 
 /* Revision/summary zone: reassigning --chapter-color to the CONTRAST hue
    means every descendant rule that already reads var(--chapter-color) —
@@ -445,7 +480,7 @@ body.drawer-open{overflow:hidden;}
   --chapter-ink: var(--chapter-contrast-ink);
   background: color-mix(in srgb, var(--chapter-contrast) 9%, var(--parchment-lt));
   border:1px solid color-mix(in srgb, var(--chapter-contrast) 35%, var(--parchment-dk));
-  border-radius:var(--r-lg); padding:40px 44px; margin-top:52px; box-shadow:var(--sh-md);
+  border-radius:var(--r-lg); padding:34px 36px; margin-top:44px; box-shadow:var(--sh-md);
 }
 .revision-badge{
   display:inline-block; font-family:var(--font-label); font-size:.72rem; font-weight:700;
@@ -457,16 +492,21 @@ body.drawer-open{overflow:hidden;}
 .side-flow .defgrid-list li{ font-size:.86rem; }
 
 @media (max-width: 980px){
-  .chapter-grid{ grid-template-columns:minmax(0,1fr); }
-  .main-flow, .side-flow{ min-width:0; overflow-wrap:anywhere; }
-  .main-flow .table-wrap{ overflow-x:auto; }
-  .side-flow{ position:static; }
-  .banner{ padding:36px 28px; }
-  .banner h1{ font-size:2rem; }
+  .chapter-grid{grid-template-columns:minmax(0,1fr);}
+  .main-flow,.side-flow{min-width:0;overflow-wrap:anywhere;}
+  .side-flow{position:static;}
+  .section-pair:not(.no-side) .side-flow{
+    margin-top:10px;border-top:1px solid var(--reader-rule);padding-top:16px;
+  }
+  .banner{padding:36px 28px;}
+  .banner h1{font-size:2rem;}
 }
 @media (max-width: 640px){
   :root{--reader-anchor-clearance:68px;}
-  #screenView{ padding:0 18px 60px; }
+  #screenView{padding-bottom:60px;}
+  .revision-flow{padding:24px 20px;margin-top:34px;}
+  .main-flow .table-wrap:has(th:nth-child(3)) table.compare{min-width:540px;}
+  .main-flow .table-wrap:has(th:nth-child(4)) table.compare{min-width:680px;}
   .site-header .row{ padding:10px 16px; }
   /* Keep chapter context visible next to the progress ring on phones. */
   .site-header .current{ display:block; }
@@ -686,10 +726,13 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
    not merely repeat the adjacent paragraph as a glossary entry.
    All visuals are native text/CSS and remain selectable in the PDF.
    ============================================================ */
-.section-pair{ margin-top:26px; align-items:start; }
-.section-pair:first-of-type{ margin-top:44px; }
-.section-pair .side-flow{ position:static; }
-.section-pair .side-flow:empty{ display:block; }
+.section-pair{margin-top:var(--reader-section-gap);align-items:start;}
+.chapter-flow>.banner+.section-pair,
+.revision-flow>.revision-badge+.section-pair{margin-top:var(--reader-first-section-gap);}
+.section-pair.no-side{grid-template-columns:minmax(0,1fr);}
+.section-pair.no-side>.side-flow{display:none;}
+.section-pair .side-flow{position:static;}
+.section-pair .side-flow:empty{display:none;}
 .learning-card{ position:relative; overflow:hidden; }
 .learning-card::before{ content:""; position:absolute; top:0; bottom:0; left:0; width:3px; background:currentColor; opacity:.38; }
 .learning-card.def, .learning-card .term{ color:var(--ink); }
@@ -750,10 +793,20 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
 .side-flow .learning-content{ font-size:.93em; }
 .side-flow .learning-content p{ font-size:inherit; }
 @media(max-width:980px){
- .section-pair{ margin-top:26px; }
- .section-pair .side-flow{ margin-top:8px; }
- .section-pair .side-flow:empty{ display:none; }
+ .section-pair{margin-top:var(--reader-section-gap);}
+ .section-pair .side-flow:empty{display:none;}
 }
+/* An overflowing screen table becomes a keyboard-focusable scroll region.
+   The hint is added only for real overflow, never into measured print blocks. */
+#screenView .table-wrap{overflow-x:auto;overflow-y:hidden;
+  overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--gold-ink) var(--parchment-lt);}
+#screenView .table-wrap:focus-visible{outline:3px solid var(--gold-ink);
+  outline-offset:3px;}
+.table-scroll-hint{font:.75rem/1.45 var(--font-label);color:var(--ink-soft);
+  max-width:none!important;margin:8px 0 14px!important;padding-left:20px;
+  background:linear-gradient(90deg,var(--gold) 0 10px,transparent 10px) left 6px/10px 1px no-repeat;}
+@media print{.table-scroll-hint{display:none!important;}}
 </style>
 </head>
 <body>
@@ -781,6 +834,13 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
     <div class="tp-imprint">
       <p>Prepared by <strong>Mohammed Husain Ujjainwala</strong></p>
       <p>TR 25368 &middot; Hadi Ashar 1448H</p>
+    </div>
+    <div class="tp-pdf-access">
+      <a class="tp-pdf-link" href="./20th-Century%20International%20History.pdf"
+        target="_blank" rel="noopener" type="application/pdf">
+        Open the complete bookmarked PDF
+      </a>
+      <p class="tp-pdf-note">All 33 chapters, with chapter and section bookmarks. Online file; for a custom chapter selection, use Contents → Print / Export PDF.</p>
     </div>
   </div>
 </div>
@@ -833,6 +893,11 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
       <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
       <button id="printBtn" type="button">⤓ Export PDF</button>
+      <div class="nav-pdf-access">
+        <a href="./20th-Century%20International%20History.pdf"
+          target="_blank" rel="noopener" type="application/pdf">Open complete bookmarked PDF</a>
+        <p>Prebuilt full-book edition with native PDF bookmarks. Requires a connection unless downloaded separately.</p>
+      </div>
       </div>
     </details>
     <div class="nav-offline">
@@ -859,7 +924,7 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
 </aside>
 
 <main id="screenView" tabindex="-1"></main>
-<noscript><p class="no-script-note">Enable JavaScript to open the interactive 33-chapter reader. The published bookmarked PDF is also available from the repository.</p></noscript>
+<noscript><p class="no-script-note">Enable JavaScript to open the interactive 33-chapter reader, or <a href="./20th-Century%20International%20History.pdf">open the complete bookmarked PDF</a>.</p></noscript>
 
 <div id="printView"></div>
 
@@ -3045,20 +3110,22 @@ function renderPage(p, absNum, isLast){
   }
 
   if(p.type==='title'){
+    // Print and screen covers share a single source of publication copy.
+    // Clone only the cover's visible fields; reclass them for fixed-size print.
+    var cover=document.getElementById('titlePage');
     var tp=document.createElement('div'); tp.className='pt-inner';
-    tp.innerHTML =
-      '<div class="pt-mark">&#10022;</div>'+
-      '<div class="pt-series">An Independent Study Companion</div>'+
-      '<h1 class="pt-title">World History Dossier</h1>'+
-      '<p class="pt-subtitle">Study Notes on Twentieth-Century International History</p>'+
-      '<div class="pt-rule"></div>'+
-      '<p class="pt-desc">Focused, clearly structured study notes, rebuilt chapter by chapter for comfortable reading and revision.</p>'+
-      '<div class="pt-imprint"><p>Prepared by <strong>Mohammed Husain Ujjainwala</strong></p><p>TR 25368 &middot; Hadi Ashar 1448H</p></div>';
+    ['mark','series','title','subtitle','rule','desc','imprint'].forEach(function(field){
+      var source=cover.querySelector('.tp-'+field);
+      if(!source) throw new Error('Missing published cover field: '+field);
+      var clone=source.cloneNode(true);
+      clone.className='pt-'+field;
+      tp.appendChild(clone);
+    });
     page.appendChild(tp);
   } else if(p.type==='hero'){
     page.appendChild(p.heroNode.cloneNode(true));
     var f=document.createElement('div'); f.className='page-footer-bar';
-    f.innerHTML='<span></span><span>'+absNum+'</span>';
+    f.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f);
   } else if(p.type==='toc'){
     var h=document.createElement('div'); h.className='page-header-bar';
@@ -3071,7 +3138,7 @@ function renderPage(p, absNum, isLast){
     p.main.forEach(function(n){ col.appendChild(n.cloneNode(true)); });
     inner.appendChild(col); page.appendChild(inner);
     var f2=document.createElement('div'); f2.className='page-footer-bar';
-    f2.innerHTML='<span>Running Notes</span><span>'+absNum+'</span>';
+    f2.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f2);
   } else { // content
     if(p.isRevision) page.classList.add('is-revision');
@@ -3092,7 +3159,7 @@ function renderPage(p, absNum, isLast){
     inner2.appendChild(colMain); inner2.appendChild(colSide);
     page.appendChild(inner2);
     var f3=document.createElement('div'); f3.className='page-footer-bar';
-    f3.innerHTML='<span>20th-Century International History</span><span>'+absNum+'</span>';
+    f3.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f3);
   }
   slot.appendChild(page);
@@ -3200,6 +3267,7 @@ function appendPairedSections(host, mainNodes, sideNodes){
   groups.forEach(function(group){
     var grid=document.createElement('div');
     grid.className='chapter-grid section-pair';
+    if(!group.side.length) grid.classList.add('no-side');
     grid.setAttribute('data-section-pair',group.key);
     var mainCol=document.createElement('div'); mainCol.className='main-flow';
     group.main.forEach(function(n){mainCol.appendChild(n);});
@@ -3209,6 +3277,41 @@ function appendPairedSections(host, mainNodes, sideNodes){
     grid.appendChild(mainCol);grid.appendChild(sideCol);host.appendChild(grid);
   });
 }
+
+/* Readable tables must never rely on pinch-zoom to reveal hidden columns.
+   Only the flowing screen DOM is enhanced; print measurements/source clones
+   remain untouched, so the landscape PDF retains its original geometry. */
+function updateScreenTableAffordances(){
+  document.querySelectorAll('#screenView .table-wrap').forEach(function(wrap,i){
+    var overflow=wrap.scrollWidth > wrap.clientWidth+2;
+    var block=wrap.closest('.block');
+    var existing=block && block.querySelector('.table-scroll-hint');
+    if(overflow){
+      wrap.tabIndex=0;
+      wrap.setAttribute('role','region');
+      var caption=wrap.querySelector('caption');
+      var label=caption ? caption.textContent.trim() : 'Comparison table';
+      wrap.setAttribute('aria-label',label+' (scroll horizontally for more columns)');
+      if(block){
+        var hint=existing || document.createElement('p');
+        hint.className='table-scroll-hint';
+        hint.textContent='Swipe sideways to view all columns';
+        hint.id='table-scroll-hint-'+i;
+        if(!existing) wrap.insertAdjacentElement('afterend',hint);
+        wrap.setAttribute('aria-describedby',hint.id);
+      }
+    } else {
+      wrap.removeAttribute('tabindex');
+      wrap.removeAttribute('role');
+      wrap.removeAttribute('aria-label');
+      wrap.removeAttribute('aria-describedby');
+      if(existing) existing.remove();
+    }
+  });
+}
+window.addEventListener('resize',function(){
+  if(document.querySelector('#screenView .chapter-flow')) updateScreenTableAffordances();
+});
 
 function renderScreenView(){
   // The screen reader owns its TOC, focus and position. The paired lifecycle
@@ -3263,6 +3366,7 @@ function renderScreenView(){
     root.appendChild(section);
   });
 
+  updateScreenTableAffordances();
   document.dispatchEvent(new Event('whd:screen-rendered'));
   updateProgress();
 }
