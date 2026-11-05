@@ -43,6 +43,10 @@ The following original reports document chapter-specific source cautions, struct
 - [Migration and release status log](history/MIGRATION_STATUS.md)
 - [Original source README / sequential checkpoints](history/PROJECT_CHECKPOINTS.md) — historical record retained intact; its older progress claims should not be mistaken for the current complete edition.
 
+## Release verification
+
+- [Phase D release gate and review checklist](release/RELEASE_VERIFICATION.md) — responsive screenshots, WCAG, PDF page-by-page QA, offline update, chapter-range and docs synchronization.
+
 ## Hosting
 
 - [GitHub Pages, rebuilds and deployment](hosting/DEPLOYMENT.md)
