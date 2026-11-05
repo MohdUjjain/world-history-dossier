@@ -821,17 +821,9 @@ window.addEventListener('resize', updateProgress);
 
 /* ---- current-chapter label in header, via scroll-spy ---- */
 function setupChapterSpy(){
-  var label = document.getElementById('currentChapterLabel');
-  var sections = document.querySelectorAll('.chapter-flow');
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        var chEl = document.querySelector('#chapterData .chapter-source[data-chapter="'+entry.target.id.replace('chapter-','')+'"]');
-        if(chEl) label.textContent = 'Ch.'+String(chEl.getAttribute('data-chapter')).padStart(2,'0')+' — '+chEl.getAttribute('data-title');
-      }
-    });
-  }, {rootMargin:'-10% 0px -80% 0px'});
-  sections.forEach(function(s){ io.observe(s); });
+  // Chapter, section and chapter-progress tracking are centralized in the
+  // screen-only src/reader-ui.js module. Keeping the legacy IntersectionObserver
+  // would race its header updates and produce inconsistent active headings.
 }
 
 /* ================= EXPORT CONTROLS (now inside the sidebar panel) ================= */
@@ -842,51 +834,59 @@ function lightweightChapterList(){
 }
 var rangeChapters = null;
 
-/* Parses strings like "5-6,1,3,20-24" into an ORDERED array of chapter
-   numbers, preserving exactly the sequence and direction the person typed
-   (so "6-5" walks backward, "5-6" walks forward). Empty input means "the
-   whole book, in its natural order." Numbers that don't match a real
-   chapter are reported back but simply skipped, rather than blocking the
-   rest of a valid export. */
+/* Parse comma-separated chapter selectors STRICTLY, preserving user order
+   and repetition. Every malformed/out-of-range token invalidates the selection.
+   The print action stays disabled until all tokens are valid. */
 function parseChapterRangeInput(str, allChapters){
   var validNums = allChapters.map(function(c){ return parseInt(c.num,10); });
-  var trimmed = (str||'').trim();
-  if(!trimmed){
-    return {list: validNums.slice(), unknown: [], isDefault:true};
-  }
-  var list = [], unknown = [];
-  trimmed.split(',').forEach(function(tokRaw){
-    var tok = tokRaw.trim();
-    if(!tok) return;
-    var dash = tok.indexOf('-');
-    if(dash > 0){ // '-' at position 0 would be a bare negative number, not a range
-      var a = parseInt(tok.slice(0,dash),10), b = parseInt(tok.slice(dash+1),10);
-      if(isNaN(a) || isNaN(b)){ unknown.push(tok); return; }
-      if(a<=b){ for(var i=a;i<=b;i++) list.push(i); } else { for(var j=a;j>=b;j--) list.push(j); }
+  var trimmed = (str||'').trim(), list=[], unknown=[];
+  if(!trimmed) return {list:validNums.slice(),unknown:[],isDefault:true};
+  trimmed.split(',').forEach(function(raw){
+    var tok=raw.trim(), match=tok.match(/^(\d+)\s*-\s*(\d+)$/);
+    if(/^\d+$/.test(tok)){
+      var single=Number(tok);
+      if(validNums.indexOf(single)!==-1) list.push(single);
+      else unknown.push(tok);
+    } else if(match){
+      var a=Number(match[1]),b=Number(match[2]);
+      if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b)||
+         Math.abs(a-b)>1000||a<0||b<0){
+        unknown.push(tok);return;
+      }
+      var step=a<=b?1:-1, failed=false;
+      for(var n=a;;n+=step){
+        if(validNums.indexOf(n)!==-1) list.push(n);
+        else failed=true;
+        if(n===b) break;
+      }
+      if(failed) unknown.push(tok);
     } else {
-      var n = parseInt(tok,10);
-      if(isNaN(n)){ unknown.push(tok); return; }
-      list.push(n);
+      unknown.push(tok || '(empty entry)');
     }
   });
-  var finalList = [];
-  list.forEach(function(n){
-    if(validNums.indexOf(n)!==-1) finalList.push(n);
-    else if(unknown.indexOf(String(n))===-1) unknown.push(String(n));
-  });
-  return {list: finalList, unknown: unknown, isDefault:false};
+  return {list:list,unknown:unknown,isDefault:false};
 }
 
 function describeRange(parsed, allChapters){
   var hint = document.getElementById('rangeHint');
+  var button = document.getElementById('printBtn');
+  var invalid = !allChapters.length || parsed.unknown.length>0 || !parsed.list.length;
+  button.disabled = invalid;
+  document.getElementById('rangeInput').setAttribute('aria-invalid', String(invalid && !parsed.isDefault));
   if(!allChapters.length){
-    hint.textContent = 'No chapters available yet — add Chapter 00 first.';
+    hint.textContent = 'No chapters available.';
     hint.classList.add('error');
     return;
   }
   if(parsed.isDefault){
     hint.textContent = 'Will export: all chapters, in order';
     hint.classList.remove('error');
+    return;
+  }
+  if(parsed.unknown.length){
+    hint.textContent='Correct these invalid chapter selections: '+parsed.unknown.join(', ')+
+      '. Nothing will print until all entries are valid.';
+    hint.classList.add('error');
     return;
   }
   if(parsed.list.length===0){
@@ -916,7 +916,7 @@ document.getElementById('includeRevisionChk').addEventListener('change', functio
 document.getElementById('printBtn').addEventListener('click', function(){
   var parsed = parseChapterRangeInput(document.getElementById('rangeInput').value, rangeChapters);
   describeRange(parsed, rangeChapters);
-  if(parsed.list.length===0) return; // nothing valid to export — hint already explains why
+  if(parsed.unknown.length || parsed.list.length===0) return; // strict validation blocks partial exports
   buildPrintView(parsed.list);
   closeNav();
   window.print();

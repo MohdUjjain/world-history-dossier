@@ -36,6 +36,7 @@ def build() -> tuple[str, list[str]]:
     css = read(SRC_DIR / "styles.css").strip("\n")
     js = read(SRC_DIR / "engine.js").strip("\n")
     offline = read(SRC_DIR / "offline-reader.js").strip("\n")
+    reader_ui = read(SRC_DIR / "reader-ui.js").strip("\n")
 
     chapter_files = sorted(
         glob.glob(str(SRC_DIR / "chapters" / "ch*.html")),
@@ -62,6 +63,7 @@ def build() -> tuple[str, list[str]]:
     values = {
         "/*__STYLES__*/": css,
         "/*__SCRIPT__*/": js,
+        "/*__READER_UI__*/": reader_ui,
         "/*__OFFLINE_READER__*/": offline,
         "<!--__CHAPTERS__-->": "\n\n".join(chapter_blocks),
     }

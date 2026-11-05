@@ -42,6 +42,9 @@
   <div class="row">
     <span class="title">World History Dossier</span>
     <span class="current" id="currentChapterLabel"></span>
+    <span id="chapterProgressRing" class="chapter-progress-ring" role="progressbar"
+      aria-label="Current chapter reading progress" aria-valuemin="0" aria-valuemax="100"
+      aria-valuenow="0" hidden><span id="chapterProgressNumber">0%</span></span>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 </header>
@@ -61,22 +64,51 @@
   </div>
 </div>
 
-<button id="navTab" aria-label="Open contents">Contents</button>
-<div id="navOverlay"></div>
-<nav id="navPanel">
+<section id="resumeReaderPrompt" class="resume-reader-prompt" role="region"
+  aria-labelledby="resumeReaderTitle" hidden>
+  <button type="button" id="resumeReaderDismiss" class="resume-dismiss" aria-label="Dismiss continue reading suggestion">×</button>
+  <div class="resume-eyebrow">Your reading place on this device</div>
+  <h2 id="resumeReaderTitle">Continue where you left off?</h2>
+  <p id="resumeReaderDescription"></p>
+  <div class="resume-actions">
+    <button type="button" id="resumeReaderContinue">Continue reading</button>
+    <button type="button" id="resumeReaderStart">Start at beginning</button>
+    <button type="button" id="resumeReaderForget">Forget saved place</button>
+  </div>
+</section>
+
+<button type="button" id="navTab" aria-label="Open contents"
+  aria-controls="navPanel" aria-expanded="false">Contents</button>
+<div id="navOverlay" aria-hidden="true"></div>
+<nav id="navPanel" role="dialog" aria-modal="true" aria-labelledby="navPanelHeading"
+  aria-hidden="true" tabindex="-1" inert>
   <div class="nav-head">
-    <span>Contents &amp; Export</span>
+    <span id="navPanelHeading">Contents &amp; Export</span>
     <button id="navClose" aria-label="Close">&times;</button>
   </div>
   <div class="nav-body">
-    <div class="nav-export">
+    <div class="nav-tools">
+      <label for="tocSearch" class="nav-section-label">Find chapter or section</label>
+      <input id="tocSearch" type="search" autocomplete="off"
+        placeholder="Search chapters, sections, revision…"
+        aria-describedby="tocSearchStatus">
+      <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
+        <button type="button" id="tocExpandAll">Expand all</button>
+        <button type="button" id="tocCollapseAll">Collapse all</button>
+      </div>
+      <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
+    </div>
+    <details id="navExportPanel" class="nav-export-details">
+      <summary>Print / Export PDF</summary>
+      <div class="nav-export">
       <div class="nav-section-label">Export</div>
       <label class="nav-check"><input type="checkbox" id="includeRevisionChk" checked> Include chapter summaries</label>
       <label class="nav-range-label" for="rangeInput">Chapters — e.g. 5-6,1,3,20-24</label>
       <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
       <button id="printBtn">⤓ Export PDF</button>
-    </div>
+      </div>
+    </details>
     <div class="nav-offline">
       <div class="nav-section-label">Offline edition</div>
       <p id="offlineStatus" aria-live="polite">Checking offline availability…</p>
@@ -125,6 +157,9 @@
 
 <script>
 /*__SCRIPT__*/
+</script>
+<script>
+/*__READER_UI__*/
 </script>
 <script>
 /*__OFFLINE_READER__*/

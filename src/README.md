@@ -10,6 +10,7 @@ The **complete edition comprises Chapters 00–32 (33 chapters)**. This director
 | `styles.css` | Imperial Archive screen and print design |
 | `engine.js` | Chapter navigation, section pairing, pagination and export |
 | `build.py` | Builds `index.html` and generates a content-hashed offline service worker |
+| `reader-ui.js` | Searchable accessible navigation, revision shortcuts, active section tracking, chapter progress and local resume |
 | `offline-reader.js` | Offline-ready status, persistent storage request and new-edition notifications; inlined into `index.html` |
 | `service-worker.template.js` | Atomic precache, scoped cache cleanup and optional Google Fonts response caching |
 | `chapter_catalog.json` | Official titles for all 33 chapters |
@@ -36,6 +37,7 @@ python src/build.py -o index.html --check
 python src/tests/validate_structure.py
 python src/tests/verify_publication.py
 node src/tests/test_offline_cache.mjs
+python src/tests/smoke_reader_ui.py
 ```
 
 Writing the published `index.html` also regenerates `service-worker.js` with a version derived from the book and small public assets. The `--check` command returns a nonzero exit status when either generated file is stale. The original `python src/build.py` without `-o` still produces `book.html` for development.

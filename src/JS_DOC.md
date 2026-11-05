@@ -424,3 +424,85 @@ result under the existing public filename. The CLI exporter can run locally
 with `--chromium /usr/bin/chromium`, or in CI with `--chromium auto` and the
 Playwright-managed Chromium. Keep that filename synchronized with the PDF
 link in the root README.
+
+
+## Interactive reading navigation and strict print selection (November 2026)
+
+**Source boundaries:** `src/engine.js` retains the chapter rendering and print
+pagination engine, while the new **`src/reader-ui.js`** owns screen-only
+navigation behavior. `src/build.py` inlines the latter at
+`/*__READER_UI__*/` **after** the core engine and **before** the offline
+reader script. Keep that order. The single-file published `index.html`
+contains all scripts; the PWA cache hash updates automatically when rebuilt.
+
+### Contents lifecycle
+
+The core `renderScreenView()` continues building `#screenView` and the
+legacy `#navToc`. The reader module installs a `MutationObserver` on
+`#navToc` and replaces those legacy rows with accessible chapter-title
+anchors plus separate, keyboard-operable chevron buttons. It disconnects
+its own observer while rebuilding to avoid recursive updates. This supports
+rebuilding after the include/exclude revision checkbox changes the screen.
+
+Each chapter has independent manually expanded/collapsed state (a Set of
+chapter numbers). Search temporarily displays only matches and expands
+their branches **without modifying that Set**. Clearing search restores the
+reader's manual expansion choices. Expand all and collapse all update that
+Set intentionally. Search indexes chapter numbers, official titles, rendered
+section headings (including revision labels), and study shortcuts.
+
+Chapter titles navigate; chevrons only expand/collapse. Revision shortcuts
+point to the real revision heading; definitions and memory aids link to
+actual `data-kind="def"`/`data-kind="memory"` blocks; a Questions shortcut
+is offered only if a recognizable revision prompt/question block exists.
+Nothing is synthesized or added to the chapter content.
+
+### Scroll tracking and resume
+
+The old `setupChapterSpy()` in engine.js is deliberately a no-op. The
+single `src/reader-ui.js` scroll tracker now owns the chapter header,
+active chapter and active section highlights, `aria-current="location"`,
+and the circular current-chapter progress indicator. The existing
+whole-book progress bar retains its separate lightweight `updateProgress()`
+handler. Scroll updates **never force any collapsed navigation branch open**.
+
+A device-local `localStorage` record, `whd-reading-place-v1`, saves:
+chapter number, stable section anchor `whd-sec-<chapter>-<key>`,
+relative chapter position, relative section position, and timestamp.
+These anchors are assigned only in the screen DOM; **chapter source HTML is
+unchanged**. Writes are throttled, guarded against storage exceptions,
+and suppressed during print. On an ordinary later visit to the cover, an
+optional prompt offers Continue reading, Start at beginning, Forget saved
+place and dismissal. Direct URL fragments and browser-restored scroll
+positions override the prompt. No automatic resume jump, account, remote
+storage, sync, telemetry, or analytics is introduced.
+
+### Accessible modal drawer
+
+The panel is a `role="dialog"`/`aria-modal="true"` region with `inert`
+and `aria-hidden` while closed. Opening transfers focus to the close
+button; Escape/backdrop close and restore focus to the opener. Tab/Shift+Tab
+are trapped among visible controls. Following a content link moves
+focus to the heading instead. Chapter toggle buttons have accessible
+labels, `aria-controls`, and `aria-expanded`. The mobile drawer covers
+the viewport without shifting the book, and screen-only controls are hidden
+from print.
+
+### Strict chapter-range export (engine.js)
+
+`parseChapterRangeInput()` now accepts **only** whole chapter numbers
+or explicit integer ranges, separated by commas, e.g. `5-6,1,3,20-24`.
+It preserves entered order, reverse ranges and duplicates. Blank interior
+tokens, non-numeric suffixes, unknown chapters and out-of-bounds ranges
+are errors; **no partial selection prints**. `describeRange()` displays
+those errors, sets `aria-invalid` and disables `#printBtn` until corrected.
+The print/export controls live inside the collapsible `#navExportPanel`
+without changing their original IDs or paginated output behavior.
+
+### Regression coverage
+
+Run `python src/tests/smoke_reader_ui.py` with Playwright Chromium to
+exercise search and expansion, keyboard access/focus restoration, active
+reading, revision/study links, strict export order and errors, saved resume,
+re-render after revision toggles, and 390px mobile geometry. Also run the
+existing chapter/print smoke tests after any core engine change.

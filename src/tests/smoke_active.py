@@ -53,6 +53,7 @@ def main():
         assert pr['overflows']==0 and pr['heroOverflows']==0,pr
         page.emulate_media(media='screen')
         page.locator('#navTab').click()
+        page.locator('#navExportPanel summary').click()
         page.locator('#includeRevisionChk').uncheck()
         assert page.locator('#screenView .revision-flow').count()==0
         page.evaluate("window.dispatchEvent(new Event('beforeprint'))")

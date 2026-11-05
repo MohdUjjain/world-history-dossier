@@ -3,7 +3,7 @@
  * The pre-rendered PDF is deliberately not precached.
  */
 const CACHE_PREFIX = 'whd-edition-';
-const CACHE_NAME = CACHE_PREFIX + '99982d14f540';
+const CACHE_NAME = CACHE_PREFIX + '2f0ec94e9197';
 const FONT_CACHE = 'whd-google-fonts-v1';
 const SHELL = [
   './index.html', './manifest.webmanifest', './icons/icon-192.png',

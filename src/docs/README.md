@@ -11,6 +11,7 @@ All non-code project documentation is organized here. The source directory's own
 
 - [Chapter notes and revision workflow](authoring/NEW_NOTES_WORKFLOW.md)
 - [Educational sidebar components and section linking](authoring/SIDEBAR_COMPONENTS.md)
+- [Reader navigation, accessibility and resume reading](authoring/READER_NAVIGATION.md)
 
 ## Reference
 

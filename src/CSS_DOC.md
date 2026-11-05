@@ -261,3 +261,33 @@ affect the 16:9 pagination or individually measured TOC/table/list blocks.
 Behavior belongs in `src/offline-reader.js`, not the print engine. The worker
 template, revision hashing, optional Google Fonts caching and offline tests
 are documented in `src/docs/hosting/PWA.md`.
+
+
+## Accessible navigation, progress and resume styling (November 2026)
+
+The new **screen-only** styles in `src/styles.css` cover:
+
+- `#navPanel[aria-hidden]`, `.nav-tools`, `#tocSearch`,
+  `.nav-tree-controls` and `.nav-export-details`: an inert modal drawer,
+  searchable chapter index, expand/collapse controls and a collapsed-by-default
+  Print / Export PDF details panel.
+- `.nav-chapter-link` and `.nav-chapter-toggle`: **separate** chapter
+  navigation and chevron actions with keyboard focus outlines.
+  `.nav-chapter.current-chapter`, `.nav-sections a.current-section`
+  and `.nav-shortcuts` highlight reading location and link to real
+  learning/revision blocks; `[hidden]` selectors ensure filtered/collapsed
+  entries never receive focus.
+- `.chapter-progress-ring`: circular current-chapter percentage in the
+  sticky header, with chapter identity color supplied by the renderer.
+  The existing 3px whole-book progress track remains unchanged.
+- `.resume-reader-prompt`: a dismissible, responsive, keyboard-accessible
+  device-local Continue reading prompt on the cover.
+- Mobile `#navPanel`: full viewport width with backdrop and body scroll
+  lock while open; the book's underlying dimensions remain unchanged.
+
+**Print safety:** All new UI lives outside `#printView` and is hidden by
+the existing drawer/header print rules or explicit `@media print` rules.
+No `.page`, `.page-slot`, `.toc-row`, `.block`, chapter color, or
+measured margin/padding rules were changed. The screen navigation module
+owns behavior and is described in `src/JS_DOC.md`. Recheck the 245-page
+bookmarked PDF and paired-sidebar layout before changing print CSS.

@@ -24,6 +24,19 @@ The reader is installable as a PWA. Once opened online and saved, all 33 chapter
 
 For maintenance and testing, see the [offline reader guide](src/docs/hosting/PWA.md).
 
+## Reader navigation
+
+The right-side Contents drawer supports **search**, expandable chapter and
+section links, revision/study shortcuts, and keyboard-accessible navigation.
+The sticky reading header tracks progress through the entire book and through
+the active chapter. An optional device-local **Continue reading** prompt can
+restore an approximate position, without automatic scrolling or remote sync.
+
+Print / Export PDF is a collapsible section. Chapter selections accept ordered
+ranges such as `5-6,1,3` and duplicates; invalid entries block printing
+instead of silently dropping chapters. See the
+[reader navigation guide](src/docs/authoring/READER_NAVIGATION.md).
+
 ## Repository guide
 
 | Location | Purpose |
