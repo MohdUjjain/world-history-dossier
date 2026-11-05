@@ -22,3 +22,9 @@ python src/tests/validate_pdf_navigation.py '20th-Century International History.
 The GitHub Actions workflow `build-bookmarked-pdf.yml` runs the exporter using Playwright-managed Chromium when print-relevant source files change; it can also be run manually.
 
 **Important:** Saving the browser's in-app export directly to a PDF may not preserve native bookmarks in all browsers. Use the repository's **pre-rendered bookmarked edition** for full outline navigation. The separate chapter-range print control is still useful for custom PDF excerpts.
+
+## Direct access in the reader
+
+The published reader now offers **Open the complete bookmarked PDF** on its cover and under **Contents → Print / Export PDF**. Both link to the existing relative file `./20th-Century%20International%20History.pdf`. The link opens the full pre-rendered document; unlike the browser's **Export PDF** button it does not apply custom chapter ranges or summary selections. The full file is not pre-cached by the offline PWA.
+
+The on-screen cover and fixed-size printed cover use the same authored text, with print-specific CSS typography. All printed running footers consistently identify the publication as **World History Dossier**.
