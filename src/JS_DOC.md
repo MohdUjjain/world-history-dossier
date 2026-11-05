@@ -341,10 +341,9 @@ cover. Neither edit changes pagination or element geometry.
   the chapter root's `data-title` and `.src-hero .ht`. The separate `data-subtitle`
   and `.hs` may describe the user's shorter notes and must never substitute
   for the official book title in navigation or TOC entries.
-- `buildChapters`, `renderScreenView`/`buildFlowingHero`, `buildNavPanel`,
-  `setupChapterSpy`, `collectTocEntries`, `buildTocRowNodes`, `renderPage`
-  all read the same official `data-title`. Do **not** generate an index entry
-  from the notes subtitle or the hero's secondary heading.
+- `buildChapters`, `renderScreenView`/`buildFlowingHero`, `collectTocEntries`,
+  `buildTocRowNodes`, `renderPage`, and reader-ui chapter-row construction
+  all read the official `data-title`. Never substitute the notes subtitle.
 - Two-digit display numbering (`00`, `01`, etc.) is used on both print content
   running headers and sidebar/scroll-spy chapter labels, matching the TOC badge.
 - Only actual active chapter sources get clickable index entries; upcoming
@@ -437,12 +436,12 @@ contains all scripts; the PWA cache hash updates automatically when rebuilt.
 
 ### Contents lifecycle
 
-The core `renderScreenView()` continues building `#screenView` and the
-legacy `#navToc`. The reader module installs a `MutationObserver` on
-`#navToc` and replaces those legacy rows with accessible chapter-title
-anchors plus separate, keyboard-operable chevron buttons. It disconnects
-its own observer while rebuilding to avoid recursive updates. This supports
-rebuilding after the include/exclude revision checkbox changes the screen.
+The core `renderScreenView()` now owns **only** `#screenView`, never
+`#navToc` or modal listeners. It dispatches `whd:screen-will-render` before
+the content subtree is replaced and `whd:screen-rendered` once all chapters
+have been attached. The reader module listens to both and constructs its own
+chapter links, sections, shortcuts and separate chevrons directly. There is
+no `MutationObserver` and no legacy TOC renderer.
 
 Each chapter has independent manually expanded/collapsed state (a Set of
 chapter numbers). Search temporarily displays only matches and expands
@@ -459,7 +458,7 @@ Nothing is synthesized or added to the chapter content.
 
 ### Scroll tracking and resume
 
-The old `setupChapterSpy()` in engine.js is deliberately a no-op. The
+The old `setupChapterSpy()` function was removed from engine.js. The
 single `src/reader-ui.js` scroll tracker now owns the chapter header,
 active chapter and active section highlights, `aria-current="location"`,
 and the circular current-chapter progress indicator. The existing
@@ -507,14 +506,13 @@ reading, revision/study links, strict export order and errors, saved resume,
 re-render after revision toggles, and 390px mobile geometry. Also run the
 existing chapter/print smoke tests after any core engine change.
 
-**Drawer-close regression (November 2026):** The original export-button
-handler calls the core `closeNav()`, not the new screen module's
-`closeDrawer()`. Both paths MUST remove `body.drawer-open`, clear
-`aria-expanded`, set `aria-hidden` and `inert`, and close the backdrop.
-Otherwise the screen remains scroll-locked after a print/export operation;
-that also prevents reading position from being saved. This fix is deliberately
-in `engine.js`, not the PDF pagination helpers. The browser smoke test
-must exercise printing followed by additional scrolling.
+**Drawer-close regression (resolved in Phase B):** The legacy `openNav()`/
+`closeNav()` handlers are removed from `engine.js`. Export dispatches
+`whd:drawer-close` with `detail.restoreFocus=true`; the single
+`reader-ui.js` `closeDrawer()` updates the dialog, backdrop, scroll lock,
+`inert`, aria attributes and opener focus. A section link uses
+`closeDrawer(false)`, then focuses the destination. The browser smoke tests
+must check both export and reader navigation closure paths.
 
 **Deferred bookmark save (November 2026):** A user may scroll once
 immediately after jumping to a chapter, while the brief navigation guard
@@ -542,3 +540,59 @@ This lives in `styles.css`, not the measured print engine: `scroll-margin-top` i
 
 ### Associated tests
 `src/tests/smoke_phase_a.py` runs from the root via a local HTTP server with Playwright Chromium. It checks the full eight-color role system, revision-page computed styles, print hero identity, anchor clearance, duplicate-build avoidance and revision-triggered rebuild. Keep it in the `verify-pages.yml` workflow beside `smoke_reader_ui.py`. Do not modify chapter sources or the fixed page-packing dimensions for these cosmetic correctness changes.
+
+
+---
+
+## Phase B — single reader ownership and position-preserving rebuilds (November 2026)
+
+### Explicit lifecycle and one modal owner
+
+`engine.js` dispatches `whd:screen-will-render` and
+`whd:screen-rendered` around every `renderScreenView()` call, including
+the empty-book branch. It no longer constructs a legacy Contents tree,
+opens or closes the modal, or owns a competing chapter spy. The print Export
+button dispatches `whd:drawer-close` before `window.print()`; the same
+`reader-ui.js` handler manages backdrop, classes, focus and body scroll lock
+for all close paths. The engine retains page export, palette assignment and
+the lightweight whole-book progress rail.
+
+### Preserve viewport location when revision pages appear or disappear
+
+Before the source screen tree is replaced, `captureView()` records the active
+chapter and a main-content block ordinal (including the chapter hero), the
+relative fraction inside that block at a viewport anchor, and a scroll fallback.
+After rendering, `buildChapterRows()` recreates the navigation and
+`restoreView()` maps the same ordinal block into the new chapter tree.
+When a revision block was removed, the last surviving body block is a sensible
+fallback. The bookmark write guard prevents synthetic repositioning from
+immediately overriding a saved reading choice. Absolute `scrollY` is not a
+valid identity for this test because removing dozens of earlier revision zones
+necessarily changes global document height. Test the same section's
+*viewport-relative* position and the drawer's focus/scroll state instead.
+
+### Search, keyboard and mobile
+
+`addLink()` stores plain-text `data-label` values. `applySearch()` matches
+chapter titles/numbers, section headings and shortcut names, displays counts,
+renders text-only `mark` highlights, shows an empty state on zero results,
+and reveals a clear control only for nonempty queries. Search expansion is
+temporary and does not mutate the manual-expanded Set. While searching, global
+Expand all/Collapse all are disabled. Escape clears focused nonempty search
+first; a subsequent Escape closes the modal. A single document keydown handler
+traps Tab and manages Escape. The mobile chapter label stays visible and the
+UI uses approximately 44px touch targets, an independent drawer scroll region
+and dynamic viewport units. `main#screenView` is a landmark and a keyboard
+skip link is available.
+
+### Regression suite
+
+Run:
+`python src/tests/smoke_reader_ui.py`
+`python src/tests/smoke_reader_interactions.py`
+`python src/tests/smoke_phase_a.py`
+
+The new Phase B suite checks search counts/highlights/empty results, keyboard
+close/clear/focus, export scroll unlock, viewport-relative reading preservation
+on revision toggles, mobile touch target sizes and overflow. It does not modify
+any chapter content or the fixed 1280×720 PDF page measurements.
