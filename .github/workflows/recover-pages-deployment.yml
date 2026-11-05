@@ -1,0 +1,35 @@
+name: Recover stale GitHub Pages deployment
+
+# Operational recovery: this push-only trigger runs exactly when this workflow
+# first lands. Later recovery is opt-in through workflow_dispatch.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/recover-pages-deployment.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  cancel-stale-pages-deployment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Inspect Pages deployment stuck after a timed-out Action
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/pages/deployments/36e7fa11cb23a63f6d7cd36ff73129b17cc7a8f5"             --jq '.status' || true
+      - name: Cancel stale deployment to release GitHub Pages queue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method POST             "repos/${{ github.repository }}/pages/deployments/36e7fa11cb23a63f6d7cd36ff73129b17cc7a8f5/cancel"             -H "Accept: application/vnd.github+json"
+      - name: Check cancellation status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/pages/deployments/36e7fa11cb23a63f6d7cd36ff73129b17cc7a8f5"             --jq '.status'
