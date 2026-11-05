@@ -605,20 +605,22 @@ function renderPage(p, absNum, isLast){
   }
 
   if(p.type==='title'){
+    // Print and screen covers share a single source of publication copy.
+    // Clone only the cover's visible fields; reclass them for fixed-size print.
+    var cover=document.getElementById('titlePage');
     var tp=document.createElement('div'); tp.className='pt-inner';
-    tp.innerHTML =
-      '<div class="pt-mark">&#10022;</div>'+
-      '<div class="pt-series">An Independent Study Companion</div>'+
-      '<h1 class="pt-title">World History Dossier</h1>'+
-      '<p class="pt-subtitle">Study Notes on Twentieth-Century International History</p>'+
-      '<div class="pt-rule"></div>'+
-      '<p class="pt-desc">Focused, clearly structured study notes, rebuilt chapter by chapter for comfortable reading and revision.</p>'+
-      '<div class="pt-imprint"><p>Prepared by <strong>Mohammed Husain Ujjainwala</strong></p><p>TR 25368 &middot; Hadi Ashar 1448H</p></div>';
+    ['mark','series','title','subtitle','rule','desc','imprint'].forEach(function(field){
+      var source=cover.querySelector('.tp-'+field);
+      if(!source) throw new Error('Missing published cover field: '+field);
+      var clone=source.cloneNode(true);
+      clone.className='pt-'+field;
+      tp.appendChild(clone);
+    });
     page.appendChild(tp);
   } else if(p.type==='hero'){
     page.appendChild(p.heroNode.cloneNode(true));
     var f=document.createElement('div'); f.className='page-footer-bar';
-    f.innerHTML='<span></span><span>'+absNum+'</span>';
+    f.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f);
   } else if(p.type==='toc'){
     var h=document.createElement('div'); h.className='page-header-bar';
@@ -631,7 +633,7 @@ function renderPage(p, absNum, isLast){
     p.main.forEach(function(n){ col.appendChild(n.cloneNode(true)); });
     inner.appendChild(col); page.appendChild(inner);
     var f2=document.createElement('div'); f2.className='page-footer-bar';
-    f2.innerHTML='<span>Running Notes</span><span>'+absNum+'</span>';
+    f2.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f2);
   } else { // content
     if(p.isRevision) page.classList.add('is-revision');
@@ -652,7 +654,7 @@ function renderPage(p, absNum, isLast){
     inner2.appendChild(colMain); inner2.appendChild(colSide);
     page.appendChild(inner2);
     var f3=document.createElement('div'); f3.className='page-footer-bar';
-    f3.innerHTML='<span>20th-Century International History</span><span>'+absNum+'</span>';
+    f3.innerHTML='<span>World History Dossier</span><span>'+absNum+'</span>';
     page.appendChild(f3);
   }
   slot.appendChild(page);
@@ -760,6 +762,7 @@ function appendPairedSections(host, mainNodes, sideNodes){
   groups.forEach(function(group){
     var grid=document.createElement('div');
     grid.className='chapter-grid section-pair';
+    if(!group.side.length) grid.classList.add('no-side');
     grid.setAttribute('data-section-pair',group.key);
     var mainCol=document.createElement('div'); mainCol.className='main-flow';
     group.main.forEach(function(n){mainCol.appendChild(n);});
@@ -769,6 +772,41 @@ function appendPairedSections(host, mainNodes, sideNodes){
     grid.appendChild(mainCol);grid.appendChild(sideCol);host.appendChild(grid);
   });
 }
+
+/* Readable tables must never rely on pinch-zoom to reveal hidden columns.
+   Only the flowing screen DOM is enhanced; print measurements/source clones
+   remain untouched, so the landscape PDF retains its original geometry. */
+function updateScreenTableAffordances(){
+  document.querySelectorAll('#screenView .table-wrap').forEach(function(wrap,i){
+    var overflow=wrap.scrollWidth > wrap.clientWidth+2;
+    var block=wrap.closest('.block');
+    var existing=block && block.querySelector('.table-scroll-hint');
+    if(overflow){
+      wrap.tabIndex=0;
+      wrap.setAttribute('role','region');
+      var caption=wrap.querySelector('caption');
+      var label=caption ? caption.textContent.trim() : 'Comparison table';
+      wrap.setAttribute('aria-label',label+' (scroll horizontally for more columns)');
+      if(block){
+        var hint=existing || document.createElement('p');
+        hint.className='table-scroll-hint';
+        hint.textContent='Swipe sideways to view all columns';
+        hint.id='table-scroll-hint-'+i;
+        if(!existing) wrap.insertAdjacentElement('afterend',hint);
+        wrap.setAttribute('aria-describedby',hint.id);
+      }
+    } else {
+      wrap.removeAttribute('tabindex');
+      wrap.removeAttribute('role');
+      wrap.removeAttribute('aria-label');
+      wrap.removeAttribute('aria-describedby');
+      if(existing) existing.remove();
+    }
+  });
+}
+window.addEventListener('resize',function(){
+  if(document.querySelector('#screenView .chapter-flow')) updateScreenTableAffordances();
+});
 
 function renderScreenView(){
   // The screen reader owns its TOC, focus and position. The paired lifecycle
@@ -823,6 +861,7 @@ function renderScreenView(){
     root.appendChild(section);
   });
 
+  updateScreenTableAffordances();
   document.dispatchEvent(new Event('whd:screen-rendered'));
   updateProgress();
 }
