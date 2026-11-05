@@ -69,7 +69,7 @@ def main():
             }""", timeout=20000)
             # The first controller event can happen before screen hydration
             # has completed, so wait for both independently.
-            page.locator("#navToc .nav-chapter-link").first.wait_for()
+            page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
             initial = page.evaluate("""async () => ({
               controlled:!!navigator.serviceWorker.controller,
               caches:(await caches.keys()).filter(n=>n.startsWith('whd-edition-')),
@@ -81,7 +81,7 @@ def main():
             assert not initial["pdfPrecached"], initial
             context.set_offline(True)
             page.goto(url, wait_until="load")
-            page.locator("#navToc .nav-chapter-link").first.wait_for()
+            page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
             assert page.locator("#screenView .chapter-flow").count() == 33
             assert "All 33 chapters saved offline" in page.locator("#offlineStatus").inner_text()
             context.set_offline(False)
