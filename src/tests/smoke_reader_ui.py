@@ -40,7 +40,7 @@ def main():
             page = context.new_page()
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(url, wait_until='load')
-            page.locator('#navToc .nav-chapter-link').first.wait_for()
+            page.locator('#navToc .nav-chapter-link').first.wait_for(state='attached')
 
             assert page.locator('#chapterData .chapter-source').count() == 33
             assert page.locator('#navToc .nav-chapter-link').count() == 33
@@ -132,7 +132,7 @@ def main():
             assert stored is not None, "Reading position must be saved after real movement"
             other = context.new_page()
             other.goto(url,wait_until='load')
-            other.locator('#navToc .nav-chapter-link').first.wait_for()
+            other.locator('#navToc .nav-chapter-link').first.wait_for(state='attached')
             other.locator('#resumeReaderPrompt').wait_for(state='visible',timeout=5000)
             assert other.evaluate('window.scrollY') < 120, "Resume must not jump automatically"
             other.locator('#resumeReaderContinue').click()
@@ -158,7 +158,7 @@ def main():
             mobile.set_viewport_size({'width':390,'height':844})
             mobile.on('pageerror',lambda e: errors.append(str(e)))
             mobile.goto(url,wait_until='load')
-            mobile.locator('#navToc .nav-chapter-link').first.wait_for()
+            mobile.locator('#navToc .nav-chapter-link').first.wait_for(state='attached')
             mobile.locator('#navTab').click()
             w = mobile.locator('#navPanel').bounding_box()
             assert w and w['width'] >= 385, w
