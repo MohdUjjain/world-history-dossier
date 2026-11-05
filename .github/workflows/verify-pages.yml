@@ -92,6 +92,7 @@ jobs:
         with:
           name: phase-d-browser-evidence
           path: .release-evidence/
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
       - name: Check actual Pages URLs on scheduled or manual runs
@@ -149,5 +150,6 @@ jobs:
         with:
           name: phase-d-pdf-evidence
           path: .release-evidence/pdf/
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
