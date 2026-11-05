@@ -97,3 +97,11 @@ validation, and optional resume. Re-run the older print smoke tests when
 pagination or chapter content changes.
 
 The Phase B browser suite covers search highlighting and empty results, focus/keyboard modal behavior, revision-toggle viewport continuity, export scroll restoration, 390px/320px mobile context, and tap-target geometry.
+
+## Phase C publication and table refinements
+
+The cover and Contents → Print / Export PDF drawer now expose a direct link to the **complete bookmarked PDF**. That pre-rendered file has native chapter and section bookmarks; the drawer's **Export PDF** button instead prints a chosen ordered chapter range, optionally hiding the revision sections. The complete PDF must be downloaded separately for offline use.
+
+On the screen, sections with no paired educational cards no longer reserve an empty side column. In narrow viewports, wide comparisons scroll sideways inside the table region; an on-screen hint appears only for actual overflow, and the region can be focused/scroll-controlled using a keyboard. This does not change the PDF's table measurements.
+
+Run `python src/tests/smoke_phase_c.py` for the accompanying publication/layout regressions. For new historical maps or images, follow `src/docs/authoring/HISTORICAL_VISUALIZATIONS.md`: source every label and date, label time-specific geography, verify rights, and provide alt text and print parity.
