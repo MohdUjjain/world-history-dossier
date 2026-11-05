@@ -98,24 +98,30 @@ def main():
               await reg.update();
             }""")
             page.locator("#editionUpdateNotice").wait_for(state="visible", timeout=20000)
-            # Activation's old-cache cleanup can outlive the earliest banner
-            # render; require eventual single-version storage, not a snapshot.
-            page.wait_for_function("""async expected => {
-              const names=(await caches.keys())
-                .filter(name=>name.startsWith('whd-edition-'));
-              return names.length===1 && names[0]===expected;
-            }""", arg="whd-edition-" + UPDATED, timeout=20000)
+            # A previous worker can still complete fetches while its clients
+            # hand over. First require the new complete edition to be present;
+            # evaluate stale-cache cleanup again after reloading into it.
+            page.wait_for_function("""async expected =>
+              (await caches.keys()).includes(expected)""",
+              arg="whd-edition-" + UPDATED, timeout=20000)
             after = page.evaluate("""async () => ({
               caches:(await caches.keys()).filter(x=>x.startsWith('whd-edition-')),
               chapters:document.querySelectorAll('#screenView .chapter-flow').length,
               notice:!document.getElementById('editionUpdateNotice').hidden
             })""")
             assert after["notice"] and after["chapters"] == 33, after
-            assert after["caches"] == ["whd-edition-" + UPDATED], after
+            assert "whd-edition-" + UPDATED in after["caches"], after
             page.locator("#editionDismissBtn").click()
             assert page.locator("#editionUpdateNotice").is_hidden()
             page.goto(url, wait_until="load")
             assert page.locator("#screenView .chapter-flow").count() == 33
+            page.wait_for_function("""async expected => {
+              const names=(await caches.keys())
+                .filter(name=>name.startsWith('whd-edition-'));
+              return names.length===1 && names[0]===expected;
+            }""", arg="whd-edition-" + UPDATED, timeout=15000)
+            after["postReloadCaches"] = page.evaluate("""async () =>
+              (await caches.keys()).filter(x=>x.startsWith('whd-edition-'))""")
             assert not failures, failures
             browser.close()
             print(json.dumps({"initial":initial,"offlineChapters":33,
