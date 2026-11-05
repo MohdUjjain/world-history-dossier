@@ -66,7 +66,7 @@ def capture(browser, url: str, out: Path, baseline: Path | None):
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(url, wait_until="load")
     page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
-    page.evaluate("() => document.fonts.ready")
+    page.evaluate("() => document.fonts.ready.then(() => true)")
     checks = []
     out.mkdir(parents=True, exist_ok=True)
 
