@@ -94,15 +94,15 @@ def main():
 
             # Beforeprint (Ctrl+P/menu) must not destroy/recreate an identical
             # tree, but a changed ordered range must do so.
-            stable = page.evaluate("""() => {
-              const root=document.getElementById('printView');
-              root.dataset.testIdentity='retained';
-              return root.firstElementChild;
+            page.evaluate("""() => {
+              window.__phaseDPrintFirstSlot =
+                document.querySelector('#printView .page-slot');
             }""")
             page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
             assert page.evaluate("""() =>
-              document.getElementById('printView').dataset.testIdentity === 'retained'
-              && document.querySelector('#printView .page-slot') !== null""")
+              document.querySelector('#printView .page-slot')
+              === window.__phaseDPrintFirstSlot"""), (
+                'beforeprint rebuilt an unchanged pagination tree')
             assert not errors, errors
             report.append({"summariesExcludedPages":without,
                            "summariesIncludedPages":with_revisions,
