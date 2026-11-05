@@ -58,24 +58,28 @@ jobs:
         run: python src/tests/smoke_phase_c.py
       - name: Audit WCAG accessibility in reader, chapter and mobile drawer
         run: python src/tests/smoke_release_accessibility.py
-      - name: Test real Chromium offline startup and edition update notice
-        run: python src/tests/smoke_release_offline.py
       - name: Test chapter-range selection, repeats, invalid input and summaries
         run: python src/tests/smoke_release_ranges.py
-      - name: Prepare trusted baseline HTML for screenshot comparison
+      - name: Prepare trusted PR-base HTML for screenshot comparison
+        if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git show "$BASE_SHA:index.html" > "$RUNNER_TEMP/dossier-baseline.html"
+      - name: Inspect five responsive layouts and compare PR screenshots
         run: |
-          if [ -n "$BASE_SHA" ]; then
-            git show "$BASE_SHA:index.html" > "$RUNNER_TEMP/dossier-baseline.html"
+          if [ -f "$RUNNER_TEMP/dossier-baseline.html" ]; then
+            python src/tests/smoke_release_browser.py \
+              --baseline "$RUNNER_TEMP/dossier-baseline.html" \
+              --out ".release-evidence/screens"
           else
-            git show "HEAD^:index.html" > "$RUNNER_TEMP/dossier-baseline.html" || cp index.html "$RUNNER_TEMP/dossier-baseline.html"
+            # Branch-based Pages can already deploy on push to main. Still
+            # capture responsive evidence, but diff against the PR base only
+            # while the PR is being reviewed before its merge.
+            python src/tests/smoke_release_browser.py \
+              --out ".release-evidence/screens"
           fi
-      - name: Inspect five responsive layouts and compare screenshots
-        run: |
-          python src/tests/smoke_release_browser.py \
-            --baseline "$RUNNER_TEMP/dossier-baseline.html" \
-            --out ".release-evidence/screens"
+      - name: Test real Chromium offline startup and edition update notice
+        run: python src/tests/smoke_release_offline.py
       - name: Upload browser, accessibility and screenshot comparison evidence
         if: always()
         uses: actions/upload-artifact@v4
