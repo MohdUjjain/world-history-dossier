@@ -29,9 +29,60 @@ var CHAPTER_PALETTE = [
   {id:'#A85C32', contrast:'#2E4A6B'}, // rust            <-> ink-blue
   {id:'#2E4A6B', contrast:'#A85C32'}  // ink-blue        <-> rust
 ];
+/* Preserve each chapter's archival hues, deriving separate accessible roles
+   for small text on parchment, chapter highlights on navy, and white-text
+   revision badges/headers. The original identity colors remain unchanged. */
+function rgbChannels(hex){
+  return [1,3,5].map(function(i){return parseInt(hex.slice(i,i+2),16);});
+}
+function rgbHex(rgb){
+  return '#'+rgb.map(function(c){return Math.max(0,Math.min(255,Math.round(c))).toString(16).padStart(2,'0');}).join('').toUpperCase();
+}
+function mixHex(a,b,t){
+  var x=rgbChannels(a),y=rgbChannels(b);
+  return rgbHex(x.map(function(v,i){return v+(y[i]-v)*t;}));
+}
+function relativeLuminance(hex){
+  var rgb=rgbChannels(hex).map(function(c){
+    var v=c/255; return v<=0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4);
+  });
+  return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722;
+}
+function contrastRatio(a,b){
+  var x=relativeLuminance(a),y=relativeLuminance(b);
+  return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);
+}
+function readableHue(original,background,toward){
+  if(contrastRatio(original,background)>=4.55) return original;
+  var lo=0,hi=1;
+  for(var i=0;i<18;i++){
+    var mid=(lo+hi)/2;
+    if(contrastRatio(mixHex(original,toward,mid),background)>=4.55) hi=mid;
+    else lo=mid;
+  }
+  return mixHex(original,toward,Math.min(1,hi+0.005));
+}
+var ACCESSIBLE_PALETTE=CHAPTER_PALETTE.map(function(pair){
+  return {
+    id:pair.id,contrast:pair.contrast,
+    ink:readableHue(pair.id,'#ECE4CE','#000000'),
+    onDark:readableHue(pair.id,'#1B2A44','#FFFFFF'),
+    contrastInk:readableHue(pair.contrast,'#ECE4CE','#000000'),
+    contrastSurface:readableHue(pair.contrast,'#FFFFFF','#000000')
+  };
+});
 function paletteFor(chapterNum){
-  var i = Math.abs(parseInt(chapterNum,10)) % CHAPTER_PALETTE.length;
-  return CHAPTER_PALETTE[i];
+  var i = Math.abs(parseInt(chapterNum,10)) % ACCESSIBLE_PALETTE.length;
+  return ACCESSIBLE_PALETTE[i];
+}
+function applyChapterPalette(el,chapterNum){
+  var pal=paletteFor(chapterNum);
+  el.style.setProperty('--chapter-color',pal.id);
+  el.style.setProperty('--chapter-contrast',pal.contrast);
+  el.style.setProperty('--chapter-ink',pal.ink);
+  el.style.setProperty('--chapter-on-dark',pal.onDark);
+  el.style.setProperty('--chapter-contrast-ink',pal.contrastInk);
+  el.style.setProperty('--chapter-contrast-surface',pal.contrastSurface);
 }
 var INCLUDE_REVISION = true; // toggled by the sidebar "Include chapter summaries" checkbox
 var MIN_HEAD_SPACE = 170;
@@ -547,9 +598,7 @@ function renderPage(p, absNum, isLast){
   var page=document.createElement('div'); page.className='page type-'+p.type; page.id='pg-'+absNum;
 
   if(p.type==='hero' || p.type==='content'){
-    var pal = paletteFor(p.chapterNum);
-    page.style.setProperty('--chapter-color', pal.id);
-    page.style.setProperty('--chapter-contrast', pal.contrast);
+    applyChapterPalette(page,p.chapterNum);
   }
 
   if(p.type==='title'){
@@ -610,8 +659,18 @@ function renderPage(p, absNum, isLast){
 /* ================= PRINT PIPELINE (builds #printView only — never shown on screen) ================= */
 var ALL_CHAPTERS = null;
 var lastRange = null;
+var lastPrintSignature = null;
 
 function buildPrintView(chapterNumList){
+  // The Export button builds before calling window.print(), which normally
+  // fires beforeprint too. Reuse the same page tree unless the ordered range
+  // or revision selection changes. Native Ctrl+P still creates it on demand.
+  var signature=chapterNumList.join(',')+'|rev='+(INCLUDE_REVISION?'1':'0');
+  var printHost=document.getElementById('printView');
+  if(lastPrintSignature===signature && printHost.firstElementChild){
+    lastRange=chapterNumList.slice();
+    return;
+  }
   if(!ALL_CHAPTERS) ALL_CHAPTERS = buildChapters();
   var chapters = chapterNumList.map(function(n){
     return ALL_CHAPTERS.find(function(c){ return parseInt(c.num,10)===n; });
@@ -651,6 +710,7 @@ function buildPrintView(chapterNumList){
     a.setAttribute('href','#pg-'+(1+T+rel));
   });
   contentPages.forEach(function(p){ n++; wrap.appendChild(renderPage(p, n)); });
+  lastPrintSignature=signature;
 }
 
 /* ================= FLOWING SCREEN VIEW (comfortable, continuous — never paginated) ================= */
@@ -725,13 +785,10 @@ function renderScreenView(){
   activeChapters.forEach(function(chEl){
     var num = chEl.getAttribute('data-chapter'), title = chEl.getAttribute('data-title'),
         author = chEl.getAttribute('data-author'), subtitle = chEl.getAttribute('data-subtitle');
-    var pal = paletteFor(num);
-
     var section = document.createElement('section');
     section.className = 'chapter-flow';
     section.id = 'chapter-'+num;
-    section.style.setProperty('--chapter-color', pal.id);
-    section.style.setProperty('--chapter-contrast', pal.contrast);
+    applyChapterPalette(section,num);
 
     section.appendChild(buildFlowingHero(chEl.querySelector('.src-hero'), num, title, author, subtitle));
 
