@@ -31,11 +31,8 @@ the same turn you change styles.css** — a stale doc is worse than no doc.
 - Radius: `--r-sm` 8px (buttons/pills/inputs) · `--r-md` 12px (boxes/cards/tables) · `--r-lg` 18px (banners/panels/revision zone)
 - Shadow: `--sh-sm`/`--sh-md`/`--sh-lg` — soft layered shadows, not single hard drop-shadows. Applied to `.box`, `.figure-card`, `.table-wrap`, `.banner`, `.revision-flow`, `#navPanel`, `#navTab`, buttons.
 
-**Chapter identity color** — NOT a `:root` token. Set per-chapter as inline
-`style="--chapter-color:...; --chapter-contrast:..."` on `.chapter-flow`
-(screen) and on each `.page` (print) by JS (`paletteFor()` in engine.js).
-CSS just *consumes* `var(--chapter-color, var(--gold))` with a gold fallback
-so nothing breaks if the variable isn't set. See §5.
+**Chapter identity colors** — `paletteFor()` preserves the eight historical identity/contrast pairs, and `applyChapterPalette()` applies six custom properties on each screen chapter and print page: `--chapter-color` (unaltered accent for decorative rules/borders), `--chapter-contrast` (unaltered revision identity), `--chapter-ink` (accessible small text on parchment), `--chapter-on-dark` (accessible chapter-colored text on navy), `--chapter-contrast-ink` (accessible revision text on parchment), and `--chapter-contrast-surface` (accessible white-text revision header/badge). The on-light and on-dark roles target at least 4.5:1 with a cushion, rather than assuming the original hue always works for small text. Body palette remains unchanged. See §5.
+`--gold-ink: #7B5320` is the shared accessible archival-gold *text* role; retain `--gold` for decorative accents. `--reader-anchor-clearance` (76px desktop / 68px narrow) offsets the sticky header for screen chapter/section/study-aid anchors without altering print geometry.
 
 ---
 
@@ -77,8 +74,8 @@ JS_DOC.md §4).
 - `.banner` / `.banner .kicker/.thesis/.yrs` — the chapter-opening hero. Auto-height (NOT the fixed-720px print hero). Kicker, thesis border, year-chips all use `var(--chapter-color)`.
 - `.chapter-grid` — CSS grid, `minmax(0,1fr) 340px` (main | sidebar), `gap:52px`. Collapses to 1 column under 980px.
 - `.main-flow` — body prose, headings, tables, timelines, figures, quotes, connectors (NOT concept callouts). Paragraph measure capped at `42rem` (readability); wide elements (tables/quotes/figures) are NOT capped.
-- `.side-flow` — `position:sticky; top:76px`. Holds concept/definition/tip/mistake/memory/high-yield blocks (educational side notes). `data-kind="concept"` blocks placed incorrectly in the main source are automatically routed to the sidebar by `normalizedStreams()`; see JS_DOC.md §2. Long question banks with `data-kind="list"` remain in the main reading column.
-- `.revision-flow` — the end-of-chapter zone. **Reassigns `--chapter-color: var(--chapter-contrast)`** so every rule below it that reads `var(--chapter-color)` automatically re-themes with zero duplicated rules. Tinted background via `color-mix(in srgb, var(--chapter-contrast) 9%, var(--parchment-lt))`. `.revision-badge` is the pill label ("Chapter N Revision").
+- `.side-flow` — the base rule is sticky, but the active section-aware `.section-pair .side-flow` overrides it to `position:static`; educational notes are paired with their own sections. It holds concept/definition/tip/mistake/memory/high-yield blocks. `data-kind="concept"` authored in the main source is routed into the sidebar by `normalizedStreams()`; see JS_DOC.md §2. Long question banks with `data-kind="list"` remain in the main reading column.
+- `.revision-flow` — the end-of-chapter zone. Reassigns `--chapter-color: var(--chapter-contrast)` **and** `--chapter-ink: var(--chapter-contrast-ink)` so both structural accents and readable small-text roles use the revision identity. Tinted background via `color-mix(in srgb, var(--chapter-contrast) 9%, var(--parchment-lt))`. The `.revision-badge` uses `--chapter-contrast-surface` with white text; the printed revision header uses the same surface token.
 
 ### 3.3 Sidebar navigation panel (NOT the `.side-flow` content sidebar — this is the site-wide nav/export drawer)
 - `#navTab` — small vertical edge tab, fixed right-center. Click opens the panel. This is the *only* screen-visible trigger for navigation/export; deliberately absent from the persistent header.
@@ -291,3 +288,14 @@ No `.page`, `.page-slot`, `.toc-row`, `.block`, chapter color, or
 measured margin/padding rules were changed. The screen navigation module
 owns behavior and is described in `src/JS_DOC.md`. Recheck the 245-page
 bookmarked PDF and paired-sidebar layout before changing print CSS.
+
+---
+
+## Phase A correctness / contrast contract (November 2026)
+
+- **Revision CSS is parse-sensitive.** The explanatory comment immediately before `.page.is-revision` must be valid CSS; a previous stray text fragment made the entire revision-page rule invalid while later header rules still applied. The browser regression checks computed revision backgrounds and header contrast, rather than merely searching for selector strings.
+- **Chapter roles must not be collapsed.** Use raw `--chapter-color` for borders and illustrations; `--chapter-ink` for captions, section numbers and other small text on parchment; `--chapter-on-dark` for chapter-branded labels on navy. Revision blocks inherit contrast equivalents and a high-contrast surface for white labels. Do not globally recolor semantic learning cards.
+- **Print hero parity.** Chapter-specific thesis borders, timeline dots and structural labels in the fixed 16:9 print hero must derive from the same palette as the flowing banner. The timeline's neutral connecting line can remain neutral.
+- **Sticky-header navigation.** `.chapter-flow,.chapter-flow [id]` have `scroll-margin-top:var(--reader-anchor-clearance)`; this affects section/aid targets and direct links on the screen reader, never fixed-size PDF layout.
+- **Safe UI gold.** `--gold-ink` is the shared darkened gold used for small UI labels; the export button uses dark brass with white text rather than illegible navy on medium brass.
+- **Regression gate.** `src/tests/smoke_phase_a.py` checks actual computed colors, navigation clearance, and print cache idempotency across the eight-pair palette.
