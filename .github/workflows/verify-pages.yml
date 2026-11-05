@@ -49,11 +49,20 @@ jobs:
           fi
       - name: Simulate offline startup, cache updates and Google Font persistence
         run: node src/tests/test_offline_cache.mjs
-      - name: Install browser, image and accessibility test dependencies
+      - name: Install browser and image test dependencies
         run: |
           python -m pip install playwright pillow
           python -m playwright install --with-deps chromium
-          npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund axe-core@4.10.3
+      - name: Restore pinned axe-core package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: phase-d-axe-core-4.10.3-${{ runner.os }}
+      - name: Install pinned axe-core auditing library (bounded network retries)
+        run: |
+          timeout 150s npm install --prefer-offline --fetch-timeout=45000 --fetch-retries=1 \
+            --no-save --no-package-lock --ignore-scripts --no-audit --no-fund \
+            axe-core@4.10.3
       - name: Test reader navigation, accessibility, revision, resume and printing
         run: python src/tests/smoke_reader_ui.py
       - name: Test Phase A palette contrast, PDF roles, anchors and print reuse
