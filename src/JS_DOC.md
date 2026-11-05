@@ -622,3 +622,10 @@ The screen cover and the Export drawer both open `./20th-Century%20International
 ### Testing
 
 `python src/tests/smoke_phase_c.py` checks cover parity, PDF link destinations, full-width empty-aid sections, source-grounded sidebar pairing, true table overflow affordances and 16:9 print footer/geometry. Re-run all existing Phase A and B Playwright suites plus `python src/build.py -o index.html --check`. Full bookmarked PDF generation/outline validation remains the independent `build-bookmarked-pdf.yml` workflow.
+
+
+## Phase D — documentation and source integrity verification (November 2026)
+
+`src/tests/verify_docs_sync.py` checks active CSS/JavaScript role names in `CSS_DOC.md`/`JS_DOC.md`, source links and the release test inventory. When provided a Git base ref, it checks changed files: CSS edits require a same-PR CSS reference update; changes to `engine.js`, `reader-ui.js` or `offline-reader.js` require a JS reference update. Editing the release CI workflow requires updating `src/docs/release/RELEASE_VERIFICATION.md` in the same PR. This phase changes **verification and documentation only**, not reader logic or PDF pagination.
+
+The release browser suite captures responsive screenshots, uses axe-core for scoped WCAG audit, tests real PWA offline updates and verifies strict ordered/repeated chapter selection. A separate pull-request `release-pdf` CI job builds a *fresh* 16:9 PDF and checks every page's geometry and text bounds as well as representative raster differences and PDF chapter/section bookmarks. The [Phase D runbook](docs/release/RELEASE_VERIFICATION.md) lists both automated and manual review. Pages currently deploys directly from `main`; protect that branch with required `verify` and `release-pdf` checks to make review a hard pre-deployment gate.
