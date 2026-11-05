@@ -24,6 +24,8 @@ The existing chapter titles, note content, eight-pair color identities, revision
 contrast roles and PDF pagination dimensions are not modified by Phase D.
 Tests aim to catch regressions, not introduce new content.
 
+The CI installs pinned axe-core 4.10.3 using a restored npm download cache and a bounded 150-second install, in a separate step from Chromium. This isolates upstream registry failures from website defects and prevents a hung package download from consuming the entire verification window.
+
 ## CI gate and screenshots
 
 `.github/workflows/verify-pages.yml` supplies:
