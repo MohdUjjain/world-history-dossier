@@ -98,6 +98,13 @@ def main():
               await reg.update();
             }""")
             page.locator("#editionUpdateNotice").wait_for(state="visible", timeout=20000)
+            # Activation's old-cache cleanup can outlive the earliest banner
+            # render; require eventual single-version storage, not a snapshot.
+            page.wait_for_function("""async expected => {
+              const names=(await caches.keys())
+                .filter(name=>name.startsWith('whd-edition-'));
+              return names.length===1 && names[0]===expected;
+            }""", "whd-edition-" + UPDATED, timeout=20000)
             after = page.evaluate("""async () => ({
               caches:(await caches.keys()).filter(x=>x.startsWith('whd-edition-')),
               chapters:document.querySelectorAll('#screenView .chapter-flow').length,
