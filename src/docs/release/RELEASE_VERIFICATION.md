@@ -41,6 +41,8 @@ Tests aim to catch regressions, not introduce new content.
 
 The workflow also uses per-PR `concurrency` with `cancel-in-progress` to stop superseded screenshot/PDF reviews when new commits land; only evidence from the latest commit should be considered release evidence.
 
+The evidence directory is intentionally dot-prefixed (`.release-evidence/`); both artifact-upload steps explicitly opt into `include-hidden-files: true`. Without that option the browser PNGs/JSON are silently skipped even when the pixel comparisons succeed.
+
 The job artifacts include `phase-d-browser-evidence` (candidate/baseline/
 diff PNG files, accessibility JSON) and `phase-d-pdf-evidence` (sample PNGs,
 contact sheet, diff masks and JSON).
