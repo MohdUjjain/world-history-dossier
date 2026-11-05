@@ -10,7 +10,7 @@ pagination code.
 
 ## 1. Big picture
 
-Everything lives in one IIFE. There are two outputs from one source:
+The chapter render and pagination system live in the `engine.js` IIFE; the screen reader state and offline behavior live in independent, inlined `reader-ui.js` and `offline-reader.js` modules. There are two outputs from one chapter source:
 
 ```
 #chapterData (hidden, pristine, never mutated)
@@ -522,3 +522,23 @@ is still in effect. `reader-ui.js` now schedules a deferred position
 capture after that guard expires, instead of requiring another scroll
 event; that would silently lose the user's last-read place. The timer is
 screen-only and print updates remain suppressed.
+
+---
+
+## Phase A: accessible chapter roles and print-build idempotency (November 2026)
+
+### Chapter palette role derivation
+The fixed `CHAPTER_PALETTE` arrays of eight `id` / `contrast` pairs remain unchanged. `ACCESSIBLE_PALETTE` derives, for each pair, `ink` (small colored type on the darkest parchment `#ECE4CE`), `onDark` (small type over navy `#1B2A44`), `contrastInk` (revision text on parchment), and `contrastSurface` (background for white-text revision badges and print headers). `readableHue()` mixes the base hue minimally with black or white to reach at least 4.55:1; color operations use standard sRGB relative luminance. `applyChapterPalette(el,num)` sets six **source** properties on each chapter/page: `--chapter-primary`, `--chapter-primary-ink`, `--chapter-on-dark`, `--chapter-contrast`, `--chapter-contrast-ink`, `--chapter-contrast-surface`. The active `--chapter-color` / `--chapter-ink` are computed by CSS on `.chapter-flow,.page`, not assigned inline. This is essential: `.page.is-revision` must be able to override both active roles; inline active styles would win and make the revision accents wrong. Printed TOC chapter rows explicitly set `--chapter-ink` because they are outside any chapter page.
+
+Do not overwrite `--chapter-color` with the darkened value: decorative marks should retain the user's original chapter palette. Screen revision elements override `--chapter-color` **and** `--chapter-ink` with their contrast equivalents. The print revision page makes the same override; its header uses `--chapter-contrast-surface`.
+
+### Print cache, native Ctrl+P, and double-build guard
+`buildPrintView(chapterNumList)` uses `lastPrintSignature = ordered chapter numbers + revision flag`. A second call with an identical signature and an existing page tree returns without repacking. This prevents the Export button's explicit build from being redundantly repeated in the native `beforeprint` callback. Any change in ordered ranges or `INCLUDE_REVISION` invalidates the signature and repaginates.
+
+The `beforeprint` handler **must remain** as a native Ctrl+P fallback, and `lastRange` still denotes the most recently exported ordered selection. Do not use a one-time boolean that would suppress required later rebuilds. To prove idempotency, `smoke_phase_a.py` compares print DOM node identity across duplicate `beforeprint` calls and checks that the page tree is replaced after changing the revision selection.
+
+### Screen anchor positioning
+This lives in `styles.css`, not the measured print engine: `scroll-margin-top` is applied to chapter/section/study-aid anchor targets via a responsive `--reader-anchor-clearance` token. Browser smoke tests assert that a linked section is not covered by the sticky header after navigation.
+
+### Associated tests
+`src/tests/smoke_phase_a.py` runs from the root via a local HTTP server with Playwright Chromium. It checks the full eight-color role system, revision-page computed styles, print hero identity, anchor clearance, duplicate-build avoidance and revision-triggered rebuild. Keep it in the `verify-pages.yml` workflow beside `smoke_reader_ui.py`. Do not modify chapter sources or the fixed page-packing dimensions for these cosmetic correctness changes.

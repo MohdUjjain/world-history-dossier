@@ -37,6 +37,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Test reader navigation, accessibility, revision, resume and printing
         run: python src/tests/smoke_reader_ui.py
+      - name: Test Phase A palette contrast, PDF roles, anchors and print reuse
+        run: python src/tests/smoke_phase_a.py
       - name: Check actual Pages URLs on scheduled or manual runs
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: python src/tests/verify_live_site.py
