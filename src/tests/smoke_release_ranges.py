@@ -36,7 +36,7 @@ def main():
                                     reduced_motion="reduce")
             page.on("pageerror",lambda e:errors.append(str(e)))
             page.goto(f"http://127.0.0.1:{server.server_port}/",wait_until="load")
-            page.locator("#navToc .nav-chapter-link").first.wait_for()
+            page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
             all_names = page.evaluate("""() => Object.fromEntries(
               [...document.querySelectorAll('#chapterData .chapter-source')]
               .map(x=>[Number(x.getAttribute('data-chapter')),
