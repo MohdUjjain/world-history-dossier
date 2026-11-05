@@ -41,6 +41,8 @@ The CI installs pinned axe-core 4.10.3 using a restored npm download cache and a
   the actual browser print engine, checks its outline/page geometry and
   compares rasterized representative pages with the repository's current PDF.
 
+The verification concurrency group is named `dossier-qa` (distinct from the earlier superseded experimental group), preserving per-PR cancellation while allowing the current gate to proceed without waiting on obsolete dependency-install jobs.
+
 The workflow also uses per-PR `concurrency` with `cancel-in-progress` to stop superseded screenshot/PDF reviews when new commits land; only evidence from the latest commit should be considered release evidence.
 
 The evidence directory is intentionally dot-prefixed (`.release-evidence/`); both artifact-upload steps explicitly opt into `include-hidden-files: true`. Without that option the browser PNGs/JSON are silently skipped even when the pixel comparisons succeed.
