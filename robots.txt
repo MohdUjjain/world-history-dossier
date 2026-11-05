@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /world-history-dossier/
+Sitemap: https://mohdujjain.github.io/world-history-dossier/sitemap.xml

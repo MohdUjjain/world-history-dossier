@@ -9,7 +9,9 @@ The **complete edition comprises Chapters 00–32 (33 chapters)**. This director
 | `shell.html` | HTML shell and metadata for the published reader |
 | `styles.css` | Imperial Archive screen and print design |
 | `engine.js` | Chapter navigation, section pairing, pagination and export |
-| `build.py` | Builds the standalone reader from the shell, styles, engine and chapter modules |
+| `build.py` | Builds `index.html` and generates a content-hashed offline service worker |
+| `offline-reader.js` | Offline-ready status, persistent storage request and new-edition notifications; inlined into `index.html` |
+| `service-worker.template.js` | Atomic precache, scoped cache cleanup and optional Google Fonts response caching |
 | `chapter_catalog.json` | Official titles for all 33 chapters |
 | `chapters/ch00.html` … `chapters/ch32.html` | Active authoring modules |
 | `tests/` | Structural and browser/print regression checks |
@@ -32,7 +34,11 @@ Run from the **repository root**:
 python src/build.py -o index.html
 python src/build.py -o index.html --check
 python src/tests/validate_structure.py
+python src/tests/verify_publication.py
+node src/tests/test_offline_cache.mjs
 ```
+
+Writing the published `index.html` also regenerates `service-worker.js` with a version derived from the book and small public assets. The `--check` command returns a nonzero exit status when either generated file is stale. The original `python src/build.py` without `-o` still produces `book.html` for development.
 
 The standalone reader has no external runtime dependencies. Full-book PDF export additionally requires local Chromium, Python Playwright, BeautifulSoup and PyMuPDF:
 

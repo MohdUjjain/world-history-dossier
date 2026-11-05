@@ -139,6 +139,47 @@ a{ color:var(--oxblood); text-decoration:none; }
 .nav-export button:hover{ background:#8f6530; transform:translateY(-1px); box-shadow:var(--sh-md); }
 .nav-export button:active{ transform:translateY(0); box-shadow:var(--sh-sm); }
 .nav-export button:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+/* ============================================================
+   OFFLINE AVAILABILITY AND NEW-EDITION NOTIFICATION — screen-only
+   The status/announcement logic is in src/offline-reader.js, not engine.js.
+   ============================================================ */
+.nav-offline{
+  padding:18px 20px 20px;
+  border-bottom:1px solid var(--parchment-dk);
+  font-family:var(--font-label);
+}
+.nav-offline .nav-section-label{ margin-bottom:8px; }
+.nav-offline p{ margin:0 0 12px; color:var(--ink-soft); font-size:.79rem; line-height:1.5; }
+.nav-offline button{
+  padding:10px 12px; border:1px solid var(--gold); color:var(--ink);
+  border-radius:var(--r-sm); background:var(--gold-lt); font:700 .78rem var(--font-label);
+  cursor:pointer; width:100%;
+}
+.nav-offline button:disabled{ opacity:.65; cursor:default; }
+.nav-offline button:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+.edition-update-notice[hidden]{ display:none!important; }
+.edition-update-notice{
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  width:min(600px,calc(100vw - 28px)); z-index:130; display:flex; flex-wrap:wrap;
+  align-items:center; justify-content:space-between; gap:16px; padding:16px 18px;
+  background:var(--ink); color:var(--parchment-lt); border:1px solid var(--gold);
+  box-shadow:var(--sh-lg); border-radius:var(--r-md); font-family:var(--font-label);
+}
+.edition-update-message{ display:grid; gap:5px; min-width:0; flex:1 1 240px; }
+.edition-update-message strong{ font-size:.91rem; }
+.edition-update-message span{ color:var(--parchment-dk); font-size:.77rem; line-height:1.4; }
+.edition-update-actions{ display:flex; gap:8px; }
+.edition-update-actions button{
+  border-radius:var(--r-sm); padding:9px 12px; border:1px solid var(--gold);
+  font:700 .76rem var(--font-label); cursor:pointer;
+  background:var(--gold-lt); color:var(--ink);
+}
+.edition-update-actions button:last-child{
+  background:transparent; color:var(--parchment-lt); border-color:var(--parchment-dk);
+}
+.edition-update-actions button:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+@media print{ .edition-update-notice{ display:none!important; } }
+
 .nav-empty{ margin:10px 12px; font-family:var(--font-label); font-size:1rem; line-height:1.55; color:var(--ink-soft); }
 
 @media (max-width:640px){

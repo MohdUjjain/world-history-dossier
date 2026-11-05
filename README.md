@@ -18,6 +18,12 @@ In supported browsers, install the dossier on your device for a dedicated app-li
 
 The bookmarked PDF has a concise, three-page contents listing all 33 chapters. Each chapter title is clickable, and the PDF reader's **Bookmarks / Outline** panel offers an expandable chapter-and-section hierarchy for jumping directly to any topic. See the [PDF navigation guide](src/docs/reference/PDF_NAVIGATION.md).
 
+## Offline edition and updates
+
+The reader is installable as a PWA. Once opened online and saved, all 33 chapters can be read without internet. The **Contents** drawer reports when the complete reader is available offline and offers **Keep on this device** (subject to browser storage permissions). When a new complete edition is cached, a visible **Reload now** notice lets readers switch to it. The large PDF remains a separate download.
+
+For maintenance and testing, see the [offline reader guide](src/docs/hosting/PWA.md).
+
 ## Repository guide
 
 | Location | Purpose |

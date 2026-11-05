@@ -1,0 +1,36 @@
+name: Verify World History Dossier website
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout publication and source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm generated reader and content-hashed service worker
+        run: python src/build.py -o index.html --check
+      - name: Validate 33 authored chapter modules
+        run: python src/tests/validate_structure.py
+      - name: Validate publication metadata, assets and offline UI
+        run: python src/tests/verify_publication.py
+      - name: Simulate offline startup, cache updates and Google Font persistence
+        run: node src/tests/test_offline_cache.mjs
+      - name: Check actual Pages URLs on scheduled or manual runs
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: python src/tests/verify_live_site.py

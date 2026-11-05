@@ -238,3 +238,26 @@ matching measured and actual geometry. QA must check **33
 printed chapter entries, 33 clickable page links and zero clipped rows** in
 the final PDF, as well as a properly nested 33-chapter/section PDF bookmark
 outline. Do not undo the no-margin rule.
+
+
+## Offline edition controls (November 2026)
+
+The following screen-only CSS lives in `src/styles.css` and is inlined
+into the standalone reader by `src/build.py`:
+
+- `.nav-offline`, `.nav-offline button` and associated typography show
+  the cached edition state and offer a user-initiated request for persistent
+  browser storage. They appear in the Contents drawer after Export.
+- `.edition-update-notice`, `.edition-update-message` and
+  `.edition-update-actions` create an accessible, dismissible notice when a
+  fully cached new edition takes control. Reloading switches the open tab to
+  that edition. The banner uses the existing Imperial Archive navy/gold tokens,
+  is fixed on screen, and is excluded via `@media print`.
+- `.edition-update-notice[hidden]` explicitly overrides the author-level
+  display declaration to avoid accidental banner visibility before an update.
+
+Keep the UI outside `#printView` and hidden in printed exports; it must not
+affect the 16:9 pagination or individually measured TOC/table/list blocks.
+Behavior belongs in `src/offline-reader.js`, not the print engine. The worker
+template, revision hashing, optional Google Fonts caching and offline tests
+are documented in `src/docs/hosting/PWA.md`.

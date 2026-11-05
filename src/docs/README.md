@@ -45,6 +45,6 @@ The following original reports document chapter-specific source cautions, struct
 ## Hosting
 
 - [GitHub Pages, rebuilds and deployment](hosting/DEPLOYMENT.md)
-- [Installable app (PWA), offline behavior and testing](hosting/PWA.md)
+- [Installable app (PWA), offline behavior, updates and tests](hosting/PWA.md)
 
 The HTML reader and PDF are generated from the maintained source. The installable PWA files live in the repository root.

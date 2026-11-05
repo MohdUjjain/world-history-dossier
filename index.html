@@ -174,6 +174,47 @@ a{ color:var(--oxblood); text-decoration:none; }
 .nav-export button:hover{ background:#8f6530; transform:translateY(-1px); box-shadow:var(--sh-md); }
 .nav-export button:active{ transform:translateY(0); box-shadow:var(--sh-sm); }
 .nav-export button:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+/* ============================================================
+   OFFLINE AVAILABILITY AND NEW-EDITION NOTIFICATION — screen-only
+   The status/announcement logic is in src/offline-reader.js, not engine.js.
+   ============================================================ */
+.nav-offline{
+  padding:18px 20px 20px;
+  border-bottom:1px solid var(--parchment-dk);
+  font-family:var(--font-label);
+}
+.nav-offline .nav-section-label{ margin-bottom:8px; }
+.nav-offline p{ margin:0 0 12px; color:var(--ink-soft); font-size:.79rem; line-height:1.5; }
+.nav-offline button{
+  padding:10px 12px; border:1px solid var(--gold); color:var(--ink);
+  border-radius:var(--r-sm); background:var(--gold-lt); font:700 .78rem var(--font-label);
+  cursor:pointer; width:100%;
+}
+.nav-offline button:disabled{ opacity:.65; cursor:default; }
+.nav-offline button:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+.edition-update-notice[hidden]{ display:none!important; }
+.edition-update-notice{
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  width:min(600px,calc(100vw - 28px)); z-index:130; display:flex; flex-wrap:wrap;
+  align-items:center; justify-content:space-between; gap:16px; padding:16px 18px;
+  background:var(--ink); color:var(--parchment-lt); border:1px solid var(--gold);
+  box-shadow:var(--sh-lg); border-radius:var(--r-md); font-family:var(--font-label);
+}
+.edition-update-message{ display:grid; gap:5px; min-width:0; flex:1 1 240px; }
+.edition-update-message strong{ font-size:.91rem; }
+.edition-update-message span{ color:var(--parchment-dk); font-size:.77rem; line-height:1.4; }
+.edition-update-actions{ display:flex; gap:8px; }
+.edition-update-actions button{
+  border-radius:var(--r-sm); padding:9px 12px; border:1px solid var(--gold);
+  font:700 .76rem var(--font-label); cursor:pointer;
+  background:var(--gold-lt); color:var(--ink);
+}
+.edition-update-actions button:last-child{
+  background:transparent; color:var(--parchment-lt); border-color:var(--parchment-dk);
+}
+.edition-update-actions button:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+@media print{ .edition-update-notice{ display:none!important; } }
+
 .nav-empty{ margin:10px 12px; font-family:var(--font-label); font-size:1rem; line-height:1.55; color:var(--ink-soft); }
 
 @media (max-width:640px){
@@ -587,12 +628,28 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
       <button id="printBtn">⤓ Export PDF</button>
     </div>
+    <div class="nav-offline">
+      <div class="nav-section-label">Offline edition</div>
+      <p id="offlineStatus" aria-live="polite">Checking offline availability…</p>
+      <button id="offlineKeep" type="button" disabled>Keep on this device</button>
+    </div>
     <div class="nav-toc-wrap">
       <div class="nav-section-label">Contents</div>
       <div class="nav-toc" id="navToc"></div>
     </div>
   </div>
 </nav>
+
+<aside id="editionUpdateNotice" class="edition-update-notice" role="status" aria-live="polite" hidden>
+  <div class="edition-update-message">
+    <strong>Updated edition saved</strong>
+    <span>A newer World History Dossier is ready on this device.</span>
+  </div>
+  <div class="edition-update-actions">
+    <button id="editionReloadBtn" type="button">Reload now</button>
+    <button id="editionDismissBtn" type="button">Later</button>
+  </div>
+</aside>
 
 <div id="screenView"></div>
 
@@ -3117,13 +3174,147 @@ window.addEventListener('load', function(){
 })();
 </script>
 <script>
-// Installable offline reader: keep registration separate from the print engine.
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./service-worker.js', {scope: './'})
-      .catch(function (error) { console.warn('Offline reader unavailable:', error); });
+/* World History Dossier — offline status, storage and edition updates.
+ * Kept independent from the chapter/print engine; inlined by src/build.py.
+ */
+(() => {
+  'use strict';
+  const status = document.getElementById('offlineStatus');
+  const keep = document.getElementById('offlineKeep');
+  const notice = document.getElementById('editionUpdateNotice');
+  const reload = document.getElementById('editionReloadBtn');
+  const dismiss = document.getElementById('editionDismissBtn');
+  const PREFIX = 'whd-edition-';
+  const ESSENTIALS = [
+    './index.html', './manifest.webmanifest', './icons/icon-192.png',
+    './icons/icon-512.png', './og-image.jpg', './404.html',
+    './sitemap.xml', './robots.txt'
+  ];
+  let registration = null;
+  let hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
+  let updateShown = false;
+  let lastUpdateCheck = 0;
+  let preparingFonts = false;
+
+  const say = (message) => { if (status) status.textContent = message; };
+  const showUpdate = () => {
+    if (updateShown) return;
+    updateShown = true;
+    if (notice) notice.hidden = false;
+    say('A new edition is ready. Reload to read it.');
+  };
+  if (reload) reload.addEventListener('click', () => location.reload());
+  if (dismiss) dismiss.addEventListener('click', () => { if (notice) notice.hidden = true; });
+
+  if (!('serviceWorker' in navigator) || !('caches' in window)) {
+    say('This browser does not support saving the reader offline.');
+    if (keep) keep.hidden = true;
+    return;
+  }
+
+  async function checkOffline() {
+    if (!registration) return;
+    try {
+      const names = (await caches.keys()).filter((name) => name.startsWith(PREFIX));
+      let ready = false;
+      const scope = registration.scope;
+      for (const name of names) {
+        const cache = await caches.open(name);
+        const results = await Promise.all(
+          ESSENTIALS.map((path) => cache.match(new URL(path, scope).href))
+        );
+        if (results.every(Boolean)) { ready = true; break; }
+      }
+      const persistent = Boolean(navigator.storage && navigator.storage.persisted &&
+        await navigator.storage.persisted());
+      if (keep) {
+        keep.disabled = !ready || persistent;
+        keep.textContent = persistent ? 'Stored with extra protection' : 'Keep on this device';
+      }
+      if (!updateShown) {
+        say(ready ? (persistent ?
+          'All 33 chapters saved offline. Persistent storage enabled.' :
+          'All 33 chapters saved offline. Your browser may clear site data.') :
+          'Preparing all 33 chapters for offline reading…');
+      }
+    } catch (_) {
+      say('Offline storage status could not be checked on this device.');
+    }
+  }
+
+  if (keep) keep.addEventListener('click', async () => {
+    keep.disabled = true;
+    try {
+      const granted = Boolean(navigator.storage && navigator.storage.persist &&
+        await navigator.storage.persist());
+      await checkOffline();
+      if (!granted) say('Reader saved offline; persistent storage was not granted. Avoid clearing site data.');
+    } catch (_) {
+      say('Reader remains cached, but persistent storage is not available here.');
+    }
+    if (keep.textContent !== 'Stored with extra protection') keep.disabled = false;
   });
-}
+
+  async function prepareFonts() {
+    if (preparingFonts || !navigator.onLine || !navigator.serviceWorker.controller) return;
+    preparingFonts = true;
+    try {
+      const urls = new Set();
+      document.querySelectorAll('link[href^="https://fonts.googleapis.com/"]').forEach(
+        (link) => urls.add(link.href)
+      );
+      if (performance && performance.getEntriesByType) {
+        performance.getEntriesByType('resource').forEach((res) => {
+          if (/^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(res.name)) urls.add(res.name);
+        });
+      }
+      // The current book uses local/system fonts: normally there are no URLs.
+      if (urls.size) navigator.serviceWorker.controller.postMessage({
+        type: 'PREPARE_FONTS', urls: [...urls].slice(0, 40)
+      });
+    } catch (_) { /* Optional font caching never blocks the local reader. */ }
+    preparingFonts = false;
+  }
+
+  async function checkForUpdates() {
+    if (!registration || !navigator.onLine) return;
+    const now = Date.now();
+    if (now - lastUpdateCheck < 60000) return;
+    lastUpdateCheck = now;
+    try { await registration.update(); } catch (_) { /* Offline usage remains safe. */ }
+  }
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController) showUpdate();
+    hadController = true;
+    checkOffline();
+    prepareFonts();
+  });
+
+  async function register() {
+    try {
+      registration = await navigator.serviceWorker.register('./service-worker.js', {
+        scope: './', updateViaCache: 'none'
+      });
+      await navigator.serviceWorker.ready;
+      await checkOffline();
+      checkForUpdates();
+      prepareFonts();
+      if (registration.installing) {
+        registration.installing.addEventListener('statechange', checkOffline);
+      }
+    } catch (error) {
+      say('Offline setup failed. Reopen the reader online to retry.');
+      console.warn('Offline registration failed:', error);
+    }
+  }
+  if (document.readyState === 'complete') register();
+  else window.addEventListener('load', register, {once:true});
+  window.addEventListener('online', () => { checkForUpdates(); prepareFonts(); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { checkOffline(); checkForUpdates(); }
+  });
+})();
 </script>
 </body>
 </html>

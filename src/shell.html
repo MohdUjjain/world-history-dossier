@@ -77,12 +77,28 @@
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
       <button id="printBtn">⤓ Export PDF</button>
     </div>
+    <div class="nav-offline">
+      <div class="nav-section-label">Offline edition</div>
+      <p id="offlineStatus" aria-live="polite">Checking offline availability…</p>
+      <button id="offlineKeep" type="button" disabled>Keep on this device</button>
+    </div>
     <div class="nav-toc-wrap">
       <div class="nav-section-label">Contents</div>
       <div class="nav-toc" id="navToc"></div>
     </div>
   </div>
 </nav>
+
+<aside id="editionUpdateNotice" class="edition-update-notice" role="status" aria-live="polite" hidden>
+  <div class="edition-update-message">
+    <strong>Updated edition saved</strong>
+    <span>A newer World History Dossier is ready on this device.</span>
+  </div>
+  <div class="edition-update-actions">
+    <button id="editionReloadBtn" type="button">Reload now</button>
+    <button id="editionDismissBtn" type="button">Later</button>
+  </div>
+</aside>
 
 <div id="screenView"></div>
 
@@ -111,13 +127,7 @@
 /*__SCRIPT__*/
 </script>
 <script>
-// Installable offline reader: keep registration separate from the print engine.
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./service-worker.js', {scope: './'})
-      .catch(function (error) { console.warn('Offline reader unavailable:', error); });
-  });
-}
+/*__OFFLINE_READER__*/
 </script>
 </body>
 </html>
