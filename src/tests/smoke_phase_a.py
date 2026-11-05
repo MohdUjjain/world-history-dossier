@@ -139,8 +139,8 @@ def main() -> None:
                 const thesis=getComputedStyle(pg.querySelector('.hero-thesis'));
                 const dot=getComputedStyle(pg.querySelector('.hero-ribbon .yr-pt'),'::before');
                 const kicker=getComputedStyle(pg.querySelector('.hero-kicker'));
-                if (hex(color)!==hex(document.querySelector('#chapter-'+i)
-                      .style.getPropertyValue('--chapter-color'))) errors.push('chapter hue '+i);
+                if (hex(color)!==hex(getComputedStyle(document.querySelector('#chapter-'+i))
+                      .getPropertyValue('--chapter-color'))) errors.push('chapter hue '+i);
                 if (thesis.borderLeftColor!==dot.backgroundColor) errors.push('hero marker '+i);
                 if (contrast(kicker.color,'#1B2A44')<4.48) errors.push('hero kicker '+i);
               });
