@@ -69,6 +69,17 @@ html,body{margin:0; background:var(--parchment);}
 body{font-family:var(--font-body); color:var(--ink); -webkit-font-smoothing:antialiased;}
 *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 a{ color:var(--oxblood); text-decoration:none; }
+/* The first keyboard Tab reveals a direct route into the academic reader. */
+.skip-to-content{
+  position:fixed;left:14px;top:12px;transform:translateY(-180%);
+  z-index:150;padding:12px 16px;background:var(--ink);color:#fff;
+  border:2px solid var(--gold-lt);border-radius:var(--r-sm);
+  font:700 .88rem var(--font-label);box-shadow:var(--sh-lg);
+}
+.skip-to-content:focus{transform:translateY(0);outline:3px solid #fff;outline-offset:2px;}
+.no-script-note{max-width:650px;margin:28px auto;padding:18px 24px;
+  font:1rem/1.6 var(--font-label);background:var(--paper);
+  border:1px solid var(--parchment-dk);border-radius:var(--r-sm);}
 ::selection{ background:var(--gold-lt); color:var(--ink); }
 
 /* ============================================================
@@ -123,12 +134,13 @@ a{ color:var(--oxblood); text-decoration:none; }
   z-index:90; background:var(--ink); color:var(--gold-lt); border:1px solid var(--gold);
   border-right:none; border-radius:var(--r-md) 0 0 var(--r-md); padding:18px 9px; font-family:var(--font-label);
   font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; cursor:pointer;
-  box-shadow:var(--sh-md); transition:padding .15s, background .15s, box-shadow .15s;
+  min-width:44px;box-shadow:var(--sh-md);
+  transition:padding .15s, background .15s, box-shadow .15s;
 }
 #navTab:hover{ background:var(--ink-soft); padding-right:15px; box-shadow:var(--sh-lg); }
 #navOverlay{
   position:fixed; inset:0; background:rgba(10,15,25,.55); z-index:108; opacity:0; visibility:hidden;
-  transition:opacity .2s;
+  transition:opacity .2s;touch-action:none;
 }
 #navOverlay.open{ opacity:1; visibility:visible; }
 #navPanel{
@@ -138,12 +150,16 @@ a{ color:var(--oxblood); text-decoration:none; }
   transition:transform .25s ease; display:flex; flex-direction:column;
 }
 #navPanel.open{ transform:translateX(0); }
+@supports(height:100dvh){#navPanel{height:100dvh;}}
 .nav-head{
   display:flex; align-items:center; justify-content:space-between; background:var(--ink); color:var(--parchment-lt);
   padding:16px 20px; font-family:var(--font-label); font-weight:700; letter-spacing:.05em; font-size:.86rem;
 }
-.nav-head button{ background:none; border:none; color:var(--parchment-lt); font-size:1.4rem; cursor:pointer; line-height:1; padding:0 4px; }
-.nav-body{ flex:1; overflow-y:auto; padding:8px 0 20px; }
+.nav-head button{ background:none; border:none; color:var(--parchment-lt); font-size:1.4rem;
+  cursor:pointer;line-height:1;display:grid;place-items:center;width:44px;height:44px;
+  padding:0;border-radius:var(--r-sm);touch-action:manipulation;}
+.nav-body{ flex:1; overflow-y:auto; padding:8px 0 max(20px,env(safe-area-inset-bottom));
+  overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch; }
 .nav-toc-wrap{ padding:14px 8px 10px; }
 .nav-chapter{ margin-bottom:2px; }
 .nav-chapter-row{
@@ -167,7 +183,8 @@ a{ color:var(--oxblood); text-decoration:none; }
   font-family:var(--font-label); font-size:.82rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
   color:var(--gold-ink); margin-bottom:14px;
 }
-.nav-check{ display:flex; align-items:center; gap:8px; font-family:var(--font-label); font-size:.8rem; color:var(--ink); margin-bottom:18px; cursor:pointer; }
+.nav-check{ display:flex; align-items:center; gap:8px; font-family:var(--font-label); font-size:.8rem; color:var(--ink); margin-bottom:6px; cursor:pointer; }
+.nav-export-explainer{font:.75rem/1.45 var(--font-label);color:var(--ink-soft);margin:0 0 16px;}
 .nav-range-label{ display:block; font-family:var(--font-label); font-size:.72rem; color:var(--slate); margin-bottom:7px; }
 #rangeInput{
   width:100%; font-family:var(--font-mono); font-size:.86rem; padding:10px 12px; border-radius:var(--r-sm);
@@ -247,10 +264,25 @@ body.drawer-open{overflow:hidden;}
 .nav-tools{padding:17px 20px 14px;border-bottom:1px solid var(--parchment-dk);
   font-family:var(--font-label);}
 .nav-tools label{display:block;margin:0 0 9px;}
+.nav-search-field{position:relative;display:flex;align-items:stretch;}
 #tocSearch{width:100%;border:1px solid var(--parchment-dk);
-  border-radius:var(--r-sm);padding:11px 12px;font:inherit;font-size:.83rem;
-  background:var(--paper);color:var(--ink);}
-#tocSearch:focus-visible, .nav-tree-controls button:focus-visible,
+  border-radius:var(--r-sm);padding:11px 49px 11px 12px;font:inherit;font-size:.83rem;
+  background:var(--paper);color:var(--ink);min-height:44px;}
+#tocSearch::-webkit-search-cancel-button{display:none;}
+.nav-search-clear{display:none;}
+#tocClearSearch{position:absolute;top:0;right:0;width:44px;height:100%;
+  border:0;background:transparent;color:var(--ink-soft);cursor:pointer;
+  font:700 1.3rem var(--font-label);touch-action:manipulation;}
+#tocClearSearch:hover{color:var(--oxblood);}
+#tocClearSearch[hidden],#tocNoResults[hidden]{display:none!important;}
+.nav-no-results{background:var(--parchment-lt);color:var(--ink-soft);
+  border:1px dashed var(--parchment-dk);border-radius:var(--r-sm);
+  padding:12px;margin:10px 0 0;font:.8rem/1.5 var(--font-label);}
+.nav-search-match{background:var(--gold-lt);color:inherit;border-radius:3px;
+  padding:0 2px;box-decoration-break:clone;}
+#navTab:focus-visible,#navClose:focus-visible,#printBtn:focus-visible,
+#tocSearch:focus-visible,#tocClearSearch:focus-visible,
+.nav-tree-controls button:focus-visible,
 .nav-chapter-link:focus-visible,.nav-chapter-toggle:focus-visible,
 .nav-sections a:focus-visible,.nav-shortcuts a:focus-visible{
   outline:3px solid var(--gold);outline-offset:2px;
@@ -258,9 +290,10 @@ body.drawer-open{overflow:hidden;}
 .nav-tree-controls{display:flex;gap:8px;margin-top:11px;}
 .nav-tree-controls button{
   background:var(--parchment-lt);color:var(--ink);padding:8px 10px;
-  border-radius:var(--r-sm);border:1px solid var(--parchment-dk);
-  cursor:pointer;font:700 .76rem var(--font-label);
+  min-height:44px;border-radius:var(--r-sm);border:1px solid var(--parchment-dk);
+  cursor:pointer;font:700 .76rem var(--font-label);touch-action:manipulation;
 }
+.nav-tree-controls button:disabled{opacity:.55;cursor:default;}
 .nav-tools #tocSearchStatus{margin:10px 0 0;color:var(--ink-soft);font-size:.72rem;}
 .nav-export-details{border-bottom:1px solid var(--parchment-dk);}
 .nav-export-details>summary{padding:16px 20px;cursor:pointer;list-style:none;
@@ -272,12 +305,12 @@ body.drawer-open{overflow:hidden;}
 .nav-export-details>summary:focus-visible{outline:3px solid var(--gold);outline-offset:-3px;}
 .nav-export-details .nav-export{border-bottom:0;}
 .nav-chapter-row{padding:5px 8px 5px 10px;gap:8px;cursor:default;}
-.nav-chapter-link{flex:1;min-width:0;display:block;padding:10px 0;
+.nav-chapter-link{flex:1;min-width:0;display:flex;align-items:center;min-height:44px;padding:10px 0;
   font:700 .94rem/1.4 var(--font-label);color:var(--ink);
   border-radius:var(--r-sm);overflow-wrap:anywhere;}
 .nav-chapter-link:hover{color:var(--oxblood);text-decoration:underline;}
 .nav-chapter-toggle{flex:none;display:grid;place-items:center;
-  width:34px;height:34px;border:1px solid transparent;
+  width:44px;height:44px;border:1px solid transparent;
   background:transparent;border-radius:var(--r-sm);
   font:700 1rem var(--font-label);color:var(--gold);cursor:pointer;
   transition:transform .12s,background .12s;}
@@ -290,12 +323,13 @@ body.drawer-open{overflow:hidden;}
 .nav-chapter[hidden], .nav-sections[hidden], .nav-shortcuts[hidden],
 .nav-sections a[hidden], .nav-shortcuts a[hidden]{display:none!important;}
 .nav-sections{padding-left:27px;}
-.nav-sections a{padding:9px 11px;line-height:1.4;}
+.nav-sections a{padding:10px 11px;min-height:44px;line-height:1.4;}
 .nav-sections a.current-section{background:var(--gold-lt);color:var(--ink);
   box-shadow:inset 3px 0 0 var(--gold);font-weight:700;}
 .nav-shortcuts{display:flex;flex-wrap:wrap;gap:6px;
   padding:7px 10px 11px 34px;}
-.nav-shortcuts a{padding:6px 8px;border:1px solid var(--parchment-dk);
+.nav-shortcuts a{padding:10px 9px;min-height:44px;display:inline-flex;align-items:center;
+  border:1px solid var(--parchment-dk);
   border-radius:6px;color:var(--ink-soft);background:var(--parchment-lt);
   font:700 .69rem var(--font-label);text-decoration:none;}
 .nav-shortcuts a:hover{border-color:var(--gold);color:var(--ink);}
@@ -321,8 +355,8 @@ body.drawer-open{overflow:hidden;}
   color:var(--ink);font:700 1.3rem var(--font-label);cursor:pointer;}
 @media(max-width:640px){
   .site-header .row{padding:9px 12px;gap:8px;}
-  .site-header .title{font-size:.72rem;max-width:42vw;overflow:hidden;text-overflow:ellipsis;}
-  .site-header .current{font-size:.68rem;}
+  .site-header .title{font-size:.72rem;max-width:36vw;overflow:hidden;text-overflow:ellipsis;}
+  .site-header .current{font-size:.69rem;min-width:0;font-style:normal;}
   .chapter-progress-ring{width:36px;height:36px;font-size:.57rem;}
   #navPanel{width:100vw;max-width:100vw;border-radius:0;}
   .resume-reader-prompt{padding:19px 18px;}
@@ -336,6 +370,20 @@ body.drawer-open{overflow:hidden;}
 @media (max-width:640px){
   .tp-title{ font-size:2.2rem; }
   #navPanel{ width:100%; max-width:100%; }
+}
+
+/* Keyboard and touch behavior are shared throughout the screen reader. */
+@media screen{
+  #navTab,#navClose,#tocClearSearch,#tocExpandAll,#tocCollapseAll,
+  .nav-chapter-toggle,.nav-chapter-link,.nav-sections a,.nav-shortcuts a{
+    touch-action:manipulation;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #navPanel,#navOverlay,#navTab,.progress-fill,.nav-chapter-toggle,
+  .nav-chapter-row,.nav-sections a,.nav-export button{
+    transition:none!important;
+  }
 }
 
 /* ============================================================
@@ -420,7 +468,8 @@ body.drawer-open{overflow:hidden;}
   :root{--reader-anchor-clearance:68px;}
   #screenView{ padding:0 18px 60px; }
   .site-header .row{ padding:10px 16px; }
-  .site-header .current{ display:none; }
+  /* Keep chapter context visible next to the progress ring on phones. */
+  .site-header .current{ display:block; }
   .main-flow .figures{ grid-template-columns:1fr; }
   .main-flow h2{ flex-wrap:wrap; }
 }
@@ -613,7 +662,7 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   .site-header{ display:none !important; }
   #screenView{ display:none !important; }
   .title-page{ display:none !important; }
-  #navTab, #navOverlay, #navPanel{ display:none !important; }
+  #navTab, #navOverlay, #navPanel,.skip-to-content,.no-script-note{ display:none !important; }
   html,body{ background:#fff; }
   #printView{ display:block !important; }
   .page-slot{ width:auto !important; height:auto !important; margin:0 !important; }
@@ -708,6 +757,7 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
 </style>
 </head>
 <body>
+<a class="skip-to-content" href="#screenView">Skip to reading content</a>
 
 <header class="site-header">
   <div class="row">
@@ -755,29 +805,34 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   aria-hidden="true" tabindex="-1" inert>
   <div class="nav-head">
     <span id="navPanelHeading">Contents &amp; Export</span>
-    <button id="navClose" aria-label="Close">&times;</button>
+    <button id="navClose" type="button" aria-label="Close contents">&times;</button>
   </div>
   <div class="nav-body">
     <div class="nav-tools">
       <label for="tocSearch" class="nav-section-label">Find chapter or section</label>
-      <input id="tocSearch" type="search" autocomplete="off"
-        placeholder="Search chapters, sections, revision…"
-        aria-describedby="tocSearchStatus">
+      <div class="nav-search-field">
+        <input id="tocSearch" type="search" autocomplete="off"
+          placeholder="Search chapters, sections, revision…"
+          aria-controls="navToc" aria-describedby="tocSearchStatus">
+        <button type="button" id="tocClearSearch" aria-label="Clear contents search" hidden>&times;</button>
+      </div>
       <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
         <button type="button" id="tocExpandAll">Expand all</button>
         <button type="button" id="tocCollapseAll">Collapse all</button>
       </div>
       <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
+      <p id="tocNoResults" class="nav-no-results" hidden>No matches. Try another chapter title, section, or revision keyword; you can also clear your search.</p>
     </div>
     <details id="navExportPanel" class="nav-export-details">
       <summary>Print / Export PDF</summary>
       <div class="nav-export">
       <div class="nav-section-label">Export</div>
-      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" checked> Include chapter summaries</label>
+      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" aria-controls="screenView" checked> Include chapter summaries</label>
+      <p class="nav-export-explainer">This also shows or hides revision sections in the reader.</p>
       <label class="nav-range-label" for="rangeInput">Chapters — e.g. 5-6,1,3,20-24</label>
       <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
-      <button id="printBtn">⤓ Export PDF</button>
+      <button id="printBtn" type="button">⤓ Export PDF</button>
       </div>
     </details>
     <div class="nav-offline">
@@ -803,7 +858,8 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   </div>
 </aside>
 
-<div id="screenView"></div>
+<main id="screenView" tabindex="-1"></main>
+<noscript><p class="no-script-note">Enable JavaScript to open the interactive 33-chapter reader. The published bookmarked PDF is also available from the repository.</p></noscript>
 
 <div id="printView"></div>
 
@@ -3155,10 +3211,12 @@ function appendPairedSections(host, mainNodes, sideNodes){
 }
 
 function renderScreenView(){
+  // The screen reader owns its TOC, focus and position. The paired lifecycle
+  // events let it bookmark the viewport before a revision-toggle rebuild and
+  // restore it only after every new chapter block has been attached.
+  document.dispatchEvent(new Event('whd:screen-will-render'));
   var root = document.getElementById('screenView');
-  root.innerHTML = '';
-  var jumpEntries = [];
-  var secCounter = 0;
+  root.replaceChildren();
 
   var activeChapters = Array.from(document.querySelectorAll('#chapterData .chapter-source'));
   if(!activeChapters.length){
@@ -3166,7 +3224,8 @@ function renderScreenView(){
       '<h2>Your refreshed World History Dossier begins here.</h2>'+ 
       '<p>The previous long notes have been archived outside the active book. '+
       'Send the new Chapter 00 notes to populate this reading view.</p></section>';
-    buildNavPanel([]);
+    document.dispatchEvent(new Event('whd:screen-rendered'));
+    updateProgress();
     return;
   }
   activeChapters.forEach(function(chEl){
@@ -3202,66 +3261,14 @@ function renderScreenView(){
     }
 
     root.appendChild(section);
-
-    jumpEntries.push({kind:'chapter', num:num, title:title, id:section.id});
-    section.querySelectorAll('[data-kind="section-head"]').forEach(function(sh){
-      secCounter++;
-      var id = 'sec-'+secCounter;
-      sh.id = id;
-      jumpEntries.push({kind:'section', chapterNum:num, title:sh.getAttribute('data-title'), id:id});
-    });
   });
 
-  buildNavPanel(jumpEntries);
-  setupChapterSpy();
+  document.dispatchEvent(new Event('whd:screen-rendered'));
+  updateProgress();
 }
 
-function buildNavPanel(entries){
-  var toc = document.getElementById('navToc');
-  toc.innerHTML = '';
-  if(!entries.length){ toc.innerHTML='<p class="nav-empty">No chapters yet. New chapters will appear here automatically.</p>'; return; }
-  var currentChapterEl = null, currentSections = null;
-  entries.forEach(function(e){
-    if(e.kind==='chapter'){
-      var pal = paletteFor(e.num);
-      var wrap = document.createElement('div'); wrap.className='nav-chapter';
-      var row = document.createElement('div'); row.className='nav-chapter-row';
-      row.innerHTML = '<span class="car">▸</span><span class="dot" style="background:'+pal.id+'"></span><span class="lbl">Ch.'+String(e.num).padStart(2,'0')+' — '+e.title+'</span>';
-      var sections = document.createElement('div'); sections.className='nav-sections';
-      row.addEventListener('click', function(){ wrap.classList.toggle('expanded'); });
-      wrap.appendChild(row); wrap.appendChild(sections);
-      toc.appendChild(wrap);
-      currentChapterEl = wrap; currentSections = sections;
-    } else if(currentSections){
-      var a = document.createElement('a');
-      a.href = '#'+e.id;
-      a.textContent = e.title;
-      a.addEventListener('click', function(ev){
-        ev.preventDefault();
-        closeNav();
-        var target = document.getElementById(e.id);
-        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-      currentSections.appendChild(a);
-    }
-  });
-}
-
-function openNav(){ document.getElementById('navPanel').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); }
-function closeNav(){
-  var panel=document.getElementById('navPanel');
-  panel.classList.remove('open');
-  document.getElementById('navOverlay').classList.remove('open');
-  // Export invokes this legacy close path, so clean up ALL modal state;
-  // otherwise body overflow stays locked after printing in the new reader UI.
-  panel.inert=true;
-  panel.setAttribute('aria-hidden','true');
-  document.getElementById('navTab').setAttribute('aria-expanded','false');
-  document.body.classList.remove('drawer-open');
-}
-document.getElementById('navTab').addEventListener('click', openNav);
-document.getElementById('navClose').addEventListener('click', closeNav);
-document.getElementById('navOverlay').addEventListener('click', closeNav);
+/* The screen-only reader-ui.js module is the sole Contents drawer owner.
+   No legacy TOC renderer/open/close handlers belong in this print engine. */
 
 /* ---- reading progress bar (kept visible throughout, including revision zones) ---- */
 function updateProgress(){
@@ -3272,13 +3279,6 @@ function updateProgress(){
 }
 window.addEventListener('scroll', updateProgress, {passive:true});
 window.addEventListener('resize', updateProgress);
-
-/* ---- current-chapter label in header, via scroll-spy ---- */
-function setupChapterSpy(){
-  // Chapter, section and chapter-progress tracking are centralized in the
-  // screen-only src/reader-ui.js module. Keeping the legacy IntersectionObserver
-  // would race its header updates and produce inconsistent active headings.
-}
 
 /* ================= EXPORT CONTROLS (now inside the sidebar panel) ================= */
 function lightweightChapterList(){
@@ -3372,7 +3372,9 @@ document.getElementById('printBtn').addEventListener('click', function(){
   describeRange(parsed, rangeChapters);
   if(parsed.unknown.length || parsed.list.length===0) return; // strict validation blocks partial exports
   buildPrintView(parsed.list);
-  closeNav();
+  document.dispatchEvent(new CustomEvent('whd:drawer-close',{
+    detail:{restoreFocus:true}
+  }));
   window.print();
 });
 // Safety net: if printing is triggered natively (Ctrl+P / browser menu) rather
@@ -3403,6 +3405,8 @@ window.addEventListener('load', function(){
 (function () {
   'use strict';
   var search = document.getElementById('tocSearch');
+  var clearSearch = document.getElementById('tocClearSearch');
+  var noResults = document.getElementById('tocNoResults');
   var toc = document.getElementById('navToc');
   var panel = document.getElementById('navPanel');
   var trigger = document.getElementById('navTab');
@@ -3423,7 +3427,8 @@ window.addEventListener('load', function(){
   var KEY = 'whd-reading-place-v1';
   var chapterRows = [], lastFocused = null, manualExpanded = new Set();
   var lastActiveChapter = null, lastActiveSection = null;
-  var observing = null, rebuilding = false, framePending = false, printing = false;
+  var rebuilding = false, framePending = false, printing = false;
+  var pendingView = null;
   var savedPosition = null, permitSaving = true, lastSaveAt = 0, lastReading = null;
   var userMoved = false, saveAfter = 0, deferredSaveTimer = null;
 
@@ -3474,6 +3479,7 @@ window.addEventListener('load', function(){
       .filter(function(el){return !el.hidden && !el.closest('[hidden]') && el.getClientRects().length > 0;});
   }
   function openDrawer() {
+    if (panel.classList.contains('open')) return;
     lastFocused = document.activeElement;
     panel.inert = false;
     panel.setAttribute('aria-hidden', 'false');
@@ -3498,6 +3504,13 @@ window.addEventListener('load', function(){
     if (!panel.classList.contains('open')) return;
     if (event.key === 'Escape') {
       event.preventDefault();
+      // First Escape clears an active contents search; a second closes
+      // the dialog. This mirrors native search-field expectations.
+      if (document.activeElement === search && search.value.trim()) {
+        search.value = '';
+        applySearch();
+        return;
+      }
       closeDrawer(true);
       return;
     }
@@ -3522,33 +3535,65 @@ window.addEventListener('load', function(){
     entry.sections.hidden = !expanded;
     entry.shortcuts.hidden = !expanded || !entry.shortcuts.childElementCount;
   }
+  function highlightLink(link, term) {
+    var label = link.dataset.label || link.textContent;
+    if (!term) { link.textContent = label; return; }
+    // Text-only construction: the search term is never interpreted as HTML.
+    var pos = normalize(label).indexOf(term);
+    if (pos < 0) { link.textContent = label; return; }
+    var hit = document.createElement('mark');
+    hit.className = 'nav-search-match';
+    hit.textContent = label.slice(pos, pos + term.length);
+    link.replaceChildren(
+      document.createTextNode(label.slice(0, pos)), hit,
+      document.createTextNode(label.slice(pos + term.length))
+    );
+  }
   function applySearch() {
     var term = normalize(search.value.trim());
-    var shown = 0;
-    chapterRows.forEach(function(entry){
-      var wholeChapter = term && normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
-      var sectionMatches = 0;
-      entry.sections.querySelectorAll('a[data-target]').forEach(function(a){
-        var match = !term || wholeChapter || normalize(a.textContent).includes(term);
-        a.hidden = !match;
-        if (term && match) sectionMatches++;
+    var shown = 0, sectionCount = 0, shortcutCount = 0;
+    chapterRows.forEach(function(entry) {
+      var chapterMatch = !!term &&
+        normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
+      var visibleChild = false;
+      highlightLink(entry.link, term);
+      entry.sections.querySelectorAll('a[data-target]').forEach(function(a) {
+        var directMatch = !!term && normalize(a.dataset.label).includes(term);
+        a.hidden = !!term && !chapterMatch && !directMatch;
+        highlightLink(a, term);
+        if (directMatch) sectionCount++;
+        if (!a.hidden) visibleChild = true;
       });
-      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a){
-        a.hidden = !!term && !wholeChapter && !normalize(a.textContent).includes(term);
-        if (term && !a.hidden) sectionMatches++;
+      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a) {
+        var directMatch = !!term && normalize(a.dataset.label).includes(term);
+        a.hidden = !!term && !chapterMatch && !directMatch;
+        highlightLink(a, term);
+        if (directMatch) shortcutCount++;
+        if (!a.hidden) visibleChild = true;
       });
-      var visible = !term || wholeChapter || sectionMatches > 0;
+      var visible = !term || chapterMatch || visibleChild;
       entry.wrap.hidden = !visible;
       if (visible) shown++;
       updateExpanded(entry, !!term && visible);
     });
-    results.textContent = term ? shown + ' matching chapter' + (shown === 1 ? '' : 's') : '33 chapters';
+    clearSearch.hidden = !term;
+    noResults.hidden = !term || shown > 0;
+    // Manual expand/collapse choices are preserved through a temporary search.
+    expandButton.disabled = !!term;
+    collapseButton.disabled = !!term;
+    if (!term) results.textContent = chapterRows.length + ' chapters';
+    else if (!shown) results.textContent = 'No matching chapters or sections.';
+    else results.textContent = shown + ' matching chapter' + (shown===1?'':'s') +
+      ' · ' + sectionCount + ' section' + (sectionCount===1?'':'s') +
+      (shortcutCount ? ' · ' + shortcutCount + ' study shortcut' +
+        (shortcutCount===1?'':'s') : '');
   }
   function addLink(host, label, id, cls) {
     var a = document.createElement('a');
     a.href = '#' + id;
     a.dataset.target = id;
     a.className = cls;
+    a.dataset.label = label;
     a.textContent = label;
     host.appendChild(a);
     return a;
@@ -3563,7 +3608,6 @@ window.addEventListener('load', function(){
   function buildChapterRows() {
     if (rebuilding) return;
     rebuilding = true;
-    if (observing) observing.disconnect();
     var chapters = Array.from(document.querySelectorAll('#screenView > .chapter-flow'));
     toc.replaceChildren();
     chapterRows = [];
@@ -3626,7 +3670,6 @@ window.addEventListener('load', function(){
     applySearch();
     applyActiveReading();
     rebuilding = false;
-    if (observing) observing.observe(toc, {childList:true});
     requestReadingUpdate();
   }
   function activeChapterAndSection() {
@@ -3671,6 +3714,7 @@ window.addEventListener('load', function(){
     applyActiveReading();
     if (current) {
       currentLabel.textContent = 'Ch.'+String(current.num).padStart(2,'0')+' — '+titleOf(current.chapter);
+      currentLabel.title = currentLabel.textContent;
       var pct = Math.round(current.ratio * 100);
       ring.hidden = false;
       ring.style.setProperty('--chapter-progress',pct+'%');
@@ -3680,6 +3724,7 @@ window.addEventListener('load', function(){
       ring.setAttribute('aria-valuetext','Chapter '+current.num+': '+pct+' percent');
     } else {
       currentLabel.textContent = '';
+      currentLabel.removeAttribute('title');
       ring.hidden = true;
     }
     if (userMoved && permitSaving && current) {
@@ -3722,6 +3767,49 @@ window.addEventListener('load', function(){
       chapterRatio:Math.max(0,Math.min(1,current.ratio)),
       sectionRatio:sectionRatio, savedAt:Date.now()
     });
+  }
+  // Preserve a viewport-relative *reading block*, not an absolute scroll
+  // pixel, across whole-reader reconstruction when revision is toggled.
+  // The chapter's main block order is stable when revision cards are removed.
+  function contentTargets(chapter) {
+    var banner = chapter.querySelector('.banner');
+    var blocks = Array.from(chapter.querySelectorAll('.main-flow > .block'));
+    return banner ? [banner].concat(blocks) : blocks;
+  }
+  function captureView() {
+    var current = activeChapterAndSection();
+    if (!current) return {chapter:null,scrollY:window.scrollY};
+    var header = document.querySelector('.site-header').getBoundingClientRect().height;
+    var anchorY = Math.max(header + 28, Math.min(window.innerHeight * .30, 260));
+    var targets = contentTargets(current.chapter), index = 0;
+    targets.forEach(function(node,i){
+      if (node.getBoundingClientRect().top <= anchorY) index = i;
+    });
+    var rect = targets[index] && targets[index].getBoundingClientRect();
+    return {
+      chapter:current.num, scrollY:window.scrollY, anchorY:anchorY,
+      blockIndex:index,
+      fraction:rect ? Math.min(1,Math.max(0,
+        (anchorY-rect.top)/Math.max(1,rect.height))) : 0
+    };
+  }
+  function restoreView(view) {
+    if (!view) return;
+    var top=view.scrollY;
+    var chapter=view.chapter && document.getElementById('chapter-'+view.chapter);
+    if (chapter) {
+      var targets=contentTargets(chapter);
+      if (targets.length) {
+        var idx=Math.min(view.blockIndex,targets.length-1);
+        var node=targets[idx],rect=node.getBoundingClientRect();
+        top=rect.top+window.scrollY+
+          rect.height * (idx===view.blockIndex ? view.fraction : 1)-view.anchorY;
+      }
+    }
+    window.scrollTo({top:Math.max(0,top),behavior:'instant'});
+    // Guard the local reading bookmark from the restoration's synthetic scroll.
+    saveAfter=Date.now()+1100;
+    requestReadingUpdate();
   }
   function hideResume() {
     if (prompt) prompt.hidden = true;
@@ -3794,7 +3882,7 @@ window.addEventListener('load', function(){
     event.stopImmediatePropagation();
     closeDrawer(true);
   }, true);
-  panel.addEventListener('keydown',handleKeys);
+  document.addEventListener('keydown',handleKeys);
   toc.addEventListener('click',function(event){
     var link = event.target.closest('a[data-target]');
     if (!link) return;
@@ -3803,6 +3891,11 @@ window.addEventListener('load', function(){
     goTo(link.dataset.target,true);
   }, true);
   search.addEventListener('input',applySearch);
+  clearSearch.addEventListener('click',function(){
+    search.value = '';
+    applySearch();
+    search.focus();
+  });
   expandButton.addEventListener('click',function(){
     chapterRows.forEach(function(row){manualExpanded.add(row.num);});
     applySearch();
@@ -3811,10 +3904,17 @@ window.addEventListener('load', function(){
     manualExpanded.clear();
     applySearch();
   });
-  document.addEventListener('keydown',function(event){
-    if (event.key === 'Escape' && panel.classList.contains('open')) {
-      event.preventDefault(); closeDrawer(true);
-    }
+  document.addEventListener('whd:drawer-close',function(event) {
+    closeDrawer(!event.detail || event.detail.restoreFocus !== false);
+  });
+  document.addEventListener('whd:screen-will-render',function() {
+    pendingView = captureView();
+  });
+  document.addEventListener('whd:screen-rendered',function() {
+    var view = pendingView;
+    pendingView = null;
+    buildChapterRows();
+    restoreView(view);
   });
   window.addEventListener('scroll',requestReadingUpdate,{passive:true});
   window.addEventListener('resize',requestReadingUpdate);
@@ -3829,16 +3929,12 @@ window.addEventListener('load', function(){
   window.addEventListener('pagehide',function(){
     if (permitSaving && userMoved && lastReading && !printing) saveCurrent(lastReading);
   });
-  observing = new MutationObserver(function(mutations){
-    if (rebuilding) return;
-    if (mutations.some(function(m){ return m.addedNodes.length || m.removedNodes.length; }))
-      buildChapterRows();
-  });
-  observing.observe(toc,{childList:true});
   panel.inert = true; panel.setAttribute('aria-hidden','true');
 
   window.addEventListener('load',function(){
-    buildChapterRows();
+    // Normally engine.js dispatches screen-rendered first. This is only a
+    // resilience fallback if another host omitted the lifecycle event.
+    if (!chapterRows.length) buildChapterRows();
     initializeResume();
     if (location.hash) {
       var id;
