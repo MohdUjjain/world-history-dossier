@@ -83,7 +83,11 @@ def main():
             page.goto(url, wait_until="load")
             page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
             assert page.locator("#screenView .chapter-flow").count() == 33
-            assert "All 33 chapters saved offline" in page.locator("#offlineStatus").inner_text()
+            # Registration/status refresh is async after the hydrated reader
+            # appears; wait for readiness instead of reading the initial text.
+            page.wait_for_function("""() => document.querySelector('#offlineStatus')
+              ?.textContent.includes('All 33 chapters saved offline')""",
+              timeout=15000)
             context.set_offline(False)
 
             # A newly installed worker must show a non-forced reader update
