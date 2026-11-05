@@ -134,9 +134,10 @@ def main():
                     x.scrollWidth<=x.clientWidth+2 && x.hasAttribute('tabindex'));
                   let scrollable=wide.length>0;
                   if(wide.length){
-                    const scroller=wide[0],previous=scroller.scrollLeft;
+                    const scroller=wide[0];
+                    scroller.scrollLeft=0; // prior viewport may leave it scrolled
                     scroller.scrollLeft=90;
-                    scrollable=scroller.scrollLeft>previous;
+                    scrollable=scroller.scrollLeft>0;
                   }
                   return {innerWidth:innerWidth,documentWidth:document.documentElement.scrollWidth,
                     count:tables.length,wide:wide.length,attributed:attributed.length,
