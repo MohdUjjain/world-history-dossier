@@ -328,3 +328,8 @@ The screen-only reader is the sole modal drawer and TOC owner; print geometry is
 - **Cover parity:** the printed cover clones the existing screen cover fields rather than duplicating title/description/imprint strings. The `.pt-*` styles continue sizing those clones for 16:9 print. Print footers consistently say *World History Dossier*.
 - **Visual evidence:** the dossier retains existing authored timelines, comparisons and instructional mini-graphics. Consult `src/docs/authoring/HISTORICAL_VISUALIZATIONS.md` before adding any external or generated historical maps/images; no unverified illustrations were inserted in Phase C.
 - **Regression:** `python src/tests/smoke_phase_c.py` compares cover/print text, PDF links, empty-rail geometry, table focus and overflow at narrow widths, and PDF footer copy.
+
+
+## Phase D — visual regression and accessibility release gates (November 2026)
+
+No CSS geometry, colors or text styles are changed in this phase. The new `src/tests/smoke_release_browser.py` captures 1440px, 1024px, 768px, 390px and 320px viewport screenshots (cover, chapter 12, open drawer and wide mobile table) and diffs them against the trusted PR base's compiled `index.html`. The `smoke_release_accessibility.py` script injects pinned axe-core for cover, chapter and modal WCAG A/AA checks, failing on serious/critical results. The PDF inspection script `src/tests/inspect_pdf_release.py` renders representative 16:9 pages and compares their pixels with the committed edition; raw print-col/page dimensions and all-page text bounds are also checked. Output PNGs/JSON are retained as CI artifacts for human visual signoff. See `src/docs/release/RELEASE_VERIFICATION.md` for acceptance criteria and branch-protection limitations.
