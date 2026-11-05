@@ -771,10 +771,12 @@ function appendPairedSections(host, mainNodes, sideNodes){
 }
 
 function renderScreenView(){
+  // The screen reader owns its TOC, focus and position. The paired lifecycle
+  // events let it bookmark the viewport before a revision-toggle rebuild and
+  // restore it only after every new chapter block has been attached.
+  document.dispatchEvent(new Event('whd:screen-will-render'));
   var root = document.getElementById('screenView');
-  root.innerHTML = '';
-  var jumpEntries = [];
-  var secCounter = 0;
+  root.replaceChildren();
 
   var activeChapters = Array.from(document.querySelectorAll('#chapterData .chapter-source'));
   if(!activeChapters.length){
@@ -782,7 +784,8 @@ function renderScreenView(){
       '<h2>Your refreshed World History Dossier begins here.</h2>'+ 
       '<p>The previous long notes have been archived outside the active book. '+
       'Send the new Chapter 00 notes to populate this reading view.</p></section>';
-    buildNavPanel([]);
+    document.dispatchEvent(new Event('whd:screen-rendered'));
+    updateProgress();
     return;
   }
   activeChapters.forEach(function(chEl){
@@ -818,66 +821,14 @@ function renderScreenView(){
     }
 
     root.appendChild(section);
-
-    jumpEntries.push({kind:'chapter', num:num, title:title, id:section.id});
-    section.querySelectorAll('[data-kind="section-head"]').forEach(function(sh){
-      secCounter++;
-      var id = 'sec-'+secCounter;
-      sh.id = id;
-      jumpEntries.push({kind:'section', chapterNum:num, title:sh.getAttribute('data-title'), id:id});
-    });
   });
 
-  buildNavPanel(jumpEntries);
-  setupChapterSpy();
+  document.dispatchEvent(new Event('whd:screen-rendered'));
+  updateProgress();
 }
 
-function buildNavPanel(entries){
-  var toc = document.getElementById('navToc');
-  toc.innerHTML = '';
-  if(!entries.length){ toc.innerHTML='<p class="nav-empty">No chapters yet. New chapters will appear here automatically.</p>'; return; }
-  var currentChapterEl = null, currentSections = null;
-  entries.forEach(function(e){
-    if(e.kind==='chapter'){
-      var pal = paletteFor(e.num);
-      var wrap = document.createElement('div'); wrap.className='nav-chapter';
-      var row = document.createElement('div'); row.className='nav-chapter-row';
-      row.innerHTML = '<span class="car">▸</span><span class="dot" style="background:'+pal.id+'"></span><span class="lbl">Ch.'+String(e.num).padStart(2,'0')+' — '+e.title+'</span>';
-      var sections = document.createElement('div'); sections.className='nav-sections';
-      row.addEventListener('click', function(){ wrap.classList.toggle('expanded'); });
-      wrap.appendChild(row); wrap.appendChild(sections);
-      toc.appendChild(wrap);
-      currentChapterEl = wrap; currentSections = sections;
-    } else if(currentSections){
-      var a = document.createElement('a');
-      a.href = '#'+e.id;
-      a.textContent = e.title;
-      a.addEventListener('click', function(ev){
-        ev.preventDefault();
-        closeNav();
-        var target = document.getElementById(e.id);
-        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-      currentSections.appendChild(a);
-    }
-  });
-}
-
-function openNav(){ document.getElementById('navPanel').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); }
-function closeNav(){
-  var panel=document.getElementById('navPanel');
-  panel.classList.remove('open');
-  document.getElementById('navOverlay').classList.remove('open');
-  // Export invokes this legacy close path, so clean up ALL modal state;
-  // otherwise body overflow stays locked after printing in the new reader UI.
-  panel.inert=true;
-  panel.setAttribute('aria-hidden','true');
-  document.getElementById('navTab').setAttribute('aria-expanded','false');
-  document.body.classList.remove('drawer-open');
-}
-document.getElementById('navTab').addEventListener('click', openNav);
-document.getElementById('navClose').addEventListener('click', closeNav);
-document.getElementById('navOverlay').addEventListener('click', closeNav);
+/* The screen-only reader-ui.js module is the sole Contents drawer owner.
+   No legacy TOC renderer/open/close handlers belong in this print engine. */
 
 /* ---- reading progress bar (kept visible throughout, including revision zones) ---- */
 function updateProgress(){
@@ -888,13 +839,6 @@ function updateProgress(){
 }
 window.addEventListener('scroll', updateProgress, {passive:true});
 window.addEventListener('resize', updateProgress);
-
-/* ---- current-chapter label in header, via scroll-spy ---- */
-function setupChapterSpy(){
-  // Chapter, section and chapter-progress tracking are centralized in the
-  // screen-only src/reader-ui.js module. Keeping the legacy IntersectionObserver
-  // would race its header updates and produce inconsistent active headings.
-}
 
 /* ================= EXPORT CONTROLS (now inside the sidebar panel) ================= */
 function lightweightChapterList(){
@@ -988,7 +932,9 @@ document.getElementById('printBtn').addEventListener('click', function(){
   describeRange(parsed, rangeChapters);
   if(parsed.unknown.length || parsed.list.length===0) return; // strict validation blocks partial exports
   buildPrintView(parsed.list);
-  closeNav();
+  document.dispatchEvent(new CustomEvent('whd:drawer-close',{
+    detail:{restoreFocus:true}
+  }));
   window.print();
 });
 // Safety net: if printing is triggered natively (Ctrl+P / browser menu) rather

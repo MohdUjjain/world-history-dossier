@@ -5,6 +5,8 @@
 (function () {
   'use strict';
   var search = document.getElementById('tocSearch');
+  var clearSearch = document.getElementById('tocClearSearch');
+  var noResults = document.getElementById('tocNoResults');
   var toc = document.getElementById('navToc');
   var panel = document.getElementById('navPanel');
   var trigger = document.getElementById('navTab');
@@ -25,7 +27,8 @@
   var KEY = 'whd-reading-place-v1';
   var chapterRows = [], lastFocused = null, manualExpanded = new Set();
   var lastActiveChapter = null, lastActiveSection = null;
-  var observing = null, rebuilding = false, framePending = false, printing = false;
+  var rebuilding = false, framePending = false, printing = false;
+  var pendingView = null;
   var savedPosition = null, permitSaving = true, lastSaveAt = 0, lastReading = null;
   var userMoved = false, saveAfter = 0, deferredSaveTimer = null;
 
@@ -76,6 +79,7 @@
       .filter(function(el){return !el.hidden && !el.closest('[hidden]') && el.getClientRects().length > 0;});
   }
   function openDrawer() {
+    if (panel.classList.contains('open')) return;
     lastFocused = document.activeElement;
     panel.inert = false;
     panel.setAttribute('aria-hidden', 'false');
@@ -100,6 +104,13 @@
     if (!panel.classList.contains('open')) return;
     if (event.key === 'Escape') {
       event.preventDefault();
+      // First Escape clears an active contents search; a second closes
+      // the dialog. This mirrors native search-field expectations.
+      if (document.activeElement === search && search.value.trim()) {
+        search.value = '';
+        applySearch();
+        return;
+      }
       closeDrawer(true);
       return;
     }
@@ -124,33 +135,65 @@
     entry.sections.hidden = !expanded;
     entry.shortcuts.hidden = !expanded || !entry.shortcuts.childElementCount;
   }
+  function highlightLink(link, term) {
+    var label = link.dataset.label || link.textContent;
+    if (!term) { link.textContent = label; return; }
+    // Text-only construction: the search term is never interpreted as HTML.
+    var pos = normalize(label).indexOf(term);
+    if (pos < 0) { link.textContent = label; return; }
+    var hit = document.createElement('mark');
+    hit.className = 'nav-search-match';
+    hit.textContent = label.slice(pos, pos + term.length);
+    link.replaceChildren(
+      document.createTextNode(label.slice(0, pos)), hit,
+      document.createTextNode(label.slice(pos + term.length))
+    );
+  }
   function applySearch() {
     var term = normalize(search.value.trim());
-    var shown = 0;
-    chapterRows.forEach(function(entry){
-      var wholeChapter = term && normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
-      var sectionMatches = 0;
-      entry.sections.querySelectorAll('a[data-target]').forEach(function(a){
-        var match = !term || wholeChapter || normalize(a.textContent).includes(term);
-        a.hidden = !match;
-        if (term && match) sectionMatches++;
+    var shown = 0, sectionCount = 0, shortcutCount = 0;
+    chapterRows.forEach(function(entry) {
+      var chapterMatch = !!term &&
+        normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
+      var visibleChild = false;
+      highlightLink(entry.link, term);
+      entry.sections.querySelectorAll('a[data-target]').forEach(function(a) {
+        var directMatch = !!term && normalize(a.dataset.label).includes(term);
+        a.hidden = !!term && !chapterMatch && !directMatch;
+        highlightLink(a, term);
+        if (directMatch) sectionCount++;
+        if (!a.hidden) visibleChild = true;
       });
-      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a){
-        a.hidden = !!term && !wholeChapter && !normalize(a.textContent).includes(term);
-        if (term && !a.hidden) sectionMatches++;
+      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a) {
+        var directMatch = !!term && normalize(a.dataset.label).includes(term);
+        a.hidden = !!term && !chapterMatch && !directMatch;
+        highlightLink(a, term);
+        if (directMatch) shortcutCount++;
+        if (!a.hidden) visibleChild = true;
       });
-      var visible = !term || wholeChapter || sectionMatches > 0;
+      var visible = !term || chapterMatch || visibleChild;
       entry.wrap.hidden = !visible;
       if (visible) shown++;
       updateExpanded(entry, !!term && visible);
     });
-    results.textContent = term ? shown + ' matching chapter' + (shown === 1 ? '' : 's') : '33 chapters';
+    clearSearch.hidden = !term;
+    noResults.hidden = !term || shown > 0;
+    // Manual expand/collapse choices are preserved through a temporary search.
+    expandButton.disabled = !!term;
+    collapseButton.disabled = !!term;
+    if (!term) results.textContent = chapterRows.length + ' chapters';
+    else if (!shown) results.textContent = 'No matching chapters or sections.';
+    else results.textContent = shown + ' matching chapter' + (shown===1?'':'s') +
+      ' · ' + sectionCount + ' section' + (sectionCount===1?'':'s') +
+      (shortcutCount ? ' · ' + shortcutCount + ' study shortcut' +
+        (shortcutCount===1?'':'s') : '');
   }
   function addLink(host, label, id, cls) {
     var a = document.createElement('a');
     a.href = '#' + id;
     a.dataset.target = id;
     a.className = cls;
+    a.dataset.label = label;
     a.textContent = label;
     host.appendChild(a);
     return a;
@@ -165,7 +208,6 @@
   function buildChapterRows() {
     if (rebuilding) return;
     rebuilding = true;
-    if (observing) observing.disconnect();
     var chapters = Array.from(document.querySelectorAll('#screenView > .chapter-flow'));
     toc.replaceChildren();
     chapterRows = [];
@@ -228,7 +270,6 @@
     applySearch();
     applyActiveReading();
     rebuilding = false;
-    if (observing) observing.observe(toc, {childList:true});
     requestReadingUpdate();
   }
   function activeChapterAndSection() {
@@ -273,6 +314,7 @@
     applyActiveReading();
     if (current) {
       currentLabel.textContent = 'Ch.'+String(current.num).padStart(2,'0')+' — '+titleOf(current.chapter);
+      currentLabel.title = currentLabel.textContent;
       var pct = Math.round(current.ratio * 100);
       ring.hidden = false;
       ring.style.setProperty('--chapter-progress',pct+'%');
@@ -282,6 +324,7 @@
       ring.setAttribute('aria-valuetext','Chapter '+current.num+': '+pct+' percent');
     } else {
       currentLabel.textContent = '';
+      currentLabel.removeAttribute('title');
       ring.hidden = true;
     }
     if (userMoved && permitSaving && current) {
@@ -324,6 +367,52 @@
       chapterRatio:Math.max(0,Math.min(1,current.ratio)),
       sectionRatio:sectionRatio, savedAt:Date.now()
     });
+  }
+  // Preserve a viewport-relative *reading block*, not an absolute scroll
+  // pixel, across whole-reader reconstruction when revision is toggled.
+  // The chapter's main block order is stable when revision cards are removed.
+  function contentTargets(chapter) {
+    var banner = chapter.querySelector('.banner');
+    var blocks = Array.from(chapter.querySelectorAll('.main-flow > .block'));
+    return banner ? [banner].concat(blocks) : blocks;
+  }
+  function captureView() {
+    // Initial load has no prior reading tree. Do not force a scrollTo(0,0)
+    // that could override the browser's native history scroll restoration.
+    if (!document.querySelector('#screenView > .chapter-flow')) return null;
+    var current = activeChapterAndSection();
+    if (!current) return {chapter:null,scrollY:window.scrollY};
+    var header = document.querySelector('.site-header').getBoundingClientRect().height;
+    var anchorY = Math.max(header + 28, Math.min(window.innerHeight * .30, 260));
+    var targets = contentTargets(current.chapter), index = 0;
+    targets.forEach(function(node,i){
+      if (node.getBoundingClientRect().top <= anchorY) index = i;
+    });
+    var rect = targets[index] && targets[index].getBoundingClientRect();
+    return {
+      chapter:current.num, scrollY:window.scrollY, anchorY:anchorY,
+      blockIndex:index,
+      fraction:rect ? Math.min(1,Math.max(0,
+        (anchorY-rect.top)/Math.max(1,rect.height))) : 0
+    };
+  }
+  function restoreView(view) {
+    if (!view) return;
+    var top=view.scrollY;
+    var chapter=view.chapter && document.getElementById('chapter-'+view.chapter);
+    if (chapter) {
+      var targets=contentTargets(chapter);
+      if (targets.length) {
+        var idx=Math.min(view.blockIndex,targets.length-1);
+        var node=targets[idx],rect=node.getBoundingClientRect();
+        top=rect.top+window.scrollY+
+          rect.height * (idx===view.blockIndex ? view.fraction : 1)-view.anchorY;
+      }
+    }
+    window.scrollTo({top:Math.max(0,top),behavior:'instant'});
+    // Guard the local reading bookmark from the restoration's synthetic scroll.
+    saveAfter=Date.now()+1100;
+    requestReadingUpdate();
   }
   function hideResume() {
     if (prompt) prompt.hidden = true;
@@ -396,7 +485,7 @@
     event.stopImmediatePropagation();
     closeDrawer(true);
   }, true);
-  panel.addEventListener('keydown',handleKeys);
+  document.addEventListener('keydown',handleKeys);
   toc.addEventListener('click',function(event){
     var link = event.target.closest('a[data-target]');
     if (!link) return;
@@ -405,6 +494,11 @@
     goTo(link.dataset.target,true);
   }, true);
   search.addEventListener('input',applySearch);
+  clearSearch.addEventListener('click',function(){
+    search.value = '';
+    applySearch();
+    search.focus();
+  });
   expandButton.addEventListener('click',function(){
     chapterRows.forEach(function(row){manualExpanded.add(row.num);});
     applySearch();
@@ -413,10 +507,17 @@
     manualExpanded.clear();
     applySearch();
   });
-  document.addEventListener('keydown',function(event){
-    if (event.key === 'Escape' && panel.classList.contains('open')) {
-      event.preventDefault(); closeDrawer(true);
-    }
+  document.addEventListener('whd:drawer-close',function(event) {
+    closeDrawer(!event.detail || event.detail.restoreFocus !== false);
+  });
+  document.addEventListener('whd:screen-will-render',function() {
+    pendingView = captureView();
+  });
+  document.addEventListener('whd:screen-rendered',function() {
+    var view = pendingView;
+    pendingView = null;
+    buildChapterRows();
+    restoreView(view);
   });
   window.addEventListener('scroll',requestReadingUpdate,{passive:true});
   window.addEventListener('resize',requestReadingUpdate);
@@ -431,16 +532,12 @@
   window.addEventListener('pagehide',function(){
     if (permitSaving && userMoved && lastReading && !printing) saveCurrent(lastReading);
   });
-  observing = new MutationObserver(function(mutations){
-    if (rebuilding) return;
-    if (mutations.some(function(m){ return m.addedNodes.length || m.removedNodes.length; }))
-      buildChapterRows();
-  });
-  observing.observe(toc,{childList:true});
   panel.inert = true; panel.setAttribute('aria-hidden','true');
 
   window.addEventListener('load',function(){
-    buildChapterRows();
+    // Normally engine.js dispatches screen-rendered first. This is only a
+    // resilience fallback if another host omitted the lifecycle event.
+    if (!chapterRows.length) buildChapterRows();
     initializeResume();
     if (location.hash) {
       var id;

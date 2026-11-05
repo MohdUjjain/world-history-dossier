@@ -70,7 +70,7 @@ JS_DOC.md §4).
   because print is a fixed 1280×720 canvas and screen is `min-height:88vh`).
 
 ### 3.2 Per-chapter flow
-- `.chapter-flow` — one per chapter, gets `--chapter-color`/`--chapter-contrast` inline.
+- `.chapter-flow` — one per chapter; the renderer assigns source palette roles inline (`--chapter-primary` and related tokens), while CSS owns active `--chapter-color` / `--chapter-ink` so revision can override them.
 - `.banner` / `.banner .kicker/.thesis/.yrs` — the chapter-opening hero. Auto-height (NOT the fixed-720px print hero). Kicker, thesis border, year-chips all use `var(--chapter-color)`.
 - `.chapter-grid` — CSS grid, `minmax(0,1fr) 340px` (main | sidebar), `gap:52px`. Collapses to 1 column under 980px.
 - `.main-flow` — body prose, headings, tables, timelines, figures, quotes, connectors (NOT concept callouts). Paragraph measure capped at `42rem` (readability); wide elements (tables/quotes/figures) are NOT capped.
@@ -80,7 +80,7 @@ JS_DOC.md §4).
 ### 3.3 Sidebar navigation panel (NOT the `.side-flow` content sidebar — this is the site-wide nav/export drawer)
 - `#navTab` — small vertical edge tab, fixed right-center. Click opens the panel. This is the *only* screen-visible trigger for navigation/export; deliberately absent from the persistent header.
 - `#navOverlay` / `#navPanel` — overlay dims the page; panel slides in from the right (`transform:translateX(100%)` → `0` via `.open`). Rounded left corners (`--r-lg`), layered shadow.
-- `.nav-export` (FIRST in `.nav-body` — order matters, was moved above TOC on request) — `#includeRevisionChk`, `#rangeInput` (free-text multi-range, e.g. `5-6,1,3,20-24`), `#rangeHint` (live validation text, `.error` class on unknown chapter numbers), `#printBtn`.
+- `.nav-tools` (FIRST) contains search and expansion controls; the collapsed `.nav-export-details` (SECOND) stays **above the chapter TOC**, retaining `#includeRevisionChk`, strict `#rangeInput`, `#rangeHint`, and `#printBtn`. The offline status follows export, then the TOC tree. The new explainer clarifies that revision inclusion also controls screen visibility.
 - `.nav-toc-wrap` / `.nav-toc` (SECOND) — enlarged, legible collapsible chapter tree (chapter labels 1rem; section links .94rem, with deeper click/tap targets), `.nav-chapter.expanded` toggles `.nav-sections` visibility. Each chapter row has a small `.dot` colored via inline style from `paletteFor()` (JS), matching that chapter's identity color — same palette as everywhere else, just a low-key nod rather than the full treatment the print TOC gets (§3.4).
 - `.nav-section-label` — small caps label ("EXPORT" / "CONTENTS") headlining each zone.
 
@@ -175,7 +175,7 @@ index) lives in **engine.js**, not here — see JS_DOC.md §2.
 ## 7. Responsive breakpoints
 
 - `980px` — `.chapter-grid` collapses to `minmax(0,1fr)` (important: avoids 390px-wide mobile horizontal overflow from intrinsic content widths), `.side-flow` loses `position:sticky`; responsive tables can scroll inside their wrappers.
-- `640px` — tighter padding, `.tp-title` shrinks, `#navPanel` goes full-width, `.site-header .current` hides, figures switch to single column and headings may wrap.
+- `640px` — tighter padding, `.tp-title` shrinks, `#navPanel` goes full-width, `.site-header .current` **remains visible** with ellipsis, figures switch to a single column, and headings may wrap.
 
 Print has no responsive breakpoints — it's always exactly 1280×720.
 
@@ -301,3 +301,17 @@ bookmarked PDF and paired-sidebar layout before changing print CSS.
 - **Regression gate.** `src/tests/smoke_phase_a.py` checks actual computed colors, navigation clearance, and print cache idempotency across the eight-pair palette.
 
 **Revision inheritance regression:** Never set `--chapter-color` or `--chapter-ink` as inline styles on a `.page`. Inline styles override `.page.is-revision` rules, silently keeping main-body accents even when the revision header changes color. `--chapter-primary` / `--chapter-primary-ink` are inline inputs; `.chapter-flow,.page` declare the CSS-owned active roles. Printed TOC chapter entries set their own active ink from `paletteFor()`.
+
+
+---
+
+## Phase B — reader interaction and accessibility polish (November 2026)
+
+The screen-only reader is the sole modal drawer and TOC owner; print geometry is unchanged.
+
+- **Drawer positioning and touch:** The Contents edge tab, modal close button, chapter chevrons, chapter/section links, tree controls, and study shortcut chips have roughly 44px minimum hit areas. The modal's own `.nav-body` scrolls with overscroll containment and bottom safe-area padding; `#navPanel` uses `100dvh` where supported. The backdrop blocks background touches. The `body.drawer-open` scroll lock is set or removed only by the reader UI.
+- **Search treatment:** `.nav-search-field` positions the clear control, `.nav-search-match` highlights matched text, `.nav-no-results` explains zero results, and tree-wide expansion controls visibly disable while searching. Filters never mutate manual branch expansion.
+- **Accessible movement:** `.skip-to-content` is revealed by keyboard focus and targets `main#screenView`. Focus outlines cover Contents/close/search/print and tree controls; reduced-motion media rules suppress drawer and control transitions. The new no-JavaScript note is hidden during print.
+- **Mobile chapter context:** The compact `#currentChapterLabel` now remains visible on screens 640px or narrower, using a shortened available measure rather than disappearing altogether.
+- **Reader-only scope:** These rules apply to screen navigation and controls. Do not alter `.page`, `.page-slot`, `.col-main`, `.col-side`, or the fixed 16:9 print measurement rules to tune mobile layout.
+- **Tests:** Run `src/tests/smoke_reader_interactions.py` alongside `smoke_reader_ui.py` and `smoke_phase_a.py`. Check touch target sizes, horizontal overflow, mobile header context, modal focus, search outcomes and reading-place preservation.

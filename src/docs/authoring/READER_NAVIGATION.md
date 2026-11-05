@@ -10,15 +10,21 @@ It does **not** alter the chapter source modules or 16:9 PDF pagination.
   drawer; the mobile layout fills the viewport behind a backdrop.
 - Chapter titles are **links to chapters**, separate from their chevrons.
   Chevron buttons expand/collapse nested section and study-shortcut links.
-- Search matches chapter numbers, chapter titles, section headings, revision
-  headings and shortcut labels. It opens matching branches only temporarily;
-  clearing search returns to the reader's manual expansion choices.
+- Search matches chapter numbers, titles, section/revision headings, and study
+  shortcuts. Results highlight matched phrases, distinguish matching chapter
+  and section counts, and offer a clear control and zero-results message.
+  Filtering temporarily expands matching branches without altering manually
+  chosen expansion. A focused search clears on the first Escape and the
+  drawer closes on a second Escape.
 - Expand all and Collapse all deliberately set the chapter states.
 - The current chapter and section are highlighted as reading progresses;
   `aria-current="location"` marks the active link. Scrolling never expands
   a branch automatically.
-- The drawer is a modal dialog: Escape/backdrop closes it, focus returns to
-  the opener, Tab/Shift+Tab remain inside, and hidden branches are unfocusable.
+- The drawer is a single-owner modal dialog: Escape/backdrop closes it,
+  focus returns to the opener, Tab/Shift+Tab remain inside, and hidden
+  branches are unfocusable. Expand/collapse is disabled while filtering.
+  On mobile, tap targets are approximately 44px; the drawer scrolls
+  independently over the book.
 
 ## Study shortcuts
 
@@ -60,10 +66,15 @@ print engine and its chapter-only PDF contents/bookmarks remain unchanged.
 ## Architecture and tests
 
 `src/engine.js` owns the chapter render and paginated PDF export.
-`src/reader-ui.js` rebuilds the core's screen-only navigation whenever the
-rendered chapter tree changes (including revision toggles); it also owns
-focus management, active reading and resume. The old core chapter spy is
-disabled to avoid competing updates. The existing progress rail is preserved.
+`src/engine.js` dispatches `whd:screen-will-render` and
+`whd:screen-rendered` events around each screen rebuild. `reader-ui.js`
+creates and owns the only Contents tree and drawer, with no legacy engine
+modal handlers or TOC MutationObserver. It snapshots a viewport-relative
+main-content block before a revision visibility change and restores that
+place afterward. Export closes via the single `whd:drawer-close` event.
+The screen reader has a `main` landmark and skip link; mobile retains
+current-chapter context in the header. The PDF engine and whole-book
+progress rail are preserved.
 
 Update **`src/JS_DOC.md`** in the same commit as engine modifications and
 **`src/CSS_DOC.md`** with any `src/styles.css` change. Source is assembled
@@ -76,9 +87,13 @@ python src/build.py -o index.html
 python src/build.py -o index.html --check
 python src/tests/validate_structure.py
 python src/tests/smoke_reader_ui.py
+python src/tests/smoke_reader_interactions.py
+python src/tests/smoke_phase_a.py
 ```
 
 The new browser smoke test runs against a local HTTP server and checks search,
 keyboard focus, Escape, mobile viewport, progress, shortcuts, ordered printing,
 validation, and optional resume. Re-run the older print smoke tests when
 pagination or chapter content changes.
+
+The Phase B browser suite covers search highlighting and empty results, focus/keyboard modal behavior, revision-toggle viewport continuity, export scroll restoration, 390px/320px mobile context, and tap-target geometry.
