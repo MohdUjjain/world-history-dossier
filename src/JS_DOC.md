@@ -559,7 +559,9 @@ the lightweight whole-book progress rail.
 
 ### Preserve viewport location when revision pages appear or disappear
 
-Before the source screen tree is replaced, `captureView()` records the active
+On first load, `captureView()` returns null because no previous chapter tree
+exists; this preserves the browser's native history scroll restoration.
+Before a subsequent screen-tree rebuild, `captureView()` records the active
 chapter and a main-content block ordinal (including the chapter hero), the
 relative fraction inside that block at a viewport anchor, and a scroll fallback.
 After rendering, `buildChapterRows()` recreates the navigation and
