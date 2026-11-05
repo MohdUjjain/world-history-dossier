@@ -24,6 +24,12 @@
   --sh-lg: 0 16px 40px rgba(27,42,68,.18), 0 4px 12px rgba(27,42,68,.08);
 }
 *{box-sizing:border-box;}
+/* Source colors are passed as --chapter-primary/--chapter-primary-ink.
+   Keep active roles in CSS (not inline) so revision pages can override them. */
+.chapter-flow,.page{
+  --chapter-color:var(--chapter-primary,var(--gold));
+  --chapter-ink:var(--chapter-primary-ink,var(--gold-ink));
+}
 html,body{margin:0; background:var(--parchment);}
 body{font-family:var(--font-body); color:var(--ink); -webkit-font-smoothing:antialiased;}
 *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
