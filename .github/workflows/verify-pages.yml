@@ -12,6 +12,12 @@ on:
 permissions:
   contents: read
 
+# A new revision to the same PR invalidates earlier review evidence.
+# Cancel obsolete long-running PDF/browser jobs and verify only the tip.
+concurrency:
+  group: dossier-release-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     name: verify
