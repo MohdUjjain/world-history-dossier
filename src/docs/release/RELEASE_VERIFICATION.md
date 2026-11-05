@@ -39,6 +39,8 @@ Tests aim to catch regressions, not introduce new content.
   the actual browser print engine, checks its outline/page geometry and
   compares rasterized representative pages with the repository's current PDF.
 
+The workflow also uses per-PR `concurrency` with `cancel-in-progress` to stop superseded screenshot/PDF reviews when new commits land; only evidence from the latest commit should be considered release evidence.
+
 The job artifacts include `phase-d-browser-evidence` (candidate/baseline/
 diff PNG files, accessibility JSON) and `phase-d-pdf-evidence` (sample PNGs,
 contact sheet, diff masks and JSON).
