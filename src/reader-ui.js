@@ -377,6 +377,9 @@
     return banner ? [banner].concat(blocks) : blocks;
   }
   function captureView() {
+    // Initial load has no prior reading tree. Do not force a scrollTo(0,0)
+    // that could override the browser's native history scroll restoration.
+    if (!document.querySelector('#screenView > .chapter-flow')) return null;
     var current = activeChapterAndSection();
     if (!current) return {chapter:null,scrollY:window.scrollY};
     var header = document.querySelector('.site-header').getBoundingClientRect().height;
