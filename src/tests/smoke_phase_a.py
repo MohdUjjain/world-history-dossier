@@ -152,6 +152,8 @@ def main() -> None:
                 if(contrast(h.backgroundColor,label.color)<4.48) errors.push('revision header contrast');
                 if(st.getPropertyValue('--chapter-ink').trim() !==
                    st.getPropertyValue('--chapter-contrast-ink').trim()) errors.push('revision ink role');
+                if(st.getPropertyValue('--chapter-color').trim() !==
+                   st.getPropertyValue('--chapter-contrast').trim()) errors.push('revision accent role');
               });
               const overflows=[...document.querySelectorAll('#printView .page .col-main,#printView .page .col-side')]
                 .filter(el=>el.scrollHeight-el.clientHeight>2).length;
