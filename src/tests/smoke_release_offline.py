@@ -104,7 +104,7 @@ def main():
               const names=(await caches.keys())
                 .filter(name=>name.startsWith('whd-edition-'));
               return names.length===1 && names[0]===expected;
-            }""", "whd-edition-" + UPDATED, timeout=20000)
+            }""", arg="whd-edition-" + UPDATED, timeout=20000)
             after = page.evaluate("""async () => ({
               caches:(await caches.keys()).filter(x=>x.startsWith('whd-edition-')),
               chapters:document.querySelectorAll('#screenView .chapter-flow').length,
