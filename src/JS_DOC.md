@@ -515,3 +515,10 @@ Otherwise the screen remains scroll-locked after a print/export operation;
 that also prevents reading position from being saved. This fix is deliberately
 in `engine.js`, not the PDF pagination helpers. The browser smoke test
 must exercise printing followed by additional scrolling.
+
+**Deferred bookmark save (November 2026):** A user may scroll once
+immediately after jumping to a chapter, while the brief navigation guard
+is still in effect. `reader-ui.js` now schedules a deferred position
+capture after that guard expires, instead of requiring another scroll
+event; that would silently lose the user's last-read place. The timer is
+screen-only and print updates remain suppressed.

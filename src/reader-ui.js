@@ -27,7 +27,7 @@
   var lastActiveChapter = null, lastActiveSection = null;
   var observing = null, rebuilding = false, framePending = false, printing = false;
   var savedPosition = null, permitSaving = true, lastSaveAt = 0, lastReading = null;
-  var userMoved = false, saveAfter = 0;
+  var userMoved = false, saveAfter = 0, deferredSaveTimer = null;
 
   function normalize(s) {
     var value = (s || '').toLowerCase();
@@ -284,10 +284,21 @@
       currentLabel.textContent = '';
       ring.hidden = true;
     }
-    if (userMoved && permitSaving && current && Date.now() >= saveAfter &&
-        Date.now() - lastSaveAt > 1100) {
-      lastSaveAt = Date.now();
-      saveCurrent(current);
+    if (userMoved && permitSaving && current) {
+      // A single wheel/touch scroll may arrive during the short navigation
+      // guard period. Schedule the save once that guard expires instead of
+      // relying on a second scroll event that may never happen.
+      var now = Date.now();
+      var nextAllowed = Math.max(saveAfter, lastSaveAt + 1100);
+      if (now >= nextAllowed) {
+        lastSaveAt = now;
+        saveCurrent(current);
+      } else if (!deferredSaveTimer) {
+        deferredSaveTimer = setTimeout(function(){
+          deferredSaveTimer = null;
+          requestReadingUpdate();
+        }, Math.max(60, nextAllowed - now + 20));
+      }
     }
   }
   function requestReadingUpdate() {

@@ -129,7 +129,7 @@ def main():
             # Resume is optional, local to the browser, and never an auto-jump.
             page.evaluate('window.scrollBy(0,180)')
             page.mouse.wheel(0, 220)
-            page.wait_for_timeout(1300)
+            page.wait_for_timeout(1900)
             stored = page.evaluate("localStorage.getItem('whd-reading-place-v1')")
             assert stored is not None, "Reading position must be saved after real movement"
             other = context.new_page()
