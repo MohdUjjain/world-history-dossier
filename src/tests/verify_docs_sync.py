@@ -95,7 +95,8 @@ def main() -> None:
     tests = (
         "smoke_reader_ui.py", "smoke_phase_a.py",
         "smoke_reader_interactions.py", "smoke_phase_c.py",
-        "smoke_release_browser.py", "smoke_release_offline.py",
+        "smoke_release_browser.py", "smoke_release_accessibility.py",
+        "smoke_release_offline.py",
         "smoke_release_ranges.py", "verify_docs_sync.py",
         "inspect_pdf_release.py",
     )
