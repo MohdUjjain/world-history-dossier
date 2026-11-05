@@ -66,7 +66,7 @@ def main():
             page=context.new_page()
             page.on("pageerror",lambda error:errors.append(str(error)))
             page.goto(f"http://127.0.0.1:{server.server_port}/",wait_until="load")
-            page.locator("#navToc .nav-chapter-link").first.wait_for()
+            page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
             page.add_script_tag(path=str(AXE))
             assert page.evaluate("document.documentElement.lang") == "en"
             assert page.locator("main#screenView").count() == 1
