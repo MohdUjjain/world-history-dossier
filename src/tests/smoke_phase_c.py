@@ -50,7 +50,7 @@ def main():
             assert page.locator("#titlePage .tp-pdf-link").count() == 1
             assert page.locator("#navExportPanel .nav-pdf-access a").count() == 1
             pdf_links = page.locator('a[href$="20th-Century%20International%20History.pdf"]')
-            assert pdf_links.count() == 3, pdf_links.count()
+            assert pdf_links.count() == 2, pdf_links.count()  # <noscript> is raw text with JS enabled
             assert page.locator(
                 'head link[rel="alternate"][type="application/pdf"]'
             ).get_attribute("href") == "./20th-Century%20International%20History.pdf"
@@ -89,6 +89,7 @@ def main():
             page.evaluate("window.print=()=>{}")
             page.locator("#printBtn").click()
             assert page.locator("#printView .page.type-hero").count() == 2
+            page.emulate_media(media="print")
             print_report = page.evaluate("""() => {
               const cover=document.getElementById('titlePage');
               const pdf=document.querySelector('#printView .page.type-title');
@@ -114,6 +115,7 @@ def main():
             assert print_report["footers"] >= 4, print_report
             assert all(x == "World History Dossier" for x in print_report["names"]), print_report
 
+            page.emulate_media(media="screen")
             # Mobile comparison tables show actual horizontal scroll (not a
             # table forced to microscopic columns), with a keyboard-usable region.
             mobile_report = []
