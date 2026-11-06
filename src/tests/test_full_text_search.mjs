@@ -1,7 +1,7 @@
 /* Pure full-book search contracts — no Chromium/npm dependencies. */
 'use strict';
-const assert = require('node:assert/strict');
-const search = require('../reader-search.js');
+import assert from 'node:assert/strict';
+import search from '../reader-search.js';
 
 assert.equal(search.normalize('  Émpire   ECONOMY '), 'empire economy');
 assert.equal(search.match('The conference ended in Bandung, 1955.', '1955 bandung'), true);
