@@ -79,9 +79,13 @@ def main():
             })""")
             assert initial["controlled"] and len(initial["caches"]) == 1, initial
             assert not initial["pdfPrecached"], initial
-            page.wait_for_function("""() => /^[a-f0-9]{12}$/.test(
-              document.getElementById('offlineEditionId')?.textContent || '')""", timeout=15000)
-            assert page.locator('#offlineEditionId').inner_text() == ORIGINAL
+            assert initial["caches"][0] == "whd-edition-" + ORIGINAL, initial
+            # The visible edition label is refreshed asynchronously after
+            # service-worker readiness; wait for the *specific* saved edition.
+            page.wait_for_function("""expected => document.getElementById('offlineEditionId')
+              ?.textContent === expected""", arg=ORIGINAL, timeout=15000)
+            assert page.locator('#offlineEditionId').inner_text().strip() == ORIGINAL, (
+                page.locator('#offlineEditionId').inner_text(), ORIGINAL, initial["caches"])
             page.locator('#navTab').click()
             assert page.locator('#tocSearchScope').is_visible()
             assert 'not the full text' in page.locator('#tocSearchScope').inner_text()
