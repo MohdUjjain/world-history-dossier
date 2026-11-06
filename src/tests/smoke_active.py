@@ -53,13 +53,16 @@ def main():
         assert pr['overflows']==0 and pr['heroOverflows']==0,pr
         page.emulate_media(media='screen')
         page.locator('#navTab').click()
+        page.locator('#navToolsTab').click()
         page.locator('#navExportPanel summary').click()
+        page.locator('#navToolsTab').click()
         page.locator('#includeRevisionChk').uncheck()
         assert page.locator('#screenView .revision-flow').count()==0
         page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
         page.emulate_media(media='print')
         assert page.locator('#printView .is-revision').count()==0
         page.emulate_media(media='screen')
+        page.locator('#navToolsTab').click()
         page.locator('#includeRevisionChk').check()
         assert page.locator('#screenView .revision-flow').count()==src['revisions']
         if CHNUMS:
@@ -67,6 +70,9 @@ def main():
             # triggering another full-book rebuild for each release.
             order=[CHNUMS[-1],CHNUMS[0],CHNUMS[-1]]
             page.evaluate('window.print=function(){}')
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator('#rangeInput').fill(','.join(map(str,order)))
             page.locator('#printBtn').click()
             page.emulate_media(media='print')

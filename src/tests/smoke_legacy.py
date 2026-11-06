@@ -33,8 +33,11 @@ def main():
         assert screen['chapters']==2 and screen['mainConcepts']==0
         assert screen['sideConcepts']==screen['originalMainConcepts']==7
         page.locator('#navTab').click();page.locator('#navClose').click()
-        page.locator('#navTab').click();page.locator('#includeRevisionChk').uncheck()
+        page.locator('#navTab').click()
+        page.locator('#navToolsTab').click()
+        page.locator('#includeRevisionChk').uncheck()
         assert page.locator('.revision-flow').count()==0
+        page.locator('#navToolsTab').click()
         page.locator('#includeRevisionChk').check()
         assert page.locator('.revision-flow').count()==2
         page.locator('#navClose').click()
@@ -53,8 +56,11 @@ def main():
         assert pr['mainConcepts']==0 and pr['sideConcepts']==7 and pr['overflow']==0, pr
         assert pr['tocChapters']==2 and pr['tocSections']==0, pr
         page.emulate_media(media='screen')
-        page.locator('#rangeInput').fill('1,0,1')
         page.locator('#navTab').click()
+        page.locator('#navToolsTab').click()
+        if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+            page.locator('#navExportPanel summary').click()
+        page.locator('#rangeInput').fill('1,0,1')
         # Avoid blocking Chromium's native print dialog during the custom-order test.
         page.evaluate('window.print=function(){}')
         page.locator('#printBtn').click()

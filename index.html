@@ -813,6 +813,64 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   max-width:none!important;margin:8px 0 14px!important;padding-left:20px;
   background:linear-gradient(90deg,var(--gold) 0 10px,transparent 10px) left 6px/10px 1px no-repeat;}
 @media print{.table-scroll-hint{display:none!important;}}
+
+/* ============================================================
+   INDEX / TOOLS NAVIGATION (2026-11-06)
+   Screen-only drawer upgrade; PDF page layout remains untouched.
+   ============================================================ */
+@media screen {
+  #navPanel .nav-tablist {
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:5px;padding:9px 13px 10px;background:var(--ink);
+    border-top:1px solid rgba(255,255,255,.15);flex:none;
+  }
+  #navPanel .nav-view-tab {
+    display:grid;place-items:center;min-height:44px;padding:9px 12px;
+    color:var(--parchment-lt);background:transparent;border:1px solid transparent;
+    border-radius:var(--r-sm);font:700 .89rem var(--font-label);
+    cursor:pointer;touch-action:manipulation;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  #navPanel .nav-view-tab:hover {background:rgba(255,255,255,.12);}
+  #navPanel .nav-view-tab[aria-selected="true"] {
+    background:var(--paper);color:var(--ink);
+    border-color:var(--gold);box-shadow:inset 0 -3px 0 var(--gold);
+  }
+  #navPanel .nav-view-tab:focus-visible,#navPanel .nav-view:focus-visible,
+  #navToolsResume:focus-visible,#includeRevisionChk:focus-visible {
+    outline:3px solid var(--gold);outline-offset:2px;
+  }
+  #navPanel .nav-body {display:flex;flex-direction:column;flex:1;min-height:0;
+    padding:0;overflow:hidden;}
+  #navPanel .nav-view {min-height:0;flex:1;overflow-y:auto;
+    overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
+    padding-bottom:max(20px,env(safe-area-inset-bottom));}
+  #navPanel .nav-view[hidden],#navToolsResumeSection[hidden]{display:none!important;}
+  #navPanel .nav-index-view .nav-tools {border-bottom:1px solid var(--parchment-dk);}
+  #navPanel .nav-tools-view {background:var(--paper);}
+  .nav-resume-tool,.nav-reading-options{
+    padding:18px 20px;border-bottom:1px solid var(--parchment-dk);
+    font-family:var(--font-label);
+  }
+  .nav-resume-tool{background:var(--parchment-lt);}
+  .nav-resume-tool .nav-section-label,.nav-reading-options .nav-section-label{
+    margin-bottom:8px;}
+  .nav-resume-tool p {font:.8rem/1.5 var(--font-label);color:var(--ink-soft);
+    margin:0 0 12px;overflow-wrap:anywhere;}
+  #navToolsResume {
+    min-height:44px;width:100%;padding:10px 12px;
+    font:700 .84rem var(--font-label);color:var(--paper);background:var(--ink);
+    border:1px solid var(--gold);border-radius:var(--r-sm);cursor:pointer;
+  }
+  #navToolsResume:hover {background:var(--ink-soft);}
+  .nav-reading-options .nav-check {margin:0 0 8px;min-height:44px;}
+  .nav-reading-options .nav-check input {width:18px;height:18px;flex:none;}
+  .nav-reading-options .nav-export-explainer{margin:0;}
+  #navPanel .nav-toc-wrap{padding-bottom:20px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #navPanel .nav-view-tab{transition:none!important;}
+}
 </style>
 </head>
 <body>
@@ -873,7 +931,15 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
     <span id="navPanelHeading">Contents &amp; Export</span>
     <button id="navClose" type="button" aria-label="Close contents">&times;</button>
   </div>
+  <div class="nav-tablist" role="tablist" aria-label="Contents sidebar views">
+    <button id="navIndexTab" type="button" class="nav-view-tab" role="tab"
+      aria-selected="true" aria-controls="navIndexPanel" tabindex="0">Index</button>
+    <button id="navToolsTab" type="button" class="nav-view-tab" role="tab"
+      aria-selected="false" aria-controls="navToolsPanel" tabindex="-1">Tools</button>
+  </div>
   <div class="nav-body">
+    <section id="navIndexPanel" class="nav-view nav-index-view" role="tabpanel"
+      aria-labelledby="navIndexTab" tabindex="0">
     <div class="nav-tools">
       <label for="tocSearch" class="nav-section-label">Find chapter or section · Contents only</label>
       <div class="nav-search-field">
@@ -890,12 +956,27 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
       <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
       <p id="tocNoResults" class="nav-no-results" hidden>No matching contents headings. Try another chapter title, section heading or study shortcut; full chapter text is not searched.</p>
     </div>
+    <div class="nav-toc-wrap">
+      <div class="nav-section-label">Contents</div>
+      <div class="nav-toc" id="navToc"></div>
+    </div>
+    </section>
+    <section id="navToolsPanel" class="nav-view nav-tools-view" role="tabpanel"
+      aria-labelledby="navToolsTab" tabindex="0" hidden inert>
+      <div id="navToolsResumeSection" class="nav-resume-tool" hidden>
+        <div class="nav-section-label">Reading place</div>
+        <p id="navToolsResumeContext"></p>
+        <button type="button" id="navToolsResume">Continue reading</button>
+      </div>
+      <div class="nav-reading-options">
+        <div class="nav-section-label">Reader preferences</div>
+        <label class="nav-check"><input type="checkbox" id="includeRevisionChk" aria-controls="screenView" checked> Include chapter summaries</label>
+        <p class="nav-export-explainer">Shows or hides end-of-chapter revision in the reader and custom PDF exports.</p>
+      </div>
     <details id="navExportPanel" class="nav-export-details">
       <summary>Print / Export PDF</summary>
       <div class="nav-export">
       <div class="nav-section-label">Export</div>
-      <label class="nav-check"><input type="checkbox" id="includeRevisionChk" aria-controls="screenView" checked> Include chapter summaries</label>
-      <p class="nav-export-explainer">This also shows or hides revision sections in the reader.</p>
       <label class="nav-range-label" for="rangeInput">Chapters — e.g. 5-6,1,3,20-24</label>
       <input type="text" id="rangeInput" placeholder="Leave blank for the full book, in order">
       <div class="nav-range-hint" id="rangeHint">Will export: all chapters, in order</div>
@@ -915,10 +996,7 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
       <button id="offlineCheckUpdate" type="button" disabled>Check for updates</button>
       <p id="offlineCheckResult" role="status" aria-live="polite"></p>
     </div>
-    <div class="nav-toc-wrap">
-      <div class="nav-section-label">Contents</div>
-      <div class="nav-toc" id="navToc"></div>
-    </div>
+    </section>
   </div>
 </nav>
 
@@ -3526,6 +3604,13 @@ window.addEventListener('load', function(){
   var trigger = document.getElementById('navTab');
   var overlay = document.getElementById('navOverlay');
   var closeButton = document.getElementById('navClose');
+  var indexTab = document.getElementById('navIndexTab');
+  var toolsTab = document.getElementById('navToolsTab');
+  var indexPanel = document.getElementById('navIndexPanel');
+  var toolsPanel = document.getElementById('navToolsPanel');
+  var toolsResumeSection = document.getElementById('navToolsResumeSection');
+  var toolsResumeContext = document.getElementById('navToolsResumeContext');
+  var toolsResumeButton = document.getElementById('navToolsResume');
   var expandButton = document.getElementById('tocExpandAll');
   var collapseButton = document.getElementById('tocCollapseAll');
   var results = document.getElementById('tocSearchStatus');
@@ -3590,9 +3675,37 @@ window.addEventListener('load', function(){
     requestReadingUpdate();
   }
 
+  // One keyboard tab stop, with inert inactive panes.
+  // Opening the Contents launcher always starts in Index.
+  function switchNavView(which, focus) {
+    var index = which !== 'tools';
+    indexTab.setAttribute('aria-selected', String(index));
+    toolsTab.setAttribute('aria-selected', String(!index));
+    indexTab.tabIndex = index ? 0 : -1;
+    toolsTab.tabIndex = index ? -1 : 0;
+    indexPanel.hidden = !index; indexPanel.inert = !index;
+    toolsPanel.hidden = index; toolsPanel.inert = index;
+    if (focus) (index ? indexTab : toolsTab).focus();
+  }
+  function handleNavTabKeys(event) {
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    var next = event.key === 'Home' ? 'index' :
+      event.key === 'End' ? 'tools' :
+      event.currentTarget === indexTab ? 'tools' : 'index';
+    switchNavView(next, true);
+  }
+  function syncToolsResume() {
+    if (!toolsResumeSection) return;
+    var chapter = savedPosition &&
+      document.getElementById('chapter-' + savedPosition.chapter);
+    toolsResumeSection.hidden = !chapter;
+    if (chapter) toolsResumeContext.textContent = 'Chapter ' +
+      String(savedPosition.chapter).padStart(2, '0') + ' — ' + titleOf(chapter);
+  }
   function focusables() {
-    return Array.from(panel.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'))
-      .filter(function(el){return !el.hidden && !el.closest('[hidden]') && el.getClientRects().length > 0;});
+    return Array.from(panel.querySelectorAll('a[href],button:not([disabled]):not([tabindex="-1"]),input:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'))
+      .filter(function(el){return !el.hidden && !el.closest('[hidden],[inert]') && el.getClientRects().length > 0;});
   }
   // A focus trap alone is insufficient for screen-reader modal isolation.
   // Preserve every sibling's prior inert state, including the update notice.
@@ -3612,6 +3725,7 @@ window.addEventListener('load', function(){
   function openDrawer() {
     if (panel.classList.contains('open')) return;
     lastFocused = document.activeElement;
+    switchNavView('index', false);
     panel.inert = false;
     panel.setAttribute('aria-hidden', 'false');
     panel.classList.add('open');
@@ -3896,11 +4010,14 @@ window.addEventListener('load', function(){
       var start = section.getBoundingClientRect().top + window.scrollY;
       sectionRatio = Math.max(0,Math.min(1,(y-start)/Math.max(1,bottom-start)));
     }
-    safeStorage('put',{
+    var checkpoint = {
       chapter:current.num, section:section?.id || null,
       chapterRatio:Math.max(0,Math.min(1,current.ratio)),
       sectionRatio:sectionRatio, savedAt:Date.now()
-    });
+    };
+    safeStorage('put',checkpoint);
+    savedPosition = checkpoint;
+    syncToolsResume();
   }
   // Preserve a viewport-relative *reading block*, not an absolute scroll
   // pixel, across whole-reader reconstruction when revision is toggled.
@@ -3957,6 +4074,7 @@ window.addEventListener('load', function(){
     savedPosition = null;
     permitSaving = true;
     hideResume();
+    syncToolsResume();
   }
   function resumeReading() {
     if (!savedPosition) return;
@@ -4003,6 +4121,7 @@ window.addEventListener('load', function(){
   });
   function initializeResume() {
     savedPosition = safeStorage('get');
+    syncToolsResume();
     if (!savedPosition || typeof savedPosition.chapter !== 'string') {
       permitSaving = true; return;
     }
@@ -4017,6 +4136,17 @@ window.addEventListener('load', function(){
   }
 
   if (resumeButton) resumeButton.addEventListener('click',resumeReading);
+  if (toolsResumeButton) toolsResumeButton.addEventListener('click',function(){
+    closeDrawer(false);
+    resumeReading();
+  });
+  [indexTab,toolsTab].forEach(function(tab){
+    tab.addEventListener('click',function(){
+      switchNavView(tab === indexTab ? 'index' : 'tools',false);
+    });
+    tab.addEventListener('keydown',handleNavTabKeys);
+  });
+  switchNavView('index',false);
   if (startButton) startButton.addEventListener('click',function(){
     forgetSaved(); userMoved = false; window.scrollTo({top:0,behavior:'auto'});
   });

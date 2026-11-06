@@ -45,10 +45,10 @@ with sync_playwright() as pw:
  assert not p.locator('#printView .col-main,#printView .col-side,#printView .col-full').evaluate_all('(a)=>a.some(e=>e.scrollHeight-e.clientHeight>2)')
  print('FOCUSED pages',p.locator('#printView .page').count(),'sidebar',p.locator('#printView .col-side > .block').count(),flush=True)
  p.emulate_media(media='screen');p.locator('#navTab').click()
- p.locator('#includeRevisionChk').uncheck();assert p.locator('#screenView .revision-flow').count()==0
+ p.locator('#navToolsTab').click();p.locator('#includeRevisionChk').uncheck();assert p.locator('#screenView .revision-flow').count()==0
  p.locator('#includeRevisionChk').check();assert p.locator('#screenView .revision-flow').count()==3
  p.evaluate('window.print=()=>{}')
- p.locator('#rangeInput').fill('32,30,31,32');p.locator('#printBtn').click()
+ p.locator('#navExportPanel summary').click();p.locator('#rangeInput').fill('32,30,31,32');p.locator('#printBtn').click()
  p.emulate_media(media='print')
  assert p.locator('#printView .hero-title').all_text_contents()==[DATA[n]['title'] for n in (32,30,31,32)]
  assert p.locator('#printView .is-revision').count()==4

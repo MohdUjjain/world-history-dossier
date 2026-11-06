@@ -776,3 +776,61 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   max-width:none!important;margin:8px 0 14px!important;padding-left:20px;
   background:linear-gradient(90deg,var(--gold) 0 10px,transparent 10px) left 6px/10px 1px no-repeat;}
 @media print{.table-scroll-hint{display:none!important;}}
+
+/* ============================================================
+   INDEX / TOOLS NAVIGATION (2026-11-06)
+   Screen-only drawer upgrade; PDF page layout remains untouched.
+   ============================================================ */
+@media screen {
+  #navPanel .nav-tablist {
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:5px;padding:9px 13px 10px;background:var(--ink);
+    border-top:1px solid rgba(255,255,255,.15);flex:none;
+  }
+  #navPanel .nav-view-tab {
+    display:grid;place-items:center;min-height:44px;padding:9px 12px;
+    color:var(--parchment-lt);background:transparent;border:1px solid transparent;
+    border-radius:var(--r-sm);font:700 .89rem var(--font-label);
+    cursor:pointer;touch-action:manipulation;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  #navPanel .nav-view-tab:hover {background:rgba(255,255,255,.12);}
+  #navPanel .nav-view-tab[aria-selected="true"] {
+    background:var(--paper);color:var(--ink);
+    border-color:var(--gold);box-shadow:inset 0 -3px 0 var(--gold);
+  }
+  #navPanel .nav-view-tab:focus-visible,#navPanel .nav-view:focus-visible,
+  #navToolsResume:focus-visible,#includeRevisionChk:focus-visible {
+    outline:3px solid var(--gold);outline-offset:2px;
+  }
+  #navPanel .nav-body {display:flex;flex-direction:column;flex:1;min-height:0;
+    padding:0;overflow:hidden;}
+  #navPanel .nav-view {min-height:0;flex:1;overflow-y:auto;
+    overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
+    padding-bottom:max(20px,env(safe-area-inset-bottom));}
+  #navPanel .nav-view[hidden],#navToolsResumeSection[hidden]{display:none!important;}
+  #navPanel .nav-index-view .nav-tools {border-bottom:1px solid var(--parchment-dk);}
+  #navPanel .nav-tools-view {background:var(--paper);}
+  .nav-resume-tool,.nav-reading-options{
+    padding:18px 20px;border-bottom:1px solid var(--parchment-dk);
+    font-family:var(--font-label);
+  }
+  .nav-resume-tool{background:var(--parchment-lt);}
+  .nav-resume-tool .nav-section-label,.nav-reading-options .nav-section-label{
+    margin-bottom:8px;}
+  .nav-resume-tool p {font:.8rem/1.5 var(--font-label);color:var(--ink-soft);
+    margin:0 0 12px;overflow-wrap:anywhere;}
+  #navToolsResume {
+    min-height:44px;width:100%;padding:10px 12px;
+    font:700 .84rem var(--font-label);color:var(--paper);background:var(--ink);
+    border:1px solid var(--gold);border-radius:var(--r-sm);cursor:pointer;
+  }
+  #navToolsResume:hover {background:var(--ink-soft);}
+  .nav-reading-options .nav-check {margin:0 0 8px;min-height:44px;}
+  .nav-reading-options .nav-check input {width:18px;height:18px;flex:none;}
+  .nav-reading-options .nav-export-explainer{margin:0;}
+  #navPanel .nav-toc-wrap{padding-bottom:20px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #navPanel .nav-view-tab{transition:none!important;}
+}

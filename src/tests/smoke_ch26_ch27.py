@@ -45,10 +45,10 @@ with sync_playwright() as pw:
  pairs=p.evaluate('''() => {let p=[...document.querySelectorAll('#printView .page')];return {pages:p.length,side:[...document.querySelectorAll('#printView .learning-card')].length,chapterLabels:p.map(x=>x.dataset.chapter).filter(Boolean)}}''')
  print('PRINT',pairs)
  p.emulate_media(media='screen');p.locator('#navTab').click()
- p.locator('#includeRevisionChk').uncheck();assert p.locator('#screenView .revision-flow').count()==0
+ p.locator('#navToolsTab').click();p.locator('#includeRevisionChk').uncheck();assert p.locator('#screenView .revision-flow').count()==0
  p.locator('#includeRevisionChk').check();assert p.locator('#screenView .revision-flow').count()==2
  p.evaluate('window.print = function(){}')
- p.locator('#rangeInput').fill('27,26,27');p.locator('#printBtn').click()
+ p.locator('#navExportPanel summary').click();p.locator('#rangeInput').fill('27,26,27');p.locator('#printBtn').click()
  p.emulate_media(media='print')
  assert p.locator('#printView .hero-title').all_text_contents()==[CASES[n]['title'] for n in (27,26,27)]
  assert p.locator('#printView .is-revision').count()==3

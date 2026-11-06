@@ -12,6 +12,13 @@
   var trigger = document.getElementById('navTab');
   var overlay = document.getElementById('navOverlay');
   var closeButton = document.getElementById('navClose');
+  var indexTab = document.getElementById('navIndexTab');
+  var toolsTab = document.getElementById('navToolsTab');
+  var indexPanel = document.getElementById('navIndexPanel');
+  var toolsPanel = document.getElementById('navToolsPanel');
+  var toolsResumeSection = document.getElementById('navToolsResumeSection');
+  var toolsResumeContext = document.getElementById('navToolsResumeContext');
+  var toolsResumeButton = document.getElementById('navToolsResume');
   var expandButton = document.getElementById('tocExpandAll');
   var collapseButton = document.getElementById('tocCollapseAll');
   var results = document.getElementById('tocSearchStatus');
@@ -76,9 +83,37 @@
     requestReadingUpdate();
   }
 
+  // One keyboard tab stop, with inert inactive panes.
+  // Opening the Contents launcher always starts in Index.
+  function switchNavView(which, focus) {
+    var index = which !== 'tools';
+    indexTab.setAttribute('aria-selected', String(index));
+    toolsTab.setAttribute('aria-selected', String(!index));
+    indexTab.tabIndex = index ? 0 : -1;
+    toolsTab.tabIndex = index ? -1 : 0;
+    indexPanel.hidden = !index; indexPanel.inert = !index;
+    toolsPanel.hidden = index; toolsPanel.inert = index;
+    if (focus) (index ? indexTab : toolsTab).focus();
+  }
+  function handleNavTabKeys(event) {
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    var next = event.key === 'Home' ? 'index' :
+      event.key === 'End' ? 'tools' :
+      event.currentTarget === indexTab ? 'tools' : 'index';
+    switchNavView(next, true);
+  }
+  function syncToolsResume() {
+    if (!toolsResumeSection) return;
+    var chapter = savedPosition &&
+      document.getElementById('chapter-' + savedPosition.chapter);
+    toolsResumeSection.hidden = !chapter;
+    if (chapter) toolsResumeContext.textContent = 'Chapter ' +
+      String(savedPosition.chapter).padStart(2, '0') + ' — ' + titleOf(chapter);
+  }
   function focusables() {
-    return Array.from(panel.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'))
-      .filter(function(el){return !el.hidden && !el.closest('[hidden]') && el.getClientRects().length > 0;});
+    return Array.from(panel.querySelectorAll('a[href],button:not([disabled]):not([tabindex="-1"]),input:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'))
+      .filter(function(el){return !el.hidden && !el.closest('[hidden],[inert]') && el.getClientRects().length > 0;});
   }
   // A focus trap alone is insufficient for screen-reader modal isolation.
   // Preserve every sibling's prior inert state, including the update notice.
@@ -98,6 +133,7 @@
   function openDrawer() {
     if (panel.classList.contains('open')) return;
     lastFocused = document.activeElement;
+    switchNavView('index', false);
     panel.inert = false;
     panel.setAttribute('aria-hidden', 'false');
     panel.classList.add('open');
@@ -382,11 +418,14 @@
       var start = section.getBoundingClientRect().top + window.scrollY;
       sectionRatio = Math.max(0,Math.min(1,(y-start)/Math.max(1,bottom-start)));
     }
-    safeStorage('put',{
+    var checkpoint = {
       chapter:current.num, section:section?.id || null,
       chapterRatio:Math.max(0,Math.min(1,current.ratio)),
       sectionRatio:sectionRatio, savedAt:Date.now()
-    });
+    };
+    safeStorage('put',checkpoint);
+    savedPosition = checkpoint;
+    syncToolsResume();
   }
   // Preserve a viewport-relative *reading block*, not an absolute scroll
   // pixel, across whole-reader reconstruction when revision is toggled.
@@ -443,6 +482,7 @@
     savedPosition = null;
     permitSaving = true;
     hideResume();
+    syncToolsResume();
   }
   function resumeReading() {
     if (!savedPosition) return;
@@ -489,6 +529,7 @@
   });
   function initializeResume() {
     savedPosition = safeStorage('get');
+    syncToolsResume();
     if (!savedPosition || typeof savedPosition.chapter !== 'string') {
       permitSaving = true; return;
     }
@@ -503,6 +544,17 @@
   }
 
   if (resumeButton) resumeButton.addEventListener('click',resumeReading);
+  if (toolsResumeButton) toolsResumeButton.addEventListener('click',function(){
+    closeDrawer(false);
+    resumeReading();
+  });
+  [indexTab,toolsTab].forEach(function(tab){
+    tab.addEventListener('click',function(){
+      switchNavView(tab === indexTab ? 'index' : 'tools',false);
+    });
+    tab.addEventListener('keydown',handleNavTabKeys);
+  });
+  switchNavView('index',false);
   if (startButton) startButton.addEventListener('click',function(){
     forgetSaved(); userMoved = false; window.scrollTo({top:0,behavior:'auto'});
   });

@@ -43,12 +43,12 @@ with sync_playwright() as pw:
  assert not p.locator('#printView .col-main,#printView .col-side,#printView .col-full').evaluate_all('(els)=>els.some(e=>e.scrollHeight-e.clientHeight>2)')
  print('PRINT pages:',p.locator('#printView .page').count())
  p.emulate_media(media='screen')
- p.locator('#navTab').click();p.locator('#includeRevisionChk').uncheck()
+ p.locator('#navTab').click();p.locator('#navToolsTab').click();p.locator('#includeRevisionChk').uncheck()
  assert p.locator('#screenView .revision-flow').count()==0
  p.locator('#includeRevisionChk').check()
  assert p.locator('#screenView .revision-flow').count()==2
  p.evaluate('window.print=function(){}')
- p.locator('#rangeInput').fill('25,24,25');p.locator('#printBtn').click()
+ p.locator('#navExportPanel summary').click();p.locator('#rangeInput').fill('25,24,25');p.locator('#printBtn').click()
  p.emulate_media(media='print')
  assert p.locator('#printView .hero-title').all_text_contents()==[CASES[n]['title'] for n in (25,24,25)]
  assert p.locator('#printView .is-revision').count()==3
