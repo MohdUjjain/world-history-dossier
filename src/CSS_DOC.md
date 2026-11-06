@@ -383,3 +383,31 @@ small brand title disappears to preserve useful controls. These
 rules are **screen only**, inside the already print-hidden header,
 not `@media print` or `.page`/`@page` geometry. The 1280×720
 compositor, tables, and export remain untouched.
+
+
+## November 2026 — flowing HTML prose rhythm (PDF unaffected)
+
+History's ordinary screen paragraphs previously had **stacked vertical
+spacing**: `.main-flow p` carried `margin-bottom:17px`, while the
+parent `.main-flow .block` added `padding-bottom:6px` and
+`margin-bottom:16px`. This produced roughly **39px** between consecutive
+prose paragraphs, visibly disrupting continuity compared with the Literature
+reader (approximately one em, or 17px).
+
+The localized `@media screen` override for direct
+`#screenView .main-flow > .block[data-kind="p"]` and
+`[data-kind="h3para"]` removes only the duplicated wrapper padding and
+margin. The existing `p` bottom margin stays at **17px**; `display:flow-root`
+contains margin collapse reliably through the paired-section layout.
+Do not apply the same removal globally to every `.block`: section headings,
+decks, tables, diagrams, quotations and pedagogical callouts require their own
+larger spacing and visual boundaries. The `h3` heading still has its
+30px top margin.
+
+The override never changes the generic `.main-flow .block`, the
+`.col-main` / `.page` print rules or the pagination engine: in print
+media, the prose-specific override is inactive. The changed CSS is inlined by
+`src/build.py`; rebuild both `index.html` and the content-hashed
+`service-worker.js` whenever it changes. The reader browser smoke test
+asserts ~17px between adjacent paragraph blocks and that heading spacing
+remains distinct.

@@ -49,6 +49,30 @@ def main():
             assert page.locator('#navExportPanel').evaluate('(node)=>!node.open')
             assert page.locator('#navPanel').get_attribute('aria-hidden') == 'true'
 
+            # Narrative paragraphs in HTML have one paragraph break, not
+            # stacked <p> margin + block padding + block margin (39px).
+            # Keep section headings and other pedagogical blocks distinct.
+            gaps = page.evaluate("""() => {
+                const next = [...document.querySelectorAll(
+                  '#screenView .main-flow > .block[data-kind="p"] + .block[data-kind="p"]'
+                )].filter(el => el.querySelector(':scope > p') &&
+                    el.previousElementSibling.querySelector(':scope > p'));
+                return next.slice(0, 20).map(el =>
+                    el.querySelector(':scope > p').getBoundingClientRect().top -
+                    el.previousElementSibling.querySelector(':scope > p').getBoundingClientRect().bottom
+                );
+            }""")
+            assert gaps and all(15 <= gap <= 19 for gap in gaps), gaps
+            prose_styles = page.locator(
+                '#screenView .main-flow > .block[data-kind="p"]').first.evaluate(
+                """el => ({
+                    padding:getComputedStyle(el).paddingBottom,
+                    margin:getComputedStyle(el).marginBottom
+                })""")
+            assert prose_styles == {'padding': '0px', 'margin': '0px'}, prose_styles
+            assert page.locator('#screenView .main-flow h3').first.evaluate(
+                "el => getComputedStyle(el).marginTop") == '30px'
+
             # Header search uses the full authored text, not just Index headings.
             assert page.locator('#readerSearchBox').get_attribute('role') == 'search'
             page.locator('#readerSearchInput').fill('Pan-Turanianism')
