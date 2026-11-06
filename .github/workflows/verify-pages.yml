@@ -127,7 +127,8 @@ jobs:
 
   release-pdf:
     name: release-pdf
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    # Manual-only: do not consume Actions minutes on every feature pull request.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
