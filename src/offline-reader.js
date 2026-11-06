@@ -21,14 +21,22 @@
   let preparingFonts = false;
 
   const say = (message) => { if (status) status.textContent = message; };
+  // Edition notifications take priority over the optional resume card.
+  // This only changes screen notice visibility, never the stored bookmark.
+  const notifyEdition = (visible) => {
+    if (notice) notice.hidden = !visible;
+    document.dispatchEvent(new CustomEvent('whd:edition-notice', {
+      detail: {visible}
+    }));
+  };
   const showUpdate = () => {
     if (updateShown) return;
     updateShown = true;
-    if (notice) notice.hidden = false;
+    notifyEdition(true);
     say('A new edition is ready. Reload to read it.');
   };
   if (reload) reload.addEventListener('click', () => location.reload());
-  if (dismiss) dismiss.addEventListener('click', () => { if (notice) notice.hidden = true; });
+  if (dismiss) dismiss.addEventListener('click', () => notifyEdition(false));
 
   if (!('serviceWorker' in navigator) || !('caches' in window)) {
     say('This browser does not support saving the reader offline.');
