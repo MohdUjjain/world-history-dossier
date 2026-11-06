@@ -17,7 +17,7 @@ are pending or failing.
 | Visual regression | `smoke_release_browser.py --baseline` | Compares 17 deterministic viewport screenshots against the **PR base commit's** published HTML, not against a regenerated copy of the candidate. Differences greater than 3.5% changed pixels fail unless an intentional visual change is documented and explicitly approved. Uploads baseline, candidate, diff images |
 | Range and summaries | `smoke_release_ranges.py`, Phases A–C tests | Strict rejection of malformed/unknown chapter ranges, reverse and repeated ranges, selected order and revision toggling, no stale print tree |
 | Offline edition | Node `test_offline_cache.mjs` **and** real Chromium `smoke_release_offline.py` | Cache-first offline reopen with all 33 chapters, PDF excluded from PWA precache, atomic worker replacement, update banner without forced reload |
-| Full 16:9 PDF | `validate_pdf_navigation.py` and `inspect_pdf_release.py` on **freshly regenerated candidate PDF** | All-page 16:9 geometry, no nearly blank pages or off-page text, 33 chapter bookmarks, 200+ section bookmarks; sampled cover/TOC/hero/body rendered images and diffs against the committed PDF |
+| Full 16:9 PDF (manual gate) | `validate_pdf_navigation.py` and `inspect_pdf_release.py` on **freshly regenerated candidate PDF** when manually requested | All-page 16:9 geometry, no nearly blank pages or off-page text, 33 chapter bookmarks, 200+ section bookmarks; sampled cover/TOC/hero/body rendered images and diffs against the committed PDF |
 | Documentation | `verify_docs_sync.py` | Living CSS/JS references include active roles; local release-document links resolve; source CSS, engine/reader/offline JS and CI changes must have corresponding docs changes in the same PR |
 
 The existing chapter titles, note content, eight-pair color identities, revision
@@ -37,7 +37,7 @@ The CI installs pinned axe-core 4.10.3 using a restored npm download cache and a
   Pixel comparisons run against the PR-base HTML **on pull requests only**;
   production pushes still capture responsive screenshots but do not
   compare them with an arbitrarily different previous commit.
-- **`release-pdf`** — on PR/manual dispatch, regenerates the full PDF with
+- **`release-pdf`** — only when manually dispatched from GitHub Actions (not on every PR); regenerates the full PDF with
   the actual browser print engine, checks its outline/page geometry and
   compares rasterized representative pages with the repository's current PDF.
 
@@ -52,8 +52,10 @@ diff PNG files, accessibility JSON) and `phase-d-pdf-evidence` (sample PNGs,
 contact sheet, diff masks and JSON).
 
 **Required status checks for branch rules:**
-`Verify World History Dossier website / verify` and
-`Verify World History Dossier website / release-pdf`. GitHub displays the
+`Verify World History Dossier website / verify` for ordinary PRs.
+`release-pdf` is an optional, manually triggered print QA gate; remove any
+old mandatory `release-pdf` branch rule before relying on the new policy.
+GitHub displays the
 exact job names under each PR. The installation of branch protection/rulesets
 must be confirmed separately in repository settings; this documentation alone
 does not protect the branch.
@@ -63,15 +65,17 @@ does not protect the branch.
 1. Author on a feature branch; update `src/CSS_DOC.md` when `src/styles.css`
    changes and `src/JS_DOC.md` when `engine.js`, `reader-ui.js` or
    `offline-reader.js` changes.
-2. Open a PR. Allow both checks to finish. Examine the uploaded screenshot
-   contact sheets, accessibility report and PDF page samples.
+2. Open a PR. Allow the `verify` check to finish. Examine the screenshot
+   contact sheets and accessibility report. If print content or layout changed,
+   manually dispatch the PDF verification job and inspect its page samples.
 3. If visual change is intentional, document it in the PR and manually
    inspect baseline, candidate and diff artifacts; do **not** simply increase
    the pixel-difference thresholds. Release scripts support an explicit
    `--allow-visual-change` switch only for separately approved runs; CI
    does not enable that switch by default.
-4. Merge only after required checks pass and the screenshots/PDF pages have
-   been reviewed. The existing GitHub Pages branch publisher then deploys.
+4. Merge after required browser checks and screenshots pass; also review
+   the manually dispatched PDF check for print-affecting changes.
+   The existing GitHub Pages branch publisher then deploys.
 5. Confirm the Pages deployment and the full bookmarked-PDF rebuild workflow
    succeeded. The PDF is intentionally a separate asset outside offline
    precaching; its later PDF-only commit can cause a second Pages deployment.
@@ -173,3 +177,23 @@ For Batch 3, visual review of the 6 November 2026 evidence showed that the chang
 ## Batch D — altered-edition checkpoint migration
 
 The `verify` job runs `src/tests/smoke_batch4_edition_migration.py` after Batch 2 continuity. It loads an **isolated browser-only modified Chapter 16 edition** with a newly inserted bilingual heading and reordered complete source-section blocks (`data-section-key` preserved), then tests existing saved section offsets, older deleted-section chapter-relative fallback and the live revision-toggle rebuild at mobile and desktop widths. It explicitly checks that reading place and persistent local bookmark survive reflow. The modified scholarly text is never committed to the publication, the print compositor and chapter palette remain unchanged, and existing PDF gates are retained.
+
+
+## November 2026 — conserve GitHub Actions minutes
+
+The expensive `release-pdf` job in `verify-pages.yml` is now
+**workflow_dispatch-only**. Normal PRs and main pushes still run
+browser/structural QA but do not regenerate or raster-check the entire PDF.
+When scholarly content, the 16:9 print compositor or PDF bookmarks change,
+use Actions → **Verify World History Dossier website** → Run workflow
+to inspect the candidate PDF before release.
+
+The separate `build-bookmarked-pdf.yml` job automatically runs for
+changes to `src/engine.js`, `src/chapters/**`, or dedicated PDF
+exporter/navigation tests. Changes to screen-only
+`src/reader-search.js`, `src/reader-ui.js`,
+`src/styles.css`, `src/shell.html` or `src/build.py` do
+**not** trigger a heavyweight PDF rebuild. If a CSS/shell
+edit deliberately affects print layout, manually dispatch
+**Build bookmarked history dossier PDF** after inspection.
+The prebuilt bookmarked PDF is unchanged by header search.

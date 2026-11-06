@@ -871,6 +871,95 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
 @media(prefers-reduced-motion:reduce) {
   #navPanel .nav-view-tab{transition:none!important;}
 }
+
+/* ============================================================
+   FULL-BOOK SEARCH — screen-only header and passage navigation.
+   Separate from Index tab's contents-only chapter/section filter.
+   ============================================================ */
+@media screen {
+  .site-header .row {min-width:0;gap:10px;padding:9px 18px;}
+  .site-header .title {flex:none;}
+  .site-header .current {min-width:0;flex:1 1 70px;}
+  .reader-search-sr-only {position:absolute;width:1px;height:1px;margin:-1px;
+    padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
+  .reader-search-box {position:relative;display:flex;align-items:center;
+    flex:0 1 282px;min-width:122px;max-width:33vw;font-family:var(--font-label);}
+  #readerSearchInput {width:100%;min-width:0;height:42px;
+    border:1px solid rgba(241,227,195,.55);border-radius:var(--r-sm);
+    padding:8px 46px 8px 12px;background:rgba(255,255,255,.09);
+    color:var(--paper);font:500 .79rem var(--font-label);outline-offset:2px;}
+  #readerSearchInput::placeholder {color:rgba(246,241,228,.8);}
+  #readerSearchInput::-webkit-search-cancel-button {display:none;}
+  #readerSearchInput:focus-visible {outline:3px solid var(--gold-lt);border-color:var(--gold-lt);}
+  #readerSearchClear {position:absolute;right:0;top:0;width:44px;height:42px;
+    display:grid;place-items:center;border:0;border-radius:var(--r-sm);
+    background:transparent;color:var(--gold-lt);cursor:pointer;
+    font:700 1.25rem var(--font-label);}
+  #readerSearchClear:hover {background:rgba(255,255,255,.15);}
+  #readerSearchClear[hidden],#readerSearchMore[hidden],
+  .reader-search-feedback[hidden],#readerSearchResults[hidden] {display:none!important;}
+  .reader-search-results {position:fixed;top:62px;right:12px;
+    width:min(580px,calc(100vw - 24px));max-height:min(68dvh,580px);
+    overflow-y:auto;overscroll-behavior:contain;
+    padding:12px;background:var(--ink);color:var(--paper);
+    border:1px solid var(--gold-line);border-radius:0 0 var(--r-md) var(--r-md);
+    box-shadow:var(--sh-lg);z-index:115;}
+  .reader-search-pop-head {display:flex;align-items:center;gap:10px;
+    justify-content:space-between;border-bottom:1px solid rgba(241,227,195,.24);
+    padding:0 2px 9px;margin-bottom:8px;}
+  #readerSearchStatus {margin:0;color:var(--gold-lt);
+    font:.76rem/1.5 var(--font-label);}
+  #readerSearchClose {border:1px solid rgba(241,227,195,.35);
+    border-radius:var(--r-sm);background:rgba(255,255,255,.09);
+    color:var(--paper);font:700 1.2rem var(--font-label);
+    cursor:pointer;min-width:44px;min-height:44px;}
+  .reader-search-hits {display:grid;gap:7px;}
+  .reader-search-hit {width:100%;display:grid;gap:5px;text-align:left;
+    border:1px solid rgba(241,227,195,.15);border-radius:var(--r-sm);
+    padding:12px 14px;color:var(--paper);cursor:pointer;
+    background:rgba(255,255,255,.065);font-family:var(--font-label);
+    overflow-wrap:anywhere;min-height:56px;}
+  .reader-search-hit:hover {background:rgba(169,121,59,.24);
+    border-color:var(--gold-lt);}
+  .reader-search-context {color:var(--gold-lt);font-size:.79rem;line-height:1.4;}
+  .reader-search-section {color:var(--parchment-dk);font-size:.74rem;line-height:1.45;}
+  .reader-search-snippet {color:var(--paper);font-size:.79rem;line-height:1.6;}
+  .reader-search-snippet mark {background:var(--gold-lt);color:var(--ink);
+    padding:0 2px;border-radius:2px;}
+  #readerSearchMore {width:100%;min-height:44px;margin-top:10px;padding:9px;
+    color:var(--ink);background:var(--gold-lt);border:0;border-radius:var(--r-sm);
+    font:700 .78rem var(--font-label);cursor:pointer;}
+  #readerSearchClear:focus-visible,#readerSearchClose:focus-visible,
+  #readerSearchMore:focus-visible,.reader-search-hit:focus-visible {
+    outline:3px solid var(--gold-lt);outline-offset:2px;}
+  ::highlight(whd-reader-search) {background:#F1D18A;color:#1B2A44;}
+  #screenView .reader-search-target {outline:3px solid var(--gold);
+    outline-offset:5px;border-radius:3px;scroll-margin-top:90px;}
+  .reader-search-feedback {position:fixed;top:66px;left:50%;
+    transform:translateX(-50%);width:min(480px,calc(100vw - 24px));
+    padding:12px 15px;z-index:106;background:var(--paper);color:var(--ink);
+    border:2px solid var(--gold);border-radius:var(--r-md);
+    box-shadow:var(--sh-lg);font:.8rem/1.5 var(--font-label);}
+  @media(max-width:640px) {
+    .site-header .row {gap:6px;padding:8px 9px;}
+    .site-header .title {font-size:.68rem;max-width:25vw;}
+    .site-header .current {flex:1 1 42px;font-size:.65rem;}
+    .reader-search-box {flex:1 1 130px;max-width:none;min-width:98px;}
+    #readerSearchInput {height:42px;padding:7px 33px 7px 9px;font-size:.72rem;}
+    #readerSearchClear {width:34px;}
+    .reader-search-results {top:60px;left:8px;right:8px;width:auto;
+      max-height:min(72dvh,620px);}
+    .reader-search-feedback {top:65px;}
+  }
+  @media(max-width:360px) {
+    .site-header .title {display:none;}
+    .site-header .current {flex:1 1 62px;}
+    .reader-search-box {flex:2 1 128px;}
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #screenView .reader-search-target {scroll-behavior:auto;}
+}
 </style>
 </head>
 <body>
@@ -880,12 +969,28 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   <div class="row">
     <span class="title">World History Dossier</span>
     <span class="current" id="currentChapterLabel"></span>
+    <div id="readerSearchBox" class="reader-search-box" role="search" aria-label="Search all 33 chapters">
+      <label for="readerSearchInput" class="reader-search-sr-only">Search all notes, paragraphs, tables, study aids and revision</label>
+      <input id="readerSearchInput" type="search" autocomplete="off" spellcheck="false"
+        placeholder="Search all notes…" aria-controls="readerSearchResults"
+        aria-expanded="false" aria-describedby="readerSearchStatus">
+      <button id="readerSearchClear" type="button" aria-label="Clear full-book search" hidden>&times;</button>
+      <div id="readerSearchResults" class="reader-search-results" role="region" aria-label="Full-book search results" hidden>
+        <div class="reader-search-pop-head">
+          <p id="readerSearchStatus" role="status" aria-live="polite">Search every passage in the dossier.</p>
+          <button id="readerSearchClose" type="button" aria-label="Close search results">&times;</button>
+        </div>
+        <div id="readerSearchHits" class="reader-search-hits"></div>
+        <button id="readerSearchMore" type="button" hidden>Show more results</button>
+      </div>
+    </div>
     <span id="chapterProgressRing" class="chapter-progress-ring" role="progressbar"
       aria-label="Current chapter reading progress" aria-valuemin="0" aria-valuemax="100"
       aria-valuenow="0" hidden><span id="chapterProgressNumber">0%</span></span>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 </header>
+<div id="readerSearchFeedback" class="reader-search-feedback" role="status" aria-live="polite" hidden></div>
 
 <div id="titlePage" class="title-page">
   <div class="tp-inner">
@@ -4228,6 +4333,441 @@ window.addEventListener('load', function(){
     }
   });
 })();
+</script>
+<script>
+/* World History Dossier — full-book, offline passage search.
+ * The immutable #chapterData supplies the complete corpus (even when screen
+ * revision sections are hidden). Stable data keys survive engine screen clones;
+ * this module never edits the print compositor or authored chapter files.
+ */
+(function (root, factory) {
+  'use strict';
+  var api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) {
+    root.WHDReaderSearch = api;
+    if (root.document) api.mount(root.document);
+  }
+})(typeof window === 'object' ? window : null, function () {
+  'use strict';
+  function squish(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+  function normalize(value) {
+    return squish(value).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+  }
+  function match(text, query) {
+    var terms = normalize(query).split(' ').filter(Boolean);
+    var target = normalize(text);
+    return !!terms.length && terms.every(function (term) { return target.includes(term); });
+  }
+  // UTF-16 offsets into original display text, even for accents and ligatures.
+  function mappedText(value) {
+    var source = String(value || ''), folded = '', starts = [], ends = [];
+    for (var i = 0; i < source.length;) {
+      var glyph = String.fromCodePoint(source.codePointAt(i));
+      var part = glyph.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+      var from = i; i += glyph.length;
+      if (!part) {
+        if (ends.length) ends[ends.length - 1] = i;
+        continue;
+      }
+      for (var k = 0; k < part.length; k++) {
+        if (/\s/.test(part[k])) {
+          if (!folded || folded.endsWith(' ')) continue;
+          folded += ' ';
+        } else folded += part[k];
+        starts.push(from); ends.push(i);
+      }
+    }
+    if (folded.endsWith(' ')) { folded = folded.slice(0, -1); starts.pop(); ends.pop(); }
+    return {source: source, folded: folded, starts: starts, ends: ends};
+  }
+  function locate(text, query) {
+    var folded = normalize(text), phrase = normalize(query);
+    var terms = phrase.split(' ').filter(Boolean);
+    if (!terms.length || !terms.every(function (term) { return folded.includes(term); })) return null;
+    var exact = folded.indexOf(phrase), first = exact >= 0 ? exact : folded.indexOf(terms[0]);
+    return {exact: exact >= 0, start: first, terms: terms};
+  }
+  function snippetParts(text, query, limit) {
+    var source = squish(text), map = mappedText(source), where = locate(source, query);
+    var width = limit || 195;
+    if (!where) return {parts: [{text: source.slice(0, width), hit: false}],
+      prefix: false, suffix: source.length > width};
+    var terms = where.exact ? [normalize(query)] : where.terms;
+    var ranges = [];
+    terms.forEach(function (term) {
+      var pos = 0, found = 0, at;
+      while (found < 80 && (at = map.folded.indexOf(term, pos)) !== -1) {
+        ranges.push([map.starts[at], map.ends[at + term.length - 1]]);
+        pos = at + Math.max(1, term.length); found++;
+      }
+    });
+    ranges.sort(function (a, b) { return a[0] - b[0] || b[1] - a[1]; });
+    var merged = [];
+    ranges.forEach(function (range) {
+      var previous = merged[merged.length - 1];
+      if (previous && range[0] <= previous[1]) previous[1] = Math.max(previous[1], range[1]);
+      else merged.push(range.slice());
+    });
+    var focal = map.starts[where.start] || 0;
+    var start = Math.max(0, focal - Math.floor(width / 3));
+    var end = Math.min(source.length, start + width);
+    if (end - start < width) start = Math.max(0, end - width);
+    var parts = [], cursor = start;
+    merged.forEach(function (range) {
+      var a = Math.max(start, range[0]), b = Math.min(end, range[1]);
+      if (b <= a || a < cursor) return;
+      if (a > cursor) parts.push({text: source.slice(cursor, a), hit: false});
+      parts.push({text: source.slice(a, b), hit: true});
+      cursor = b;
+    });
+    if (cursor < end) parts.push({text: source.slice(cursor, end), hit: false});
+    return {parts: parts, prefix: start > 0, suffix: end < source.length};
+  }
+  function hashText(text) {
+    var value = 2166136261;
+    for (var i = 0; i < text.length; i++) {
+      value ^= text.charCodeAt(i);
+      value = Math.imul(value, 16777619) >>> 0;
+    }
+    return value.toString(36);
+  }
+  function buildIndex(doc) {
+    var corpus = [], fragments = new Set();
+    var semantic = 'h1,h2,h3,h4,h5,h6,p,li,td,th,caption,dt,dd,blockquote,pre,figcaption';
+    var skipped = 'script,style,noscript,template,[hidden],[aria-hidden="true"]';
+    var serial = 0;
+    function register(node, chapter, section, isRevision, kind, targetSelector, displayOverride) {
+      var text = squish(displayOverride == null ? (node && node.textContent) : displayOverride);
+      if (text.length < 2) return;
+      var index = corpus.length;
+      var key = node && !targetSelector ? 'whd-search-' + chapter.num + '-' + (++serial) : null;
+      if (key) node.setAttribute('data-whd-search-key', key);
+      var base = 'whd-hit-' + chapter.num + '-' + hashText(section + '\n' + text.slice(0, 320));
+      var fragment = base, suffix = 1;
+      while (fragments.has(fragment)) fragment = base + '-' + (++suffix);
+      fragments.add(fragment);
+      corpus.push({index: index, chapter: chapter.num, title: chapter.title,
+        section: section, revision: isRevision, kind: kind, text: text,
+        normalized: normalize(text), key: key, selector: targetSelector || null,
+        fragment: fragment, node: node});
+    }
+    Array.from(doc.querySelectorAll('#chapterData > .chapter-source')).forEach(function (source) {
+      var chapter = {num: source.getAttribute('data-chapter'),
+        title: source.getAttribute('data-title') || 'Untitled chapter'};
+      var hero = source.querySelector('.src-hero');
+      register(null, chapter, 'Chapter overview', false, 'chapter', '.banner h1',
+        'Chapter ' + chapter.num + ' · ' + chapter.title);
+      if (hero) [
+        ['.hk', '.banner .kicker', 'Chapter overview'],
+        ['.hs', '.banner .subtitle', 'Chapter overview'],
+        ['.hb', '.banner .byline', 'Chapter overview'],
+        ['.hthesis', '.banner .thesis', 'Central thesis'],
+        ['.hyears', '.banner .yrs', 'Timeline']
+      ].forEach(function (parts) {
+        var unit = hero.querySelector(parts[0]);
+        if (unit) register(null, chapter, parts[2], false, 'hero', parts[1], unit.textContent);
+      });
+      var sectionNames = new Map([['intro', 'Opening overview']]);
+      Array.from(source.querySelectorAll('.src-main > .block[data-kind="section-head"]'))
+        .forEach(function (block) {
+          sectionNames.set(block.getAttribute('data-section-key') || '',
+            block.getAttribute('data-title') || squish(block.textContent));
+        });
+      ['.src-main', '.src-side'].forEach(function (selector) {
+        var inMain = selector === '.src-main';
+        var stream = source.querySelector(selector);
+        if (!stream) return;
+        var sectionKey = 'intro', revision = false;
+        Array.from(stream.children).forEach(function (block) {
+          if (block.getAttribute('data-revision-start') === 'true') revision = true;
+          if (inMain && block.getAttribute('data-kind') === 'section-head')
+            sectionKey = block.getAttribute('data-section-key') || sectionKey;
+          var key = inMain ? sectionKey : (block.getAttribute('data-for-section') || 'intro');
+          var section = sectionNames.get(key) || (revision ? 'Revision and recall' : 'Study aids');
+          var insideRevision = revision || key === 'revision';
+          var grouped = new Map();
+          var walker = doc.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+          var leaf;
+          while ((leaf = walker.nextNode())) {
+            if (!leaf.nodeValue || !leaf.nodeValue.trim() || !leaf.parentElement) continue;
+            var parent = leaf.parentElement;
+            if (parent.closest(skipped)) continue;
+            var unit = parent.closest(semantic) || parent.closest('div,span,small,cite,strong,em,b') || block;
+            if (!block.contains(unit)) unit = block;
+            var value = grouped.get(unit) || '';
+            grouped.set(unit, value + leaf.nodeValue);
+          }
+          grouped.forEach(function (text, unit) {
+            var tag = unit.localName;
+            var heading = /^h[1-6]$/.test(tag) || block.getAttribute('data-kind') === 'section-head' && tag === 'h2';
+            register(unit, chapter, section, insideRevision,
+              heading ? 'heading' : 'passage', null, text);
+          });
+          // A diagram with independent inline captions also deserves a joined
+          // searchable phrase, without duplicating whole paragraphs or tables.
+          var isVisual = !block.querySelector(semantic) &&
+            /^(flow|quote|memory|concept|def|tip|hy|mistake)$/.test(block.getAttribute('data-kind') || '');
+          if (isVisual && squish(block.textContent).length <= 520 && grouped.size > 1)
+            register(block, chapter, section, insideRevision, 'visual');
+        });
+      });
+    });
+    return corpus;
+  }
+  function find(index, query) {
+    var phrase = normalize(query), found = [];
+    if (!phrase) return found;
+    index.forEach(function (entry) {
+      var where = locate(entry.normalized, phrase);
+      if (!where) return;
+      var score = (where.exact ? 140 : 0) +
+        (entry.kind === 'chapter' ? 170 : entry.kind === 'heading' ? 85 : 0) +
+        (where.start === 0 ? 14 : 0) +
+        Math.max(0, 40 - Math.floor(entry.text.length / 16));
+      found.push({entry: entry, score: score});
+    });
+    // A matching phrase in a child label should not reappear as a second hit
+    // from its enclosing diagram wrapper; retain cross-label wrapper matches.
+    found = found.filter(function (hit) {
+      return hit.entry.kind !== 'visual' || !found.some(function (other) {
+        return other.entry !== hit.entry && other.entry.chapter === hit.entry.chapter &&
+          other.entry.node && hit.entry.node && hit.entry.node.contains(other.entry.node) &&
+          other.entry.normalized.includes(phrase);
+      });
+    });
+    found.sort(function (a, b) { return b.score - a.score || a.entry.index - b.entry.index; });
+    return found;
+  }
+  function mount(doc) {
+    var input = doc.getElementById('readerSearchInput');
+    var popup = doc.getElementById('readerSearchResults');
+    var hits = doc.getElementById('readerSearchHits');
+    var status = doc.getElementById('readerSearchStatus');
+    var clear = doc.getElementById('readerSearchClear');
+    var close = doc.getElementById('readerSearchClose');
+    var more = doc.getElementById('readerSearchMore');
+    var box = doc.getElementById('readerSearchBox');
+    var feedback = doc.getElementById('readerSearchFeedback');
+    if (!input || !popup || !hits || !status || !clear || !close || !more || !box) return;
+    var corpus = null, found = [], shown = 0, timer = null, generation = 0;
+    var currentQuery = '', highlighted = null, highlightTimer = null;
+    var suppressFocus = false, screenRenderedOnce = false, suppressFragment = false;
+    var PAGE_SIZE = 30;
+    function ensure() { if (!corpus) corpus = buildIndex(doc); return corpus; }
+    function show() { popup.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+    function focusInput() {
+      suppressFocus = true; input.focus({preventScroll: true}); suppressFocus = false;
+    }
+    function hide() { popup.hidden = true; input.setAttribute('aria-expanded', 'false'); }
+    function invalidate() {
+      generation++;
+      if (timer !== null) clearTimeout(timer);
+      timer = null;
+    }
+    function clearHighlight() {
+      if (highlightTimer) clearTimeout(highlightTimer);
+      highlightTimer = null;
+      if (window.CSS && CSS.highlights) CSS.highlights.delete('whd-reader-search');
+      if (highlighted && highlighted.isConnected) highlighted.classList.remove('reader-search-target');
+      highlighted = null;
+    }
+    function targetFor(entry) {
+      var chapter = doc.getElementById('chapter-' + entry.chapter);
+      if (!chapter) return null;
+      if (entry.selector) return chapter.querySelector(entry.selector);
+      return chapter.querySelector('[data-whd-search-key="' + entry.key + '"]');
+    }
+    function reveal(entry) {
+      var toggle = doc.getElementById('includeRevisionChk');
+      if (entry.revision && toggle && !toggle.checked) {
+        toggle.checked = true;
+        toggle.dispatchEvent(new Event('change', {bubbles: true}));
+        if (feedback) {
+          feedback.textContent = 'Chapter summaries are now shown to reveal this search result. Hide them again under Contents → Tools.';
+          feedback.hidden = false;
+          setTimeout(function () { feedback.hidden = true; }, 6500);
+        }
+      }
+    }
+    function navigate(entry, fromHash) {
+      hide();
+      invalidate();
+      suppressFragment = true;
+      reveal(entry);
+      suppressFragment = false;
+      var target = targetFor(entry);
+      if (!target) return;
+      clearHighlight();
+      var anchor = target.id || entry.fragment;
+      if (!target.id) target.id = anchor;
+      if (!fromHash && window.history && window.history.pushState &&
+          window.location.hash !== '#' + encodeURIComponent(anchor))
+        window.history.pushState({historySearch: true}, '', '#' + encodeURIComponent(anchor));
+      highlighted = target;
+      target.classList.add('reader-search-target');
+      if (window.CSS && CSS.highlights && typeof Highlight === 'function') {
+        var ranges = [], walker = doc.createTreeWalker(target, NodeFilter.SHOW_TEXT), leaf;
+        var words = normalize(input.value).split(' ').filter(Boolean);
+        while ((leaf = walker.nextNode()) && ranges.length < 80) {
+          var map = mappedText(leaf.nodeValue);
+          words.forEach(function (word) {
+            var pos = 0, at;
+            while (ranges.length < 80 && (at = map.folded.indexOf(word, pos)) !== -1) {
+              var range = doc.createRange();
+              range.setStart(leaf, map.starts[at]);
+              range.setEnd(leaf, map.ends[at + word.length - 1]);
+              ranges.push(range);
+              pos = at + Math.max(1, word.length);
+            }
+          });
+        }
+        if (ranges.length) CSS.highlights.set('whd-reader-search', new Highlight(...ranges));
+      }
+      var original = target.getAttribute('tabindex');
+      if (original === null) target.setAttribute('tabindex', '-1');
+      requestAnimationFrame(function () {
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({block: 'center', behavior: reduce ? 'instant' : 'smooth'});
+        target.focus({preventScroll: true});
+        highlightTimer = setTimeout(function () {
+          if (highlighted === target) clearHighlight();
+          if (original === null && target.getAttribute('tabindex') === '-1') target.removeAttribute('tabindex');
+        }, 4500);
+      });
+    }
+    function maybeFollowHash() {
+      if (suppressFragment) return;
+      var id;
+      try { id = decodeURIComponent(window.location.hash.slice(1)); } catch (_) { return; }
+      if (!id || !id.startsWith('whd-hit-')) return;
+      var entry = ensure().find(function (candidate) { return candidate.fragment === id; });
+      if (entry) navigate(entry, true);
+    }
+    function resultButton(hit) {
+      var entry = hit.entry;
+      var button = doc.createElement('button');
+      button.type = 'button'; button.className = 'reader-search-hit';
+      var context = doc.createElement('strong'); context.className = 'reader-search-context';
+      context.textContent = 'Ch.' + String(entry.chapter).padStart(2, '0') + ' — ' + entry.title;
+      var section = doc.createElement('span'); section.className = 'reader-search-section';
+      section.textContent = entry.section + (entry.revision ? ' · Revision' : '');
+      var snippet = doc.createElement('span'); snippet.className = 'reader-search-snippet';
+      var excerpt = snippetParts(entry.text, input.value, 192);
+      if (excerpt.prefix) snippet.append(doc.createTextNode('…'));
+      excerpt.parts.forEach(function (part) {
+        if (part.hit) {
+          var mark = doc.createElement('mark'); mark.textContent = part.text; snippet.appendChild(mark);
+        } else snippet.append(doc.createTextNode(part.text));
+      });
+      if (excerpt.suffix) snippet.append(doc.createTextNode('…'));
+      button.append(context, section, snippet);
+      button.addEventListener('click', function () {
+        if (currentQuery !== input.value.trim()) { render(); return; }
+        navigate(entry, false);
+      });
+      return button;
+    }
+    function appendPage() {
+      var end = Math.min(found.length, shown + PAGE_SIZE);
+      for (var i = shown; i < end; i++) hits.appendChild(resultButton(found[i]));
+      shown = end;
+      more.hidden = shown >= found.length;
+      if (!more.hidden) more.textContent = 'Show more · ' + shown + ' of ' + found.length;
+      status.textContent = found.length ?
+        'Showing ' + shown + ' of ' + found.length + ' matching passages.' :
+        'No matches found. Try a different word or phrase.';
+    }
+    function render() {
+      invalidate();
+      currentQuery = input.value.trim();
+      hits.replaceChildren();
+      shown = 0; found = []; more.hidden = true;
+      clear.hidden = !currentQuery;
+      if (!currentQuery || doc.body.classList.contains('drawer-open')) { hide(); return; }
+      found = find(ensure(), currentQuery);
+      appendPage(); show();
+    }
+    input.addEventListener('input', function () {
+      invalidate();
+      hide();
+      clear.hidden = !input.value.trim();
+      var ticket = generation;
+      timer = setTimeout(function () { if (ticket === generation) render(); }, 120);
+    });
+    input.addEventListener('focus', function () {
+      if (!suppressFocus && input.value.trim() && popup.hidden) render();
+    });
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        if (!popup.hidden) hide();
+        else if (input.value) { input.value = ''; render(); }
+        event.preventDefault(); return;
+      }
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        if (popup.hidden) render();
+        var options = hits.querySelectorAll('.reader-search-hit');
+        if (options.length) {
+          event.preventDefault();
+          options[event.key === 'ArrowDown' ? 0 : options.length - 1].focus();
+        }
+      } else if (event.key === 'Enter') {
+        if (popup.hidden) render();
+        var first = hits.querySelector('.reader-search-hit');
+        if (first) { event.preventDefault(); first.click(); }
+      }
+    });
+    hits.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') { event.preventDefault(); hide(); focusInput(); return; }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      var buttons = Array.from(hits.querySelectorAll('.reader-search-hit'));
+      var index = buttons.indexOf(doc.activeElement);
+      if (index < 0) return;
+      event.preventDefault();
+      var next = index + (event.key === 'ArrowDown' ? 1 : -1);
+      if (next < 0) input.focus();
+      else if (next < buttons.length) buttons[next].focus();
+      else if (!more.hidden) more.focus();
+    });
+    more.addEventListener('click', function () {
+      var start = shown; appendPage();
+      var next = hits.querySelectorAll('.reader-search-hit')[start];
+      if (next) next.focus();
+    });
+    close.addEventListener('click', function () { hide(); focusInput(); });
+    clear.addEventListener('click', function () {
+      input.value = ''; render(); input.focus();
+    });
+    doc.addEventListener('pointerdown', function (event) {
+      if (!popup.hidden && !box.contains(event.target)) hide();
+    });
+    doc.addEventListener('keydown', function (event) {
+      var active = doc.activeElement;
+      if (event.key !== '/' || event.ctrlKey || event.altKey || event.metaKey ||
+          doc.body.classList.contains('drawer-open') ||
+          ['INPUT', 'TEXTAREA', 'SELECT'].includes(active && active.tagName) ||
+          (active && active.isContentEditable)) return;
+      event.preventDefault(); input.focus(); input.select();
+    });
+    doc.getElementById('navTab')?.addEventListener('click', hide, true);
+    doc.addEventListener('whd:screen-will-render', function () {
+      // Engine reads these attributes while cloning the immutable sources.
+      ensure();
+      clearHighlight();
+    });
+    doc.addEventListener('whd:screen-rendered', function () {
+      if (!screenRenderedOnce) { screenRenderedOnce = true; maybeFollowHash(); }
+    });
+    window.addEventListener('hashchange', maybeFollowHash);
+    window.addEventListener('popstate', maybeFollowHash);
+    // On initial load the engine fires will-render, then screen-rendered;
+    // no MutationObserver or global service is required.
+    return {getStats: function () { return {entries: ensure().length, matches: found.length}; }};
+  }
+  return Object.freeze({squish: squish, normalize: normalize, match: match,
+    mappedText: mappedText, locate: locate, snippetParts: snippetParts,
+    buildIndex: buildIndex, find: find, mount: mount});
+});
 </script>
 <script>
 /* World History Dossier — offline status, storage and edition updates.

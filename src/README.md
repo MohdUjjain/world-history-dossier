@@ -10,7 +10,8 @@ The **complete edition comprises Chapters 00–32 (33 chapters)**. This director
 | `styles.css` | Imperial Archive screen and print design |
 | `engine.js` | Chapter navigation, section pairing, pagination and export |
 | `build.py` | Builds `index.html` and generates a content-hashed offline service worker |
-| `reader-ui.js` | Searchable accessible navigation, revision shortcuts, active section tracking, chapter progress and local resume |
+| `reader-ui.js` | Accessible Index tab chapter/section filtering, revision shortcuts, active section tracking, chapter progress and local resume |
+| `reader-search.js` | Local full-book text search of passages, tables, side aids and revisions; inlined into the offline reader |
 | `offline-reader.js` | Offline-ready status, persistent storage request and new-edition notifications; inlined into `index.html` |
 | `service-worker.template.js` | Atomic precache, scoped cache cleanup and optional Google Fonts response caching |
 | `chapter_catalog.json` | Official titles for all 33 chapters |

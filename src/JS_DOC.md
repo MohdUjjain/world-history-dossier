@@ -683,3 +683,55 @@ No new localStorage key or scroll tracker is introduced.
 `#navIndexPanel`, `#navToolsPanel`, `#navToolsResumeSection` and
 `#navToolsResume`. This screen-only component does not touch
 `#chapterData`, `#printView` or the independent 16:9 pagination engine.
+
+
+## November 2026 — full-book search in the reading header
+
+The independent `src/reader-search.js` is inlined by `src/build.py` at
+`/*__READER_SEARCH__*/` in `src/shell.html`. The existing `src/reader-ui.js`
+still owns the Index tab's **contents-only** chapter/section filter, the
+modal Contents drawer, the reading bookmark and active-section highlighting.
+Neither the pagination engine nor authored source chapters are modified.
+
+`WHDReaderSearch.buildIndex(document)` creates a lazy, local text corpus
+from **all 33 immutable `#chapterData > .chapter-source` nodes**, including
+chapter hero information, paragraphs, headings, table cells/captions,
+inline emphasis, learning sidebars, diagram labels and revision sections.
+Do not index `#printView`'s page clones. Each normalized passage stores
+its source order, chapter title/number, section, revision status and a
+generated content-fingerprint link. Search applies case and accent folding,
+requires every term within a passage, ranks exact phrases and headings,
+and displays highlighted contextual excerpts in batches of 30. Its pure
+helper methods can be tested without a browser.
+
+The screen compositor destroys/rebuilds `#screenView` on
+`#includeRevisionChk` changes. `whd:screen-will-render` ensures the
+search corpus exists and stamps inert `data-whd-search-key` attributes
+on original source text units *before* the normal engine clones them.
+The search keeps those keys through `whd:screen-rendered` and resolves
+them against the current live `.chapter-flow` only when navigating.
+This is deliberate: do not cache stale rendered element references or
+move original nodes out of `#chapterData`. No MutationObserver,
+localStorage key, or second reading position tracker is introduced.
+
+The header's `#readerSearchInput` displays a viewport-bounded popover
+(`#readerSearchResults`) with native button results and
+`#readerSearchHits`, a count (`#readerSearchStatus`), Show more,
+clear and close controls. Slash focuses the field outside edit controls;
+Up/Down/Enter navigate; Escape dismisses; click-away closes. A chosen
+passage receives a shareable `#whd-hit-...` URL fragment, focus and
+scroll into view, and transient CSS Custom Highlight API decoration where
+supported. Query generations invalidate stale debounced render callbacks.
+Text nodes and `mark` are used for safe highlighted excerpts, never
+query-derived `innerHTML`.
+
+When a revision hit is absent from the current screen because the
+Tools **Include chapter summaries** option is unchecked, the search uses
+that same existing control's change handler to re-enable summaries,
+with a temporary `#readerSearchFeedback` announcement. It does
+not set a separate persistent preference or touch print architecture.
+
+Rebuild `index.html` and the service worker together. Test browser
+search, deep links, mobile widths, revision-hidden jump, results paging
+and the existing Index filter separately. Any edits to this JS file
+must update `src/JS_DOC.md` in the same change.

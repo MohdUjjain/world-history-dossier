@@ -49,6 +49,44 @@ def main():
             assert page.locator('#navExportPanel').evaluate('(node)=>!node.open')
             assert page.locator('#navPanel').get_attribute('aria-hidden') == 'true'
 
+            # Header search uses the full authored text, not just Index headings.
+            assert page.locator('#readerSearchBox').get_attribute('role') == 'search'
+            page.locator('#readerSearchInput').fill('Pan-Turanianism')
+            page.locator('#readerSearchHits .reader-search-hit').first.wait_for(state='visible')
+            assert page.locator('#readerSearchHits mark').count() >= 1
+            assert 'Ch.00' in page.locator('#readerSearchHits .reader-search-context').first.inner_text()
+            assert 'matching passages' in page.locator('#readerSearchStatus').inner_text()
+            page.locator('#readerSearchHits .reader-search-hit').first.click()
+            assert page.locator('#readerSearchResults').is_hidden()
+            assert page.locator('#screenView .reader-search-target').count() == 1
+            assert page.evaluate("location.hash.startsWith('#whd-hit-')")
+
+            # An excerpt in an excluded revision can still be found; opening
+            # it uses the existing Tools toggle and re-renders the target.
+            page.locator('#navTab').click()
+            page.locator('#navToolsTab').click()
+            page.locator('#includeRevisionChk').uncheck()
+            page.keyboard.press('Escape')
+            assert page.locator('#screenView .revision-flow').count() == 0
+            page.locator('#readerSearchInput').fill('Summary of Twentieth-Century Imperial Evolutions')
+            page.locator('#readerSearchHits .reader-search-hit').first.wait_for(state='visible')
+            page.locator('#readerSearchHits .reader-search-hit').first.click()
+            assert page.locator('#includeRevisionChk').is_checked()
+            assert page.locator('#screenView .revision-flow').count() == 33
+            assert page.locator('#readerSearchFeedback').is_visible()
+            assert page.locator('#screenView .reader-search-target').count() == 1
+
+            # Slash shortcut and Escape remain independent of the Contents
+            # modal and leave the typed full-book query intact.
+            page.locator('#readerSearchInput').fill('')
+            page.locator('#screenView').focus()
+            page.keyboard.press('/')
+            assert page.evaluate("document.activeElement.id") == 'readerSearchInput'
+            page.locator('#readerSearchInput').fill('unlikelyxxxxxxphrase')
+            page.wait_for_function("document.querySelector('#readerSearchStatus').textContent.includes('No matches')")
+            page.keyboard.press('Escape')
+            assert page.locator('#readerSearchResults').is_hidden()
+
             # A floating button opens a modal drawer with correct keyboard focus.
             page.locator('#navTab').click()
             assert page.locator('#navPanel').get_attribute('aria-hidden') == 'false'

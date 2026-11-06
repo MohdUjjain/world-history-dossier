@@ -4,11 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/build-bookmarked-pdf.yml'
+      # Only print engine, authored content and dedicated PDF-tool changes
+      # should automatically regenerate the heavyweight bookmarked PDF.
       - 'src/engine.js'
-      - 'src/styles.css'
-      - 'src/shell.html'
-      - 'src/build.py'
       - 'src/chapters/**'
       - 'src/tools/export_full_pdf.py'
       - 'src/tests/validate_pdf_navigation.py'
