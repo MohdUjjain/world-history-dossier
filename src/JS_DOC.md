@@ -738,3 +738,21 @@ must update `src/JS_DOC.md` in the same change.
 ## 2026-11-06 — Remove sidebar contents filter
 
 `src/reader-ui.js` no longer resolves `#tocSearch`, `#tocClearSearch`, `#tocSearchStatus`, or `#tocNoResults`. `applySearch()`, `highlightLink()`, and its local `normalize()` were deleted; no content search or text highlights run inside the Contents drawer. The chapter tree is unchanged: `syncExpandedState()` renders `manualExpanded` decisions through `updateExpanded()`, and Expand all / Collapse all remain always available. Escape simply dismisses the drawer and restores opener focus. The independent header `src/reader-search.js` still performs complete-book text matching and deep links; neither chapter source nor PDF pagination changes. Browser tests should confirm old Index search controls are absent and header search still works.
+
+
+## Full-book search and revision visibility (November 2026)
+
+\`src/reader-search.js\` indexes meaningful authored text from \`#chapterData\`,
+then filters its results against the current \`includeRevisionChk\` (Contents
+→ Tools) setting. The source index remains complete, but **hidden revision
+sections are not returned as search hits**. Toggling revision visibility
+refreshes any open result list after the screen engine has rebuilt its
+chapter clones. Selecting a stale hidden hit cannot override the user's
+choice or automatically tick \`includeRevisionChk\`.
+
+A previously shared \`#whd-hit-...\` URL referencing revision content may
+fall back to its existing chapter when revisions are hidden; it does not
+silently change the Tools setting. The screen-reader revision toggle and
+the print compositor's chapter-range/revision signature remain otherwise
+unchanged. Browser checks in \`src/tests/smoke_reader_ui.py\` and pure search
+checks in \`src/tests/test_full_text_search.mjs\` cover these boundaries.
