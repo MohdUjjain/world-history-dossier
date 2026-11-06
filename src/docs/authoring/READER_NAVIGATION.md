@@ -6,6 +6,24 @@ It does **not** alter the chapter source modules or 16:9 PDF pagination.
 
 ## Contents drawer
 
+### Index and Tools views — 2026-11-06
+
+The drawer has two screen-only accessible tabs. **Index** hosts chapter and
+section searching (contents only), Expand/Collapse and chapter-colour
+navigation. **Tools** hosts a locally saved Continue Reading shortcut
+(when available), revision visibility, collapsible ordered PDF export,
+the complete bookmarked PDF link, and offline/update controls.
+Both tabs have 44px touch targets. Click, Left/Right arrows, Home and End
+switch views; inactive panels are `hidden` and `inert` so keyboard focus
+remains in the active view. Opening Contents starts on Index.
+Each panel scrolls independently. The floating trigger, modal focus trap,
+Escape/backdrop closing and focus restoration remain intact.
+
+Revision visibility still affects both the flowing reader and custom PDF
+exports. The screen navigation pass does not change the print engine,
+chapter data or original reading positions.
+
+
 - The right-edge floating Contents button opens a full-height, non-reflowing
   drawer; the mobile layout fills the viewport behind a backdrop.
 - Chapter titles are **links to chapters**, separate from their chevrons.
