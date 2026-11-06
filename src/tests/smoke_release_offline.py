@@ -84,8 +84,10 @@ def main():
             # service-worker readiness; wait for the *specific* saved edition.
             page.wait_for_function("""expected => document.getElementById('offlineEditionId')
               ?.textContent === expected""", arg=ORIGINAL, timeout=15000)
-            assert page.locator('#offlineEditionId').inner_text().strip() == ORIGINAL, (
-                page.locator('#offlineEditionId').inner_text(), ORIGINAL, initial["caches"])
+            # Closed dialog content is visibility:hidden: inner_text() may be
+            # empty until opened even while its DOM textContent is correct.
+            assert page.locator('#offlineEditionId').text_content().strip() == ORIGINAL, (
+                page.locator('#offlineEditionId').text_content(), ORIGINAL, initial["caches"])
             page.locator('#navTab').click()
             assert page.locator('#tocSearchScope').is_visible()
             assert 'not the full text' in page.locator('#tocSearchScope').inner_text()
