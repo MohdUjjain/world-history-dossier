@@ -249,6 +249,11 @@ a{ color:var(--oxblood); text-decoration:none; }
 }
 .nav-offline button:disabled{ opacity:.65; cursor:default; }
 .nav-offline button:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+.nav-offline button + button{margin-top:8px;}
+.nav-offline .nav-edition-meta{margin:0 0 12px;}
+.nav-edition-meta code{font:700 .82rem ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink);}
+.nav-offline #offlineCheckResult{margin:8px 0 0;}
+.nav-offline #offlineCheckResult:empty{display:none;}
 .edition-update-notice[hidden]{ display:none!important; }
 .edition-update-notice{
   position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
@@ -324,6 +329,7 @@ body.drawer-open{overflow:hidden;}
 }
 .nav-tree-controls button:disabled{opacity:.55;cursor:default;}
 .nav-tools #tocSearchStatus{margin:10px 0 0;color:var(--ink-soft);font-size:.72rem;}
+.nav-tools .nav-search-scope{margin:7px 0 11px;color:var(--ink-soft);font:.76rem/1.45 var(--font-label);}
 .nav-export-details{border-bottom:1px solid var(--parchment-dk);}
 .nav-export-details>summary{padding:16px 20px;cursor:pointer;list-style:none;
   color:var(--ink);font:700 .84rem var(--font-label);
@@ -869,19 +875,20 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
   </div>
   <div class="nav-body">
     <div class="nav-tools">
-      <label for="tocSearch" class="nav-section-label">Find chapter or section</label>
+      <label for="tocSearch" class="nav-section-label">Find chapter or section · Contents only</label>
       <div class="nav-search-field">
         <input id="tocSearch" type="search" autocomplete="off"
-          placeholder="Search chapters, sections, revision…"
-          aria-controls="navToc" aria-describedby="tocSearchStatus">
+          placeholder="Search titles, sections, study shortcuts…"
+          aria-controls="navToc" aria-describedby="tocSearchScope tocSearchStatus">
         <button type="button" id="tocClearSearch" aria-label="Clear contents search" hidden>&times;</button>
       </div>
+      <p id="tocSearchScope" class="nav-search-scope">Searches chapter titles, section headings and study shortcuts—not the full text of chapters.</p>
       <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
         <button type="button" id="tocExpandAll">Expand all</button>
         <button type="button" id="tocCollapseAll">Collapse all</button>
       </div>
       <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
-      <p id="tocNoResults" class="nav-no-results" hidden>No matches. Try another chapter title, section, or revision keyword; you can also clear your search.</p>
+      <p id="tocNoResults" class="nav-no-results" hidden>No matching contents headings. Try another chapter title, section heading or study shortcut; full chapter text is not searched.</p>
     </div>
     <details id="navExportPanel" class="nav-export-details">
       <summary>Print / Export PDF</summary>
@@ -903,7 +910,10 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
     <div class="nav-offline">
       <div class="nav-section-label">Offline edition</div>
       <p id="offlineStatus" aria-live="polite">Checking offline availability…</p>
+      <p class="nav-edition-meta">Saved edition: <code id="offlineEditionId">Checking…</code></p>
       <button id="offlineKeep" type="button" disabled>Keep on this device</button>
+      <button id="offlineCheckUpdate" type="button" disabled>Check for updates</button>
+      <p id="offlineCheckResult" role="status" aria-live="polite"></p>
     </div>
     <div class="nav-toc-wrap">
       <div class="nav-section-label">Contents</div>
@@ -4097,6 +4107,9 @@ window.addEventListener('load', function(){
   'use strict';
   const status = document.getElementById('offlineStatus');
   const keep = document.getElementById('offlineKeep');
+  const editionId = document.getElementById('offlineEditionId');
+  const checkButton = document.getElementById('offlineCheckUpdate');
+  const checkResult = document.getElementById('offlineCheckResult');
   const notice = document.getElementById('editionUpdateNotice');
   const reload = document.getElementById('editionReloadBtn');
   const dismiss = document.getElementById('editionDismissBtn');
@@ -4109,8 +4122,10 @@ window.addEventListener('load', function(){
   let updateShown = false;
   let lastUpdateCheck = 0;
   let preparingFonts = false;
+  let checkingManually = false;
 
   const say = (message) => { if (status) status.textContent = message; };
+  const reportCheck = (message) => { if (checkResult) checkResult.textContent = message; };
   // Edition notifications take priority over the optional resume card.
   // This only changes screen notice visibility, never the stored bookmark.
   const notifyEdition = (visible) => {
@@ -4131,6 +4146,8 @@ window.addEventListener('load', function(){
   if (!('serviceWorker' in navigator) || !('caches' in window)) {
     say('This browser does not support saving the reader offline.');
     if (keep) keep.hidden = true;
+    if (checkButton) checkButton.hidden = true;
+    if (editionId) editionId.textContent = 'Unavailable';
     return;
   }
 
@@ -4138,15 +4155,20 @@ window.addEventListener('load', function(){
     if (!registration) return;
     try {
       const names = (await caches.keys()).filter((name) => name.startsWith(PREFIX));
-      let ready = false;
+      let ready = false, savedEdition = '';
       const scope = registration.scope;
       for (const name of names) {
         const cache = await caches.open(name);
         const results = await Promise.all(
           ESSENTIALS.map((path) => cache.match(new URL(path, scope).href))
         );
-        if (results.every(Boolean)) { ready = true; break; }
+        if (results.every(Boolean)) {
+          ready = true;
+          savedEdition = name.slice(PREFIX.length);
+          break;
+        }
       }
+      if (editionId) editionId.textContent = savedEdition || 'Not saved yet';
       const persistent = Boolean(navigator.storage && navigator.storage.persisted &&
         await navigator.storage.persisted());
       if (keep) {
@@ -4198,16 +4220,56 @@ window.addEventListener('load', function(){
     preparingFonts = false;
   }
 
-  async function checkForUpdates() {
-    if (!registration || !navigator.onLine) return;
+  async function checkForUpdates(manual = false) {
+    if (manual && checkingManually) return;
+    if (!registration) {
+      if (manual) reportCheck('Offline reader setup is not ready yet.');
+      return;
+    }
+    if (!navigator.onLine) {
+      if (manual) reportCheck('You are offline. Connect to check for updates.');
+      return;
+    }
+    // Background checks are throttled; deliberate checks always reach the worker.
     const now = Date.now();
-    if (now - lastUpdateCheck < 60000) return;
+    if (!manual && now - lastUpdateCheck < 60000) return;
     lastUpdateCheck = now;
-    try { await registration.update(); } catch (_) { /* Offline usage remains safe. */ }
+    let updateFound = false;
+    const onUpdateFound = () => {
+      updateFound = true;
+      if (manual) reportCheck('New edition found; preparing it for offline reading…');
+    };
+    if (manual) {
+      checkingManually = true;
+      if (checkButton) checkButton.disabled = true;
+      reportCheck('Checking for a newer edition…');
+    }
+    registration.addEventListener('updatefound', onUpdateFound);
+    try {
+      await registration.update();
+      if (manual) {
+        await checkOffline();
+        if (updateShown) reportCheck('Updated edition ready. Reload to read it.');
+        else if (updateFound || registration.installing)
+          reportCheck('An update is being prepared. You will be prompted when it is ready.');
+        else reportCheck('No newer edition detected.');
+      }
+    } catch (_) {
+      if (manual) reportCheck('Unable to check for updates. Try again when connected.');
+    } finally {
+      registration.removeEventListener('updatefound', onUpdateFound);
+      if (manual) {
+        checkingManually = false;
+        if (checkButton) checkButton.disabled = false;
+      }
+    }
   }
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (hadController) showUpdate();
+    if (hadController) {
+      showUpdate();
+      reportCheck('Updated edition ready. Reload to read it.');
+    }
     hadController = true;
     checkOffline();
     prepareFonts();
@@ -4218,6 +4280,7 @@ window.addEventListener('load', function(){
       registration = await navigator.serviceWorker.register('./service-worker.js', {
         scope: './', updateViaCache: 'none'
       });
+      if (checkButton) checkButton.disabled = false;
       await navigator.serviceWorker.ready;
       await checkOffline();
       checkForUpdates();
@@ -4232,6 +4295,7 @@ window.addEventListener('load', function(){
   }
   if (document.readyState === 'complete') register();
   else window.addEventListener('load', register, {once:true});
+  if (checkButton) checkButton.addEventListener('click', () => checkForUpdates(true));
   window.addEventListener('online', () => { checkForUpdates(); prepareFonts(); });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) { checkOffline(); checkForUpdates(); }
