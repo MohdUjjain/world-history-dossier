@@ -33,7 +33,9 @@ def main():
         assert screen['chapters']==2 and screen['mainConcepts']==0
         assert screen['sideConcepts']==screen['originalMainConcepts']==7
         page.locator('#navTab').click();page.locator('#navClose').click()
-        page.locator('#navTab').click();page.locator('#includeRevisionChk').uncheck()
+        page.locator('#navTab').click()
+        page.locator('#navToolsTab').click()
+        page.locator('#includeRevisionChk').uncheck()
         assert page.locator('.revision-flow').count()==0
         page.locator('#navToolsTab').click()
         page.locator('#includeRevisionChk').check()
