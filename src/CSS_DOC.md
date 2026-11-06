@@ -338,3 +338,21 @@ No CSS geometry, colors or text styles are changed in this phase. The new `src/t
 ## Batch 3: Offline edition and contents scope
 
 `src/styles.css` styles `.nav-edition-meta`, `#offlineCheckResult`, and `.nav-search-scope` within the existing navy/parchment Contents drawer. The extra manual update action inherits `.nav-offline button` keyboard-focus and touch target rules; these additions remain screen-only and do not change chapter, PDF, or print geometry.
+
+## 2026-11-06 — Accessible Index / Tools drawer
+
+The original floating **Contents** edge trigger and modal drawer remain screen-only.
+The drawer now has two fixed, large **Index** and **Tools** ARIA tabs. Its
+`.nav-body` is a non-scrolling flex shell: individual `.nav-view` tabpanels
+scroll independently and use `min-height:0` to avoid clipping narrow mobile
+viewports. `[hidden]` + `inert` remove the inactive tabpanel from
+paint and keyboard focus. Index retains the chapter-colour dots, search,
+Expand/Collapse controls, hierarchical links and study shortcuts.
+
+New selectors: `.nav-tablist`, `.nav-view-tab`, `.nav-view`,
+`.nav-index-view`, `.nav-tools-view`, `.nav-resume-tool`,
+`.nav-reading-options`, `#navToolsResume`. The selected tab is parchment
+on navy with a gold inset underline; Imperial Archive colour, 44px targets,
+gold focus outlines, safe-area insets and reduced-motion handling remain.
+These overrides are inside `@media screen`: **do not move them into the
+fixed 16:9 print styles**.
