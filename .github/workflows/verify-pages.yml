@@ -86,11 +86,19 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git show "$BASE_SHA:index.html" > "$RUNNER_TEMP/dossier-baseline.html"
       - name: Inspect five responsive layouts and compare PR screenshots
+        env:
+          REVIEWED_VISUAL_CHANGE: ${{ contains(github.event.pull_request.labels.*.name, 'reviewed-visual-change') }}
         run: |
+          # Only an explicitly labelled, manually reviewed design PR can
+          # override the 3.5% visual threshold; diffs are always generated.
+          approved=()
+          if [ "$REVIEWED_VISUAL_CHANGE" = "true" ]; then
+            approved+=(--allow-visual-change)
+          fi
           if [ -f "$RUNNER_TEMP/dossier-baseline.html" ]; then
             python src/tests/smoke_release_browser.py \
               --baseline "$RUNNER_TEMP/dossier-baseline.html" \
-              --out ".release-evidence/screens"
+              --out ".release-evidence/screens" "${approved[@]}"
           else
             # Branch-based Pages can already deploy on push to main. Still
             # capture responsive evidence, but diff against the PR base only
