@@ -658,3 +658,28 @@ copies of this contract aligned when new functional assets are introduced.
 ## Batch 3: Manual edition checks and readable saved identifiers
 
 `src/offline-reader.js` identifies a **complete saved** cache by the established `whd-edition-` prefix and required reader assets, showing its 12-character suffix in `#offlineEditionId`. The `#offlineCheckUpdate` button invokes a manual service-worker `registration.update()` even inside the ordinary one-minute background-check throttle, announcing offline, error, no-new-version and update-in-progress states in `#offlineCheckResult`. `controllerchange` retains the existing user-controlled reload prompt and updates the saved-edition label; it does not automatically reload or touch the bookmark. Contents search remains implemented in `src/reader-ui.js` as heading/shortcut filtering, not body-text search.
+
+## 2026-11-06 — Reader Index / Tools tab model
+
+`src/reader-ui.js` now owns the modal drawer's accessible two-view tab
+model. `switchNavView('index'|'tools',focus)` updates each tab's
+`aria-selected`, roving `tabIndex`, and panel `hidden`/`inert`.
+Left/Right arrows and Home/End switch and focus tabs; mouse/touch click
+activates a view. Opening Contents defaults to Index. The floating opener,
+background inert isolation, Escape/backdrop dismissal and focus return remain.
+
+`focusables()` explicitly excludes inactive tab buttons and inert descendants
+from the modal trap. Index owns `#tocSearch`, `#navToc` and tree expansion.
+Tools owns `#includeRevisionChk`, `#navExportPanel`, `#rangeInput`,
+`#printBtn`, the prebuilt PDF link and offline status/actions. The revision
+switch **still affects BOTH screen and custom-print composition**; the
+existing range grammar, repeat/order semantics and
+`whd:drawer-close` are unchanged. A new Tools-only Continue Reading action
+uses the existing `resumeReading()` checkpoint and hides when unavailable;
+`saveCurrent`, `forgetSaved`, and `initializeResume` synchronize it.
+No new localStorage key or scroll tracker is introduced.
+
+`src/shell.html` exposes `#navIndexTab`, `#navToolsTab`,
+`#navIndexPanel`, `#navToolsPanel`, `#navToolsResumeSection` and
+`#navToolsResume`. This screen-only component does not touch
+`#chapterData`, `#printView` or the independent 16:9 pagination engine.
