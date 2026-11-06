@@ -9,11 +9,9 @@
   const reload = document.getElementById('editionReloadBtn');
   const dismiss = document.getElementById('editionDismissBtn');
   const PREFIX = 'whd-edition-';
-  const ESSENTIALS = [
-    './index.html', './manifest.webmanifest', './icons/icon-192.png',
-    './icons/icon-512.png', './og-image.jpg', './404.html',
-    './sitemap.xml', './robots.txt'
-  ];
+  // The offline-ready label reflects the executable book, not optional
+  // social previews, icons, sitemap or the best-effort 404 fallback.
+  const ESSENTIALS = ['./index.html', './manifest.webmanifest'];
   let registration = null;
   let hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
   let updateShown = false;
@@ -21,14 +19,22 @@
   let preparingFonts = false;
 
   const say = (message) => { if (status) status.textContent = message; };
+  // Edition notifications take priority over the optional resume card.
+  // This only changes screen notice visibility, never the stored bookmark.
+  const notifyEdition = (visible) => {
+    if (notice) notice.hidden = !visible;
+    document.dispatchEvent(new CustomEvent('whd:edition-notice', {
+      detail: {visible}
+    }));
+  };
   const showUpdate = () => {
     if (updateShown) return;
     updateShown = true;
-    if (notice) notice.hidden = false;
+    notifyEdition(true);
     say('A new edition is ready. Reload to read it.');
   };
   if (reload) reload.addEventListener('click', () => location.reload());
-  if (dismiss) dismiss.addEventListener('click', () => { if (notice) notice.hidden = true; });
+  if (dismiss) dismiss.addEventListener('click', () => notifyEdition(false));
 
   if (!('serviceWorker' in navigator) || !('caches' in window)) {
     say('This browser does not support saving the reader offline.');

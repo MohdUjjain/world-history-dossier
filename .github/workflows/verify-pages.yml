@@ -49,6 +49,8 @@ jobs:
           fi
       - name: Simulate offline startup, cache updates and Google Font persistence
         run: node src/tests/test_offline_cache.mjs
+      - name: Regression — optional offline assets must not block reader
+        run: node src/tests/test_optional_precache.mjs
       - name: Install browser and image test dependencies
         run: |
           python -m pip install playwright pillow
@@ -65,6 +67,8 @@ jobs:
             axe-core@4.10.3
       - name: Test reader navigation, accessibility, revision, resume and printing
         run: python src/tests/smoke_reader_ui.py
+      - name: Regression — dialog background inertness and competing notices
+        run: python src/tests/smoke_batch1_dialog_notices.py
       - name: Test Phase A palette contrast, PDF roles, anchors and print reuse
         run: python src/tests/smoke_phase_a.py
       - name: Test Phase B search, drawer focus, revision continuity and mobile touch

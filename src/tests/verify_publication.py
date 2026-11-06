@@ -121,7 +121,8 @@ def verify():
         assert path in worker, f"Not in offline cache: {path}"
     assert "fonts.googleapis.com" in worker and "fonts.gstatic.com" in worker
     assert ".pdf" in worker and "name.startsWith(CACHE_PREFIX)" in worker
-    assert "cache.addAll(SHELL)" in worker and "self.skipWaiting()" in worker
+    assert "cache.addAll(CORE_ASSETS)" in worker and "self.skipWaiting()" in worker
+    assert "OPTIONAL_ASSETS" in worker and "Promise.allSettled" in worker
     assert (ROOT / "src/shell.html").read_text(encoding="utf-8").count("/*__OFFLINE_READER__*/") == 1
     assert re.search(r"CACHE_NAME\s*=\s*CACHE_PREFIX\s*\+\s*'[0-9a-f]{12}'", worker), "Worker revision not content hashed"
 

@@ -26,6 +26,8 @@
   var dismissButton = document.getElementById('resumeReaderDismiss');
   var KEY = 'whd-reading-place-v1';
   var chapterRows = [], lastFocused = null, manualExpanded = new Set();
+  var backgroundInertSnapshot = [];
+  var editionNoticeVisible = false, resumeDismissed = false;
   var lastActiveChapter = null, lastActiveSection = null;
   var rebuilding = false, framePending = false, printing = false;
   var pendingView = null;
@@ -78,6 +80,21 @@
     return Array.from(panel.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'))
       .filter(function(el){return !el.hidden && !el.closest('[hidden]') && el.getClientRects().length > 0;});
   }
+  // A focus trap alone is insufficient for screen-reader modal isolation.
+  // Preserve every sibling's prior inert state, including the update notice.
+  function isolateBackground(isOpen) {
+    if (isOpen) {
+      backgroundInertSnapshot = Array.from(document.body.children)
+        .filter(function(el){ return el !== panel && el !== overlay; })
+        .map(function(el){return {element:el,wasInert:el.inert};});
+      backgroundInertSnapshot.forEach(function(state){state.element.inert=true;});
+    } else {
+      backgroundInertSnapshot.forEach(function(state){
+        if (state.element.isConnected) state.element.inert=state.wasInert;
+      });
+      backgroundInertSnapshot=[];
+    }
+  }
   function openDrawer() {
     if (panel.classList.contains('open')) return;
     lastFocused = document.activeElement;
@@ -87,6 +104,7 @@
     overlay.classList.add('open');
     trigger.setAttribute('aria-expanded', 'true');
     document.body.classList.add('drawer-open');
+    isolateBackground(true);
     closeButton.focus();
   }
   function closeDrawer(restore) {
@@ -97,7 +115,9 @@
     panel.inert = true;
     panel.setAttribute('aria-hidden', 'true');
     trigger.setAttribute('aria-expanded', 'false');
-    if (restore !== false && lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    isolateBackground(false);
+    if (restore !== false && lastFocused && lastFocused.isConnected &&
+        typeof lastFocused.focus === 'function') lastFocused.focus();
     lastFocused = null;
   }
   function handleKeys(event) {
@@ -418,6 +438,7 @@
     if (prompt) prompt.hidden = true;
   }
   function forgetSaved() {
+    resumeDismissed=true;
     safeStorage('remove');
     savedPosition = null;
     permitSaving = true;
@@ -425,6 +446,7 @@
   }
   function resumeReading() {
     if (!savedPosition) return;
+    resumeDismissed=true;
     var chapter = document.getElementById('chapter-' + savedPosition.chapter);
     if (!chapter) return forgetSaved();
     var section = savedPosition.section && document.getElementById(savedPosition.section);
@@ -448,6 +470,23 @@
     window.scrollTo({top:Math.max(0,top-window.innerHeight*.25),behavior:'auto'});
     requestReadingUpdate();
   }
+  function offerResumeIfEligible() {
+    if (!savedPosition || resumeDismissed || editionNoticeVisible ||
+        location.hash || window.scrollY > 120 || userMoved) return;
+    var chapter=document.getElementById('chapter-' + savedPosition.chapter);
+    if (!chapter) { forgetSaved(); return; }
+    description.textContent='Your saved place: Chapter '+
+      String(savedPosition.chapter).padStart(2,'0')+' — '+titleOf(chapter)+'.';
+    prompt.hidden=false;
+  }
+  document.addEventListener('whd:edition-notice',function(event){
+    editionNoticeVisible=Boolean(event.detail && event.detail.visible);
+    if (editionNoticeVisible) {
+      hideResume();
+    } else {
+      offerResumeIfEligible();
+    }
+  });
   function initializeResume() {
     savedPosition = safeStorage('get');
     if (!savedPosition || typeof savedPosition.chapter !== 'string') {
@@ -456,12 +495,10 @@
     permitSaving = false;
     // Direct chapter links and browser-restored scroll positions have priority.
     setTimeout(function() {
-      if (location.hash || window.scrollY > 120) { permitSaving=true; return; }
-      var chapter = document.getElementById('chapter-' + savedPosition.chapter);
-      if (!chapter) { forgetSaved(); return; }
-      description.textContent = 'Your saved place: Chapter '+String(savedPosition.chapter).padStart(2,'0')+
-        ' — '+titleOf(chapter)+'.';
-      prompt.hidden = false;
+      if (location.hash || window.scrollY > 120 || userMoved) {
+        permitSaving=true; return;
+      }
+      offerResumeIfEligible();
     }, 250);
   }
 
@@ -471,6 +508,7 @@
   });
   if (forgetButton) forgetButton.addEventListener('click',forgetSaved);
   if (dismissButton) dismissButton.addEventListener('click',function(){
+    resumeDismissed=true;
     hideResume(); permitSaving = true;
   });
   trigger.addEventListener('click', function(event){
