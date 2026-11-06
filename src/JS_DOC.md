@@ -629,3 +629,28 @@ The screen cover and the Export drawer both open `./20th-Century%20International
 `src/tests/verify_docs_sync.py` checks active CSS/JavaScript role names in `CSS_DOC.md`/`JS_DOC.md`, source links and the release test inventory. When provided a Git base ref, it checks changed files: CSS edits require a same-PR CSS reference update; changes to `engine.js`, `reader-ui.js` or `offline-reader.js` require a JS reference update. Editing the release CI workflow requires updating `src/docs/release/RELEASE_VERIFICATION.md` in the same PR. This phase changes **verification and documentation only**, not reader logic or PDF pagination.
 
 The release browser suite captures responsive screenshots, uses axe-core for scoped WCAG audit, tests real PWA offline updates and verifies strict ordered/repeated chapter selection. A separate pull-request `release-pdf` CI job builds a *fresh* 16:9 PDF and checks every page's geometry and text bounds as well as representative raster differences and PDF chapter/section bookmarks. The [Phase D runbook](docs/release/RELEASE_VERIFICATION.md) lists both automated and manual review. Pages currently deploys directly from `main`; protect that branch with required `verify` and `release-pdf` checks to make review a hard pre-deployment gate.
+
+## Batch 1 — modal and edition-notice resilience (November 2026)
+
+`reader-ui.js` owns a snapshot of the inert state of every direct body child
+except `#navPanel` and `#navOverlay`. On modal open it makes background
+reading, cover, progress/navigation chrome, and independent notices inert;
+on close it restores each element's previous state **before** returning focus.
+Do not replace this with focus trapping alone; it would permit assistive
+technology to reach controls behind the open drawer. Normal close, backdrop,
+Escape, navigation, and the print/export `whd:drawer-close` event must converge
+on the same cleanup.
+
+`offline-reader.js` sends `whd:edition-notice` with `detail.visible`
+whenever the update notice is presented or dismissed. The reader defers the
+optional Continue Reading prompt while an edition notice is visible and may
+restore it after dismissal only if a valid saved checkpoint remains and the
+reader has not navigated, moved, or dismissed the suggestion. The persistent
+reading checkpoint is never cleared by this notice coordination.
+
+`src/service-worker.template.js` separates `CORE_ASSETS` from
+`OPTIONAL_ASSETS`: failed supplemental icon, social-preview, sitemap, robots
+or 404 downloads cannot abort installation of a complete HTML reader.
+Installation still rejects a missing required resource, and the offline-ready
+indicator in `src/offline-reader.js` checks only core resources. Keep both
+copies of this contract aligned when new functional assets are introduced.
