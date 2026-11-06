@@ -756,3 +756,10 @@ silently change the Tools setting. The screen-reader revision toggle and
 the print compositor's chapter-range/revision signature remain otherwise
 unchanged. Browser checks in \`src/tests/smoke_reader_ui.py\` and pure search
 checks in \`src/tests/test_full_text_search.mjs\` cover these boundaries.
+
+
+## 11. Full-text search visibility and exact passage navigation (2026-11-06)
+
+`src/reader-search.js` indexes both the main notes stream and the chapter-side learning cards. The revision boundary is **sticky per stream**: after encountering `data-revision-start="true"`, `data-section-key="revision"`, or `data-for-section="revision"`, subsequent blocks in that stream are revision content even if later blocks omit the marker. The active **Include chapter summaries** setting is applied inside `find(index, query, {includeRevision:false})` before relevance ranking and paging, not by hiding rendered result buttons afterward. This keeps the scope consistent with the chapter reader and prevents hidden end-of-matter material from reappearing through search.
+
+Search result clicks target the exact generated passage key using an instant scroll, rather than leaving a previous smooth-scroll animation in flight; stale hidden revision results must not switch the reader's visibility preference. Rebuild the published `index.html` and content-hashed `service-worker.js` using `python src/build.py -o index.html`, then run `src/tests/test_full_text_search.mjs` and the browser interaction suite. Preserve `#chapterData` as the immutable authored source.
