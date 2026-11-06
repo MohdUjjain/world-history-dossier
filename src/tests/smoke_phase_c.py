@@ -84,7 +84,11 @@ def main():
 
             # Browser-generated PDF samples the real 16:9 print system.
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#navExportPanel summary").click()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator("#rangeInput").fill("0,1")
             page.evaluate("window.print=()=>{}")
             page.locator("#printBtn").click()
