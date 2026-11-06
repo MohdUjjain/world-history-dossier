@@ -98,19 +98,20 @@
   </div>
   <div class="nav-body">
     <div class="nav-tools">
-      <label for="tocSearch" class="nav-section-label">Find chapter or section</label>
+      <label for="tocSearch" class="nav-section-label">Find chapter or section · Contents only</label>
       <div class="nav-search-field">
         <input id="tocSearch" type="search" autocomplete="off"
-          placeholder="Search chapters, sections, revision…"
-          aria-controls="navToc" aria-describedby="tocSearchStatus">
+          placeholder="Search titles, sections, study shortcuts…"
+          aria-controls="navToc" aria-describedby="tocSearchScope tocSearchStatus">
         <button type="button" id="tocClearSearch" aria-label="Clear contents search" hidden>&times;</button>
       </div>
+      <p id="tocSearchScope" class="nav-search-scope">Searches chapter titles, section headings and study shortcuts—not the full text of chapters.</p>
       <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
         <button type="button" id="tocExpandAll">Expand all</button>
         <button type="button" id="tocCollapseAll">Collapse all</button>
       </div>
       <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
-      <p id="tocNoResults" class="nav-no-results" hidden>No matches. Try another chapter title, section, or revision keyword; you can also clear your search.</p>
+      <p id="tocNoResults" class="nav-no-results" hidden>No matching contents headings. Try another chapter title, section heading or study shortcut; full chapter text is not searched.</p>
     </div>
     <details id="navExportPanel" class="nav-export-details">
       <summary>Print / Export PDF</summary>
@@ -132,7 +133,10 @@
     <div class="nav-offline">
       <div class="nav-section-label">Offline edition</div>
       <p id="offlineStatus" aria-live="polite">Checking offline availability…</p>
+      <p class="nav-edition-meta">Saved edition: <code id="offlineEditionId">Checking…</code></p>
       <button id="offlineKeep" type="button" disabled>Keep on this device</button>
+      <button id="offlineCheckUpdate" type="button" disabled>Check for updates</button>
+      <p id="offlineCheckResult" role="status" aria-live="polite"></p>
     </div>
     <div class="nav-toc-wrap">
       <div class="nav-section-label">Contents</div>
