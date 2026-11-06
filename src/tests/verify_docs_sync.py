@@ -16,9 +16,9 @@ ROOT = Path(__file__).resolve().parents[2]
 RELEASE_DOC = "src/docs/release/RELEASE_VERIFICATION.md"
 STYLE_DOC = "src/CSS_DOC.md"
 SCRIPT_DOC = "src/JS_DOC.md"
-SCRIPT_SOURCES = {"src/engine.js", "src/reader-ui.js", "src/offline-reader.js"}
+SCRIPT_SOURCES = {"src/engine.js", "src/reader-ui.js", "src/reader-search.js", "src/offline-reader.js"}
 REQUIRED_FILES = (
-    "src/styles.css", "src/engine.js", "src/reader-ui.js",
+    "src/styles.css", "src/engine.js", "src/reader-ui.js", "src/reader-search.js",
     STYLE_DOC, SCRIPT_DOC, RELEASE_DOC,
     "src/tests/verify_docs_sync.py", "src/tests/smoke_release_browser.py",
     "src/tests/smoke_release_offline.py", "src/tests/smoke_release_ranges.py",

@@ -129,3 +129,33 @@ Run `python src/tests/smoke_phase_c.py` for the accompanying publication/layout 
 The Contents drawer explicitly labels its search as **contents only**. It filters chapter numbers/titles, section and revision headings, and study shortcuts; it does **not** index paragraph, table, or other full-chapter text. The scope hint remains visible before and after searching, and the input references it with `aria-describedby`.
 
 The Offline edition panel displays the short identifier of a complete saved cache, or “Not saved yet” where no verified complete cache exists. “Check for updates” bypasses the one-minute **automatic** check throttle, reports offline/error/no-new-version and download states, and never forces a reload or alters reading position. An installed update still uses the existing user-controlled reload notice. The identifier identifies a saved *offline* edition, not the currently visible (potentially older) tab.
+
+
+## Full-book search — November 2026
+
+The **Search all notes…** field in the sticky navy reading header
+searches actual content of Chapters 00–32, independently of
+Contents → Index's chapter/section-only filter. A local,
+self-contained `src/reader-search.js` module indexes the original
+chapter source DOM (not PDF clones). Results include text in
+paragraphs, tables/captions, concepts, definitions, diagram labels,
+study aids and revision blocks, with chapter and section context
+and matching snippets. The search works offline.
+
+Case/Latin accent folding, all-terms-within-one-passage matching and
+relevance ranking favour exact phrases and headings. Results use
+native buttons, accessible counts and Show more in batches of 30;
+there is no fixed ceiling. Use `/` to focus search outside an
+edit field, arrows to move through results, Enter to navigate,
+Escape to dismiss. Selecting a result focuses and highlights
+the original flowing note block and gives it a shareable
+`#whd-hit-...` fragment.
+
+Search reads from `#chapterData`, so summaries remain searchable
+when absent from the current view. Choosing such a result
+re-enables summaries via the existing Tools toggle, with a
+temporary notification, then jumps to the passage. Its data
+keys are cloned into `#screenView` on the standard
+`whd:screen-will-render`/`whd:screen-rendered` lifecycle,
+surviving revision toggles with no second position tracker.
+No change to chapter source text or the PDF engine.

@@ -356,3 +356,30 @@ on navy with a gold inset underline; Imperial Archive colour, 44px targets,
 gold focus outlines, safe-area insets and reduced-motion handling remain.
 These overrides are inside `@media screen`: **do not move them into the
 fixed 16:9 print styles**.
+
+
+## November 2026 — screen-only full-book header search
+
+The sticky navy `.site-header` adds `.reader-search-box` beside
+the existing current-chapter label and progress ring. It is separate
+from the Index tab's contents filter `#tocSearch`. Under
+`@media screen`, `#readerSearchInput` has a 42px field and gold
+focus treatment; `#readerSearchClear` and
+`#readerSearchClose` are labelled buttons.
+
+`.reader-search-results` is a fixed, viewport-bounded, scrollable
+navy/gold dropdown with contextual `.reader-search-hit` native
+buttons, `.reader-search-snippet mark` excerpt emphasis and
+`#readerSearchMore` for batched results. The on-page
+`::highlight(whd-reader-search)` Custom Highlight rule and
+`#screenView .reader-search-target` focus outline temporarily
+distinguish the destination passage. `.reader-search-feedback`
+announces when a hidden revision section has been made visible.
+
+Mobile overrides fit header, chapter label, search and progress circle
+without horizontal overflow at 390px/320px; the result dropdown has
+8px side gutters and bounded height. At 360px and below the redundant
+small brand title disappears to preserve useful controls. These
+rules are **screen only**, inside the already print-hidden header,
+not `@media print` or `.page`/`@page` geometry. The 1280×720
+compositor, tables, and export remain untouched.

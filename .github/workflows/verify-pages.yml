@@ -47,7 +47,9 @@ jobs:
             python src/tests/verify_docs_sync.py
           fi
       - name: Simulate offline startup, cache updates and Google Font persistence
-        run: node src/tests/test_offline_cache.mjs
+        run: |
+          node src/tests/test_offline_cache.mjs
+          node src/tests/test_full_text_search.mjs
       - name: Regression — optional offline assets must not block reader
         run: node src/tests/test_optional_precache.mjs
       - name: Install browser and image test dependencies
