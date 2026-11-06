@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "key": "whd-reading-place-v1",
+  "chapter": "16",
+  "lostSection": "whd-edition1-section-ch16-deleted",
+  "checkpoint": {
+    "chapter": "16",
+    "section": "whd-edition1-section-ch16-deleted",
+    "chapterRatio": 0.46,
+    "sectionRatio": 0.25,
+    "savedAt": 1730000000000
+  }
+}

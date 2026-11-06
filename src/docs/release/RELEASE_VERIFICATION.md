@@ -152,3 +152,14 @@ clearing the saved checkpoint. Both tests are regression gates, not visual
 redesign work. A failed optional asset must not be misreported as an
 incomplete offline book, and preserving the previous install remains
 mandatory when core precaching fails.
+
+## Batch 2 — continuity regression fixtures (November 2026)
+
+`src/tests/fixtures/batch2_modified_edition.json` models a saved section
+anchor absent in an updated edition but with its chapter identity intact.
+`python src/tests/smoke_batch2_continuity.py` tests that Continue Reading
+falls back within the surviving chapter, then verifies that hiding summaries
+does not overwrite the saved chapter or strand the reading viewport.
+These are browser-driven, real DOM checks on mobile and desktop. The workflow
+now verifies stacked PRs targeting the Batch 1 review branch as well as PRs
+targeting `main`; this avoids bypassing CI while the batches remain unmerged.
