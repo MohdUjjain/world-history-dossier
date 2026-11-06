@@ -460,6 +460,22 @@ body.drawer-open{overflow:hidden;}
   color:var(--chapter-ink, var(--oxblood)); text-transform:uppercase; margin:30px 0 10px;}
 .main-flow .block{padding-bottom:6px;margin-bottom:16px;}
 .main-flow .block[data-kind="section-head"]{ margin-top:8px; }
+
+/* Screen reading only: ordinary prose should have ONE paragraph break.
+   The generic .block adds 6px padding + 16px margin on top of a <p>'s
+   17px bottom margin (39px total). Leave the <p> margin intact and
+   remove only that duplicate wrapper spacing for narrative paragraphs.
+   flow-root contains the paragraph margin so it cannot collapse across
+   the chapter's section-pair grid. Print page blocks remain unchanged. */
+@media screen {
+  #screenView .main-flow > .block[data-kind="p"],
+  #screenView .main-flow > .block[data-kind="h3para"] {
+    padding-bottom:0;
+    margin-bottom:0;
+    display:flow-root;
+  }
+}
+
 .main-flow .box{ font-size:.98rem; padding:20px 24px; max-width:44rem; }
 .main-flow .box p{ max-width:none; font-size:.98rem; }
 .main-flow .quote{ font-size:1.2rem; padding:18px 24px 18px 26px; max-width:46rem; }
