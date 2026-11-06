@@ -87,10 +87,13 @@ def main():
     # History's checkbox is a per-session setting. Live rebuilds must retain
     # the reading viewport and must not rewrite the pre-existing chapter bookmark.
     page.locator('#navTab').click()
+    page.locator('#navToolsTab').click()
     page.locator('#navExportPanel summary').click()
+    page.locator('#navToolsTab').click()
     page.locator('#includeRevisionChk').uncheck()
     assert page.locator('#chapter-16 .revision-flow').count()==0
     assert page.evaluate('key=>JSON.parse(localStorage.getItem(key)).chapter',KEY)=='16'
+    page.locator('#navToolsTab').click()
     page.locator('#includeRevisionChk').check()
     assert page.locator('#chapter-16 .revision-flow').count()==1
     assert page.locator('#whd-sec-16-s3').count()==1
