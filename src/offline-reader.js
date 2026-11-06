@@ -9,11 +9,9 @@
   const reload = document.getElementById('editionReloadBtn');
   const dismiss = document.getElementById('editionDismissBtn');
   const PREFIX = 'whd-edition-';
-  const ESSENTIALS = [
-    './index.html', './manifest.webmanifest', './icons/icon-192.png',
-    './icons/icon-512.png', './og-image.jpg', './404.html',
-    './sitemap.xml', './robots.txt'
-  ];
+  // The offline-ready label reflects the executable book, not optional
+  // social previews, icons, sitemap or the best-effort 404 fallback.
+  const ESSENTIALS = ['./index.html', './manifest.webmanifest'];
   let registration = null;
   let hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
   let updateShown = false;
