@@ -91,6 +91,7 @@ def main():
             page.locator('#navTab').click()
             assert page.locator('#tocSearchScope').is_visible()
             assert 'not the full text' in page.locator('#tocSearchScope').inner_text()
+            page.locator('#navToolsTab').click()
             page.locator('#offlineCheckUpdate').click()
             page.wait_for_function("""() => /No newer edition detected|An update is being prepared/.test(
               document.getElementById('offlineCheckResult')?.textContent || '')""", timeout=15000)
@@ -105,6 +106,7 @@ def main():
               ?.textContent.includes('All 33 chapters saved offline')""",
               timeout=15000)
             page.locator('#navTab').click()
+            page.locator('#navToolsTab').click()
             page.locator('#offlineCheckUpdate').click()
             page.wait_for_function("""() => document.getElementById('offlineCheckResult')
               ?.textContent.includes('You are offline')""", timeout=10000)
