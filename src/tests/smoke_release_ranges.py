@@ -43,11 +43,15 @@ def main():
                        x.getAttribute('data-title')]))""")
             page.evaluate("window.print=()=>{}")
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#navExportPanel summary").click()
 
             invalid = ("1,,2","1x,2","999,1","0-99","1-2,,5",
                        "-1","1-","1-2000","1 2","1-2,abc")
             for val in invalid:
+                page.locator('#navToolsTab').click()
+                if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                    page.locator('#navExportPanel summary').click()
                 page.locator("#rangeInput").fill(val)
                 assert page.locator("#printBtn").is_disabled(), val
                 assert page.locator("#rangeInput").get_attribute("aria-invalid") == "true", val
@@ -62,6 +66,9 @@ def main():
             for selector, expected in cases:
                 if page.locator("#navPanel").get_attribute("aria-hidden") == "true":
                     page.locator("#navTab").click()
+                page.locator('#navToolsTab').click()
+                if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                    page.locator('#navExportPanel summary').click()
                 page.locator("#rangeInput").fill(selector)
                 assert page.locator("#printBtn").is_enabled(),selector
                 page.locator("#printBtn").click()
@@ -77,7 +84,11 @@ def main():
             # The summaries toggle changes BOTH screen and print composition,
             # with a fresh print signature even when ordered selection stays put.
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator("#rangeInput").fill("0,1")
+            page.locator('#navToolsTab').click()
             page.locator("#includeRevisionChk").uncheck()
             assert page.locator(".nav-shortcut",has_text="Revision").count() == 0
             page.locator("#printBtn").click()
@@ -85,6 +96,7 @@ def main():
             without = page.locator("#printView .page-slot").count()
 
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#includeRevisionChk").check()
             assert page.locator(".nav-shortcut",has_text="Revision").count() == 33
             page.locator("#printBtn").click()
