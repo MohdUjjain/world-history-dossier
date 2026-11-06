@@ -96,7 +96,12 @@ def main() -> None:
             # removed; the same section must stay at the same viewport position.
             page.locator("#navTab").click()
             entry = page.locator('.nav-chapter[data-chapter="29"]')
-            entry.locator(".nav-chapter-toggle").click()
+            # An earlier Expand All may persist while the drawer is closed.
+            # Clicking an already expanded chapter would *collapse* its links.
+            chapter_toggle = entry.locator(".nav-chapter-toggle")
+            if chapter_toggle.get_attribute("aria-expanded") != "true":
+                chapter_toggle.click()
+            assert chapter_toggle.get_attribute("aria-expanded") == "true"
             heading_link = entry.locator(".nav-section-link").nth(2)
             target = heading_link.get_attribute("data-target")
             heading_link.click()
