@@ -654,3 +654,7 @@ or 404 downloads cannot abort installation of a complete HTML reader.
 Installation still rejects a missing required resource, and the offline-ready
 indicator in `src/offline-reader.js` checks only core resources. Keep both
 copies of this contract aligned when new functional assets are introduced.
+
+## Batch 3: Manual edition checks and readable saved identifiers
+
+`src/offline-reader.js` identifies a **complete saved** cache by the established `whd-edition-` prefix and required reader assets, showing its 12-character suffix in `#offlineEditionId`. The `#offlineCheckUpdate` button invokes a manual service-worker `registration.update()` even inside the ordinary one-minute background-check throttle, announcing offline, error, no-new-version and update-in-progress states in `#offlineCheckResult`. `controllerchange` retains the existing user-controlled reload prompt and updates the saved-edition label; it does not automatically reload or touch the bookmark. Contents search remains implemented in `src/reader-ui.js` as heading/shortcut filtering, not body-text search.

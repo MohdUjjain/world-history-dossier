@@ -334,3 +334,7 @@ The screen-only reader is the sole modal drawer and TOC owner; print geometry is
 ## Phase D — visual regression and accessibility release gates (November 2026)
 
 No CSS geometry, colors or text styles are changed in this phase. The new `src/tests/smoke_release_browser.py` captures 1440px, 1024px, 768px, 390px and 320px viewport screenshots (cover, chapter 12, open drawer and wide mobile table) and diffs them against the trusted PR base's compiled `index.html`. The `smoke_release_accessibility.py` script injects pinned axe-core for cover, chapter and modal WCAG A/AA checks, failing on serious/critical results. The PDF inspection script `src/tests/inspect_pdf_release.py` renders representative 16:9 pages and compares their pixels with the committed edition; raw print-col/page dimensions and all-page text bounds are also checked. Output PNGs/JSON are retained as CI artifacts for human visual signoff. See `src/docs/release/RELEASE_VERIFICATION.md` for acceptance criteria and branch-protection limitations.
+
+## Batch 3: Offline edition and contents scope
+
+`src/styles.css` styles `.nav-edition-meta`, `#offlineCheckResult`, and `.nav-search-scope` within the existing navy/parchment Contents drawer. The extra manual update action inherits `.nav-offline button` keyboard-focus and touch target rules; these additions remain screen-only and do not change chapter, PDF, or print geometry.

@@ -79,6 +79,22 @@ def main():
             })""")
             assert initial["controlled"] and len(initial["caches"]) == 1, initial
             assert not initial["pdfPrecached"], initial
+            assert initial["caches"][0] == "whd-edition-" + ORIGINAL, initial
+            # The visible edition label is refreshed asynchronously after
+            # service-worker readiness; wait for the *specific* saved edition.
+            page.wait_for_function("""expected => document.getElementById('offlineEditionId')
+              ?.textContent === expected""", arg=ORIGINAL, timeout=15000)
+            # Closed dialog content is visibility:hidden: inner_text() may be
+            # empty until opened even while its DOM textContent is correct.
+            assert page.locator('#offlineEditionId').text_content().strip() == ORIGINAL, (
+                page.locator('#offlineEditionId').text_content(), ORIGINAL, initial["caches"])
+            page.locator('#navTab').click()
+            assert page.locator('#tocSearchScope').is_visible()
+            assert 'not the full text' in page.locator('#tocSearchScope').inner_text()
+            page.locator('#offlineCheckUpdate').click()
+            page.wait_for_function("""() => /No newer edition detected|An update is being prepared/.test(
+              document.getElementById('offlineCheckResult')?.textContent || '')""", timeout=15000)
+            page.locator('#navClose').click()
             context.set_offline(True)
             page.goto(url, wait_until="load")
             page.locator("#navToc .nav-chapter-link").first.wait_for(state="attached")
@@ -88,6 +104,11 @@ def main():
             page.wait_for_function("""() => document.querySelector('#offlineStatus')
               ?.textContent.includes('All 33 chapters saved offline')""",
               timeout=15000)
+            page.locator('#navTab').click()
+            page.locator('#offlineCheckUpdate').click()
+            page.wait_for_function("""() => document.getElementById('offlineCheckResult')
+              ?.textContent.includes('You are offline')""", timeout=10000)
+            page.locator('#navClose').click()
             context.set_offline(False)
 
             # A newly installed worker must show a non-forced reader update
@@ -111,6 +132,8 @@ def main():
             })""")
             assert after["notice"] and after["chapters"] == 33, after
             assert "whd-edition-" + UPDATED in after["caches"], after
+            page.wait_for_function("""id => document.getElementById('offlineEditionId')
+              ?.textContent === id""", arg=UPDATED, timeout=15000)
             page.locator("#editionDismissBtn").click()
             assert page.locator("#editionUpdateNotice").is_hidden()
             page.goto(url, wait_until="load")

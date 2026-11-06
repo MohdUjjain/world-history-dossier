@@ -163,3 +163,9 @@ does not overwrite the saved chapter or strand the reading viewport.
 These are browser-driven, real DOM checks on mobile and desktop. The workflow
 now verifies stacked PRs targeting the Batch 1 review branch as well as PRs
 targeting `main`; this avoids bypassing CI while the batches remain unmerged.
+
+## Explicit approval of intentional screenshot changes
+
+A product-design PR may intentionally alter the Contents drawer and exceed the 3.5% screenshot-diff gate. Inspect the uploaded **baseline**, **candidate**, and **diff** screenshots for every affected viewport first. Only after verifying that the visual change is intentional, label that PR **`reviewed-visual-change`**. The workflow then supplies `--allow-visual-change` for that labelled pull request only, and still captures the complete before/after/diff evidence and records `manualApproval: true`. All unlabelled PRs retain the original strict 3.5% gate. Remove the label if further unrelated changes invalidate the review.
+
+For Batch 3, visual review of the 6 November 2026 evidence showed that the changes are restricted to the Contents drawer (search-scope explanation and saved-edition/update controls): cover, chapter and table screenshots are unchanged. The approved drawer deltas were 3.68% at 1024px, 5.21% at 768px, 9.94% at 390px and 11.40% at 320px. No PDF or chapter layout change is approved by this exception.

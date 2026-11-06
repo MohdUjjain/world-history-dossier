@@ -105,3 +105,9 @@ The cover and Contents → Print / Export PDF drawer now expose a direct link to
 On the screen, sections with no paired educational cards no longer reserve an empty side column. In narrow viewports, wide comparisons scroll sideways inside the table region; an on-screen hint appears only for actual overflow, and the region can be focused/scroll-controlled using a keyboard. This does not change the PDF's table measurements.
 
 Run `python src/tests/smoke_phase_c.py` for the accompanying publication/layout regressions. For new historical maps or images, follow `src/docs/authoring/HISTORICAL_VISUALIZATIONS.md`: source every label and date, label time-specific geography, verify rights, and provide alt text and print parity.
+
+## Edition identification and contents-only search (Batch 3)
+
+The Contents drawer explicitly labels its search as **contents only**. It filters chapter numbers/titles, section and revision headings, and study shortcuts; it does **not** index paragraph, table, or other full-chapter text. The scope hint remains visible before and after searching, and the input references it with `aria-describedby`.
+
+The Offline edition panel displays the short identifier of a complete saved cache, or “Not saved yet” where no verified complete cache exists. “Check for updates” bypasses the one-minute **automatic** check throttle, reports offline/error/no-new-version and download states, and never forces a reload or alters reading position. An installed update still uses the existing user-controlled reload notice. The identifier identifies a saved *offline* edition, not the currently visible (potentially older) tab.
