@@ -260,25 +260,7 @@ a{ color:var(--oxblood); text-decoration:none; }
 body.drawer-open{overflow:hidden;}
 .nav-tools{padding:17px 20px 14px;border-bottom:1px solid var(--parchment-dk);
   font-family:var(--font-label);}
-.nav-tools label{display:block;margin:0 0 9px;}
-.nav-search-field{position:relative;display:flex;align-items:stretch;}
-#tocSearch{width:100%;border:1px solid var(--parchment-dk);
-  border-radius:var(--r-sm);padding:11px 49px 11px 12px;font:inherit;font-size:.83rem;
-  background:var(--paper);color:var(--ink);min-height:44px;}
-#tocSearch::-webkit-search-cancel-button{display:none;}
-.nav-search-clear{display:none;}
-#tocClearSearch{position:absolute;top:0;right:0;width:44px;height:100%;
-  border:0;background:transparent;color:var(--ink-soft);cursor:pointer;
-  font:700 1.3rem var(--font-label);touch-action:manipulation;}
-#tocClearSearch:hover{color:var(--oxblood);}
-#tocClearSearch[hidden],#tocNoResults[hidden]{display:none!important;}
-.nav-no-results{background:var(--parchment-lt);color:var(--ink-soft);
-  border:1px dashed var(--parchment-dk);border-radius:var(--r-sm);
-  padding:12px;margin:10px 0 0;font:.8rem/1.5 var(--font-label);}
-.nav-search-match{background:var(--gold-lt);color:inherit;border-radius:3px;
-  padding:0 2px;box-decoration-break:clone;}
 #navTab:focus-visible,#navClose:focus-visible,#printBtn:focus-visible,
-#tocSearch:focus-visible,#tocClearSearch:focus-visible,
 .nav-tree-controls button:focus-visible,
 .nav-chapter-link:focus-visible,.nav-chapter-toggle:focus-visible,
 .nav-sections a:focus-visible,.nav-shortcuts a:focus-visible{
@@ -291,8 +273,6 @@ body.drawer-open{overflow:hidden;}
   cursor:pointer;font:700 .76rem var(--font-label);touch-action:manipulation;
 }
 .nav-tree-controls button:disabled{opacity:.55;cursor:default;}
-.nav-tools #tocSearchStatus{margin:10px 0 0;color:var(--ink-soft);font-size:.72rem;}
-.nav-tools .nav-search-scope{margin:7px 0 11px;color:var(--ink-soft);font:.76rem/1.45 var(--font-label);}
 .nav-export-details{border-bottom:1px solid var(--parchment-dk);}
 .nav-export-details>summary{padding:16px 20px;cursor:pointer;list-style:none;
   color:var(--ink);font:700 .84rem var(--font-label);
@@ -372,7 +352,7 @@ body.drawer-open{overflow:hidden;}
 
 /* Keyboard and touch behavior are shared throughout the screen reader. */
 @media screen{
-  #navTab,#navClose,#tocClearSearch,#tocExpandAll,#tocCollapseAll,
+  #navTab,#navClose,#tocExpandAll,#tocCollapseAll,
   .nav-chapter-toggle,.nav-chapter-link,.nav-sections a,.nav-shortcuts a{
     touch-action:manipulation;
   }

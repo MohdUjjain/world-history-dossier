@@ -297,25 +297,7 @@ a{ color:var(--oxblood); text-decoration:none; }
 body.drawer-open{overflow:hidden;}
 .nav-tools{padding:17px 20px 14px;border-bottom:1px solid var(--parchment-dk);
   font-family:var(--font-label);}
-.nav-tools label{display:block;margin:0 0 9px;}
-.nav-search-field{position:relative;display:flex;align-items:stretch;}
-#tocSearch{width:100%;border:1px solid var(--parchment-dk);
-  border-radius:var(--r-sm);padding:11px 49px 11px 12px;font:inherit;font-size:.83rem;
-  background:var(--paper);color:var(--ink);min-height:44px;}
-#tocSearch::-webkit-search-cancel-button{display:none;}
-.nav-search-clear{display:none;}
-#tocClearSearch{position:absolute;top:0;right:0;width:44px;height:100%;
-  border:0;background:transparent;color:var(--ink-soft);cursor:pointer;
-  font:700 1.3rem var(--font-label);touch-action:manipulation;}
-#tocClearSearch:hover{color:var(--oxblood);}
-#tocClearSearch[hidden],#tocNoResults[hidden]{display:none!important;}
-.nav-no-results{background:var(--parchment-lt);color:var(--ink-soft);
-  border:1px dashed var(--parchment-dk);border-radius:var(--r-sm);
-  padding:12px;margin:10px 0 0;font:.8rem/1.5 var(--font-label);}
-.nav-search-match{background:var(--gold-lt);color:inherit;border-radius:3px;
-  padding:0 2px;box-decoration-break:clone;}
 #navTab:focus-visible,#navClose:focus-visible,#printBtn:focus-visible,
-#tocSearch:focus-visible,#tocClearSearch:focus-visible,
 .nav-tree-controls button:focus-visible,
 .nav-chapter-link:focus-visible,.nav-chapter-toggle:focus-visible,
 .nav-sections a:focus-visible,.nav-shortcuts a:focus-visible{
@@ -328,8 +310,6 @@ body.drawer-open{overflow:hidden;}
   cursor:pointer;font:700 .76rem var(--font-label);touch-action:manipulation;
 }
 .nav-tree-controls button:disabled{opacity:.55;cursor:default;}
-.nav-tools #tocSearchStatus{margin:10px 0 0;color:var(--ink-soft);font-size:.72rem;}
-.nav-tools .nav-search-scope{margin:7px 0 11px;color:var(--ink-soft);font:.76rem/1.45 var(--font-label);}
 .nav-export-details{border-bottom:1px solid var(--parchment-dk);}
 .nav-export-details>summary{padding:16px 20px;cursor:pointer;list-style:none;
   color:var(--ink);font:700 .84rem var(--font-label);
@@ -409,7 +389,7 @@ body.drawer-open{overflow:hidden;}
 
 /* Keyboard and touch behavior are shared throughout the screen reader. */
 @media screen{
-  #navTab,#navClose,#tocClearSearch,#tocExpandAll,#tocCollapseAll,
+  #navTab,#navClose,#tocExpandAll,#tocCollapseAll,
   .nav-chapter-toggle,.nav-chapter-link,.nav-sections a,.nav-shortcuts a{
     touch-action:manipulation;
   }
@@ -1062,20 +1042,10 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
     <section id="navIndexPanel" class="nav-view nav-index-view" role="tabpanel"
       aria-labelledby="navIndexTab" tabindex="0">
     <div class="nav-tools">
-      <label for="tocSearch" class="nav-section-label">Find chapter or section · Contents only</label>
-      <div class="nav-search-field">
-        <input id="tocSearch" type="search" autocomplete="off"
-          placeholder="Search titles, sections, study shortcuts…"
-          aria-controls="navToc" aria-describedby="tocSearchScope tocSearchStatus">
-        <button type="button" id="tocClearSearch" aria-label="Clear contents search" hidden>&times;</button>
-      </div>
-      <p id="tocSearchScope" class="nav-search-scope">Searches chapter titles, section headings and study shortcuts—not the full text of chapters.</p>
       <div class="nav-tree-controls" role="group" aria-label="Contents tree controls">
         <button type="button" id="tocExpandAll">Expand all</button>
         <button type="button" id="tocCollapseAll">Collapse all</button>
       </div>
-      <p id="tocSearchStatus" role="status" aria-live="polite">33 chapters</p>
-      <p id="tocNoResults" class="nav-no-results" hidden>No matching contents headings. Try another chapter title, section heading or study shortcut; full chapter text is not searched.</p>
     </div>
     <div class="nav-toc-wrap">
       <div class="nav-section-label">Contents</div>
@@ -3717,9 +3687,6 @@ window.addEventListener('load', function(){
  */
 (function () {
   'use strict';
-  var search = document.getElementById('tocSearch');
-  var clearSearch = document.getElementById('tocClearSearch');
-  var noResults = document.getElementById('tocNoResults');
   var toc = document.getElementById('navToc');
   var panel = document.getElementById('navPanel');
   var trigger = document.getElementById('navTab');
@@ -3734,7 +3701,6 @@ window.addEventListener('load', function(){
   var toolsResumeButton = document.getElementById('navToolsResume');
   var expandButton = document.getElementById('tocExpandAll');
   var collapseButton = document.getElementById('tocCollapseAll');
-  var results = document.getElementById('tocSearchStatus');
   var ring = document.getElementById('chapterProgressRing');
   var ringText = document.getElementById('chapterProgressNumber');
   var currentLabel = document.getElementById('currentChapterLabel');
@@ -3754,10 +3720,6 @@ window.addEventListener('load', function(){
   var savedPosition = null, permitSaving = true, lastSaveAt = 0, lastReading = null;
   var userMoved = false, saveAfter = 0, deferredSaveTimer = null;
 
-  function normalize(s) {
-    var value = (s || '').toLowerCase();
-    return value.normalize ? value.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : value;
-  }
   function safeStorage(action, value) {
     try {
       if (action === 'get') return JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -3873,13 +3835,6 @@ window.addEventListener('load', function(){
     if (!panel.classList.contains('open')) return;
     if (event.key === 'Escape') {
       event.preventDefault();
-      // First Escape clears an active contents search; a second closes
-      // the dialog. This mirrors native search-field expectations.
-      if (document.activeElement === search && search.value.trim()) {
-        search.value = '';
-        applySearch();
-        return;
-      }
       closeDrawer(true);
       return;
     }
@@ -3895,8 +3850,8 @@ window.addEventListener('load', function(){
       event.preventDefault(); first.focus();
     }
   }
-  function updateExpanded(entry, searchable) {
-    var expanded = manualExpanded.has(entry.num) || searchable;
+  function updateExpanded(entry) {
+    var expanded = manualExpanded.has(entry.num);
     entry.wrap.classList.toggle('expanded', expanded);
     entry.toggle.setAttribute('aria-expanded', String(expanded));
     entry.toggle.setAttribute('aria-label',
@@ -3904,65 +3859,14 @@ window.addEventListener('load', function(){
     entry.sections.hidden = !expanded;
     entry.shortcuts.hidden = !expanded || !entry.shortcuts.childElementCount;
   }
-  function highlightLink(link, term) {
-    var label = link.dataset.label || link.textContent;
-    if (!term) { link.textContent = label; return; }
-    // Text-only construction: the search term is never interpreted as HTML.
-    var pos = normalize(label).indexOf(term);
-    if (pos < 0) { link.textContent = label; return; }
-    var hit = document.createElement('mark');
-    hit.className = 'nav-search-match';
-    hit.textContent = label.slice(pos, pos + term.length);
-    link.replaceChildren(
-      document.createTextNode(label.slice(0, pos)), hit,
-      document.createTextNode(label.slice(pos + term.length))
-    );
-  }
-  function applySearch() {
-    var term = normalize(search.value.trim());
-    var shown = 0, sectionCount = 0, shortcutCount = 0;
-    chapterRows.forEach(function(entry) {
-      var chapterMatch = !!term &&
-        normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
-      var visibleChild = false;
-      highlightLink(entry.link, term);
-      entry.sections.querySelectorAll('a[data-target]').forEach(function(a) {
-        var directMatch = !!term && normalize(a.dataset.label).includes(term);
-        a.hidden = !!term && !chapterMatch && !directMatch;
-        highlightLink(a, term);
-        if (directMatch) sectionCount++;
-        if (!a.hidden) visibleChild = true;
-      });
-      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a) {
-        var directMatch = !!term && normalize(a.dataset.label).includes(term);
-        a.hidden = !!term && !chapterMatch && !directMatch;
-        highlightLink(a, term);
-        if (directMatch) shortcutCount++;
-        if (!a.hidden) visibleChild = true;
-      });
-      var visible = !term || chapterMatch || visibleChild;
-      entry.wrap.hidden = !visible;
-      if (visible) shown++;
-      updateExpanded(entry, !!term && visible);
-    });
-    clearSearch.hidden = !term;
-    noResults.hidden = !term || shown > 0;
-    // Manual expand/collapse choices are preserved through a temporary search.
-    expandButton.disabled = !!term;
-    collapseButton.disabled = !!term;
-    if (!term) results.textContent = chapterRows.length + ' chapters';
-    else if (!shown) results.textContent = 'No matching chapters or sections.';
-    else results.textContent = shown + ' matching chapter' + (shown===1?'':'s') +
-      ' · ' + sectionCount + ' section' + (sectionCount===1?'':'s') +
-      (shortcutCount ? ' · ' + shortcutCount + ' study shortcut' +
-        (shortcutCount===1?'':'s') : '');
+  function syncExpandedState() {
+    chapterRows.forEach(updateExpanded);
   }
   function addLink(host, label, id, cls) {
     var a = document.createElement('a');
     a.href = '#' + id;
     a.dataset.target = id;
     a.className = cls;
-    a.dataset.label = label;
     a.textContent = label;
     host.appendChild(a);
     return a;
@@ -4000,7 +3904,7 @@ window.addEventListener('load', function(){
       toggle.addEventListener('click', function(){
         if (manualExpanded.has(num)) manualExpanded.delete(num);
         else manualExpanded.add(num);
-        applySearch();
+        syncExpandedState();
       });
       top.prepend(dot);
       top.appendChild(toggle);
@@ -4036,7 +3940,7 @@ window.addEventListener('load', function(){
       toc.appendChild(wrap);
       chapterRows.push({num:num,title:title,wrap:wrap,link:link,toggle:toggle,sections:list,shortcuts:shortcuts});
     });
-    applySearch();
+    syncExpandedState();
     applyActiveReading();
     rebuilding = false;
     requestReadingUpdate();
@@ -4296,19 +4200,13 @@ window.addEventListener('load', function(){
     event.stopImmediatePropagation();
     goTo(link.dataset.target,true);
   }, true);
-  search.addEventListener('input',applySearch);
-  clearSearch.addEventListener('click',function(){
-    search.value = '';
-    applySearch();
-    search.focus();
-  });
   expandButton.addEventListener('click',function(){
     chapterRows.forEach(function(row){manualExpanded.add(row.num);});
-    applySearch();
+    syncExpandedState();
   });
   collapseButton.addEventListener('click',function(){
     manualExpanded.clear();
-    applySearch();
+    syncExpandedState();
   });
   document.addEventListener('whd:drawer-close',function(event) {
     closeDrawer(!event.detail || event.detail.restoreFocus !== false);

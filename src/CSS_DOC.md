@@ -80,7 +80,7 @@ JS_DOC.md §4).
 ### 3.3 Sidebar navigation panel (NOT the `.side-flow` content sidebar — this is the site-wide nav/export drawer)
 - `#navTab` — small vertical edge tab, fixed right-center. Click opens the panel. This is the *only* screen-visible trigger for navigation/export; deliberately absent from the persistent header.
 - `#navOverlay` / `#navPanel` — overlay dims the page; panel slides in from the right (`transform:translateX(100%)` → `0` via `.open`). Rounded left corners (`--r-lg`), layered shadow.
-- `.nav-tools` (FIRST) contains search and expansion controls; the collapsed `.nav-export-details` (SECOND) stays **above the chapter TOC**, retaining `#includeRevisionChk`, strict `#rangeInput`, `#rangeHint`, and `#printBtn`. The offline status follows export, then the TOC tree. The new explainer clarifies that revision inclusion also controls screen visibility.
+- `.nav-tools` at the top of the Index panel contains only Expand all / Collapse all controls. The Tools tab separately contains revision visibility, ordered PDF export, and offline actions. The header owns the one full-book search; the Index tree has no duplicate search field.
 - `.nav-toc-wrap` / `.nav-toc` (SECOND) — enlarged, legible collapsible chapter tree (chapter labels 1rem; section links .94rem, with deeper click/tap targets), `.nav-chapter.expanded` toggles `.nav-sections` visibility. Each chapter row has a small `.dot` colored via inline style from `paletteFor()` (JS), matching that chapter's identity color — same palette as everywhere else, just a low-key nod rather than the full treatment the print TOC gets (§3.4).
 - `.nav-section-label` — small caps label ("EXPORT" / "CONTENTS") headlining each zone.
 
@@ -264,10 +264,10 @@ are documented in `src/docs/hosting/PWA.md`.
 
 The new **screen-only** styles in `src/styles.css` cover:
 
-- `#navPanel[aria-hidden]`, `.nav-tools`, `#tocSearch`,
-  `.nav-tree-controls` and `.nav-export-details`: an inert modal drawer,
-  searchable chapter index, expand/collapse controls and a collapsed-by-default
-  Print / Export PDF details panel.
+- `#navPanel[aria-hidden]`, `.nav-tools`, `.nav-tree-controls` and
+  `.nav-export-details`: an inert modal drawer, Index-only expand/collapse
+  controls and a collapsed-by-default Print / Export PDF details panel.
+  Search appears only in the reading header.
 - `.nav-chapter-link` and `.nav-chapter-toggle`: **separate** chapter
   navigation and chevron actions with keyboard focus outlines.
   `.nav-chapter.current-chapter`, `.nav-sections a.current-section`
@@ -310,11 +310,11 @@ bookmarked PDF and paired-sidebar layout before changing print CSS.
 The screen-only reader is the sole modal drawer and TOC owner; print geometry is unchanged.
 
 - **Drawer positioning and touch:** The Contents edge tab, modal close button, chapter chevrons, chapter/section links, tree controls, and study shortcut chips have roughly 44px minimum hit areas. The modal's own `.nav-body` scrolls with overscroll containment and bottom safe-area padding; `#navPanel` uses `100dvh` where supported. The backdrop blocks background touches. The `body.drawer-open` scroll lock is set or removed only by the reader UI.
-- **Search treatment:** `.nav-search-field` positions the clear control, `.nav-search-match` highlights matched text, `.nav-no-results` explains zero results, and tree-wide expansion controls visibly disable while searching. Filters never mutate manual branch expansion.
-- **Accessible movement:** `.skip-to-content` is revealed by keyboard focus and targets `main#screenView`. Focus outlines cover Contents/close/search/print and tree controls; reduced-motion media rules suppress drawer and control transitions. The new no-JavaScript note is hidden during print.
+- **Index tree:** no sidebar search or filter. Expand all / Collapse all always operate on the entire chapter tree and the reader retains manually chosen open chapters.
+- **Accessible movement:** `.skip-to-content` is revealed by keyboard focus and targets `main#screenView`. Focus outlines cover Contents/close/print and tree controls; header full-book search has its own styles. Reduced-motion rules suppress drawer and control transitions. The no-JavaScript note is hidden during print.
 - **Mobile chapter context:** The compact `#currentChapterLabel` now remains visible on screens 640px or narrower, using a shortened available measure rather than disappearing altogether.
 - **Reader-only scope:** These rules apply to screen navigation and controls. Do not alter `.page`, `.page-slot`, `.col-main`, `.col-side`, or the fixed 16:9 print measurement rules to tune mobile layout.
-- **Tests:** Run `src/tests/smoke_reader_interactions.py` alongside `smoke_reader_ui.py` and `smoke_phase_a.py`. Check touch target sizes, horizontal overflow, mobile header context, modal focus, search outcomes and reading-place preservation.
+- **Tests:** Run `src/tests/smoke_reader_interactions.py` alongside `smoke_reader_ui.py` and `smoke_phase_a.py`. Check tree expansion, touch target sizes, horizontal overflow, mobile header context, modal focus, header-search outcomes and reading-place preservation.
 
 ---
 
@@ -337,7 +337,7 @@ No CSS geometry, colors or text styles are changed in this phase. The new `src/t
 
 ## Batch 3: Offline edition and contents scope
 
-`src/styles.css` styles `.nav-edition-meta`, `#offlineCheckResult`, and `.nav-search-scope` within the existing navy/parchment Contents drawer. The extra manual update action inherits `.nav-offline button` keyboard-focus and touch target rules; these additions remain screen-only and do not change chapter, PDF, or print geometry.
+`src/styles.css` styles `.nav-edition-meta` and `#offlineCheckResult` within the existing navy/parchment Contents drawer. The earlier contents-only `.nav-search-scope` styling was retired with the duplicate sidebar search. The manual update action inherits `.nav-offline button` keyboard-focus and touch target rules; these additions remain screen-only and do not change print geometry.
 
 ## 2026-11-06 — Accessible Index / Tools drawer
 
@@ -362,7 +362,7 @@ fixed 16:9 print styles**.
 
 The sticky navy `.site-header` adds `.reader-search-box` beside
 the existing current-chapter label and progress ring. It is separate
-from the Index tab's contents filter `#tocSearch`. Under
+from the Index navigation tree (which has no search input). Under
 `@media screen`, `#readerSearchInput` has a 42px field and gold
 focus treatment; `#readerSearchClear` and
 `#readerSearchClose` are labelled buttons.
@@ -411,3 +411,8 @@ media, the prose-specific override is inactive. The changed CSS is inlined by
 `service-worker.js` whenever it changes. The reader browser smoke test
 asserts ~17px between adjacent paragraph blocks and that heading spacing
 remains distinct.
+
+
+## 2026-11-06 — Remove duplicate sidebar search
+
+`src/shell.html` no longer has the Index-only `#tocSearch`, its clear button, scope hint, result counter or empty state. The `.nav-tools` section now contains only `#tocExpandAll` and `#tocCollapseAll`; `src/styles.css` removes obsolete `.nav-search-*` and `#toc*Search*` rules while keeping all tree-control keyboard focus and touch sizing. **Full-book search remains in the sticky reading header** (`#readerSearchInput` and `.reader-search-results`) and is unaffected. This is a screen-only cleanup; the print engine, page measurements, and physical PDF are unchanged.

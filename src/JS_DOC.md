@@ -444,11 +444,10 @@ chapter links, sections, shortcuts and separate chevrons directly. There is
 no `MutationObserver` and no legacy TOC renderer.
 
 Each chapter has independent manually expanded/collapsed state (a Set of
-chapter numbers). Search temporarily displays only matches and expands
-their branches **without modifying that Set**. Clearing search restores the
-reader's manual expansion choices. Expand all and collapse all update that
-Set intentionally. Search indexes chapter numbers, official titles, rendered
-section headings (including revision labels), and study shortcuts.
+chapter numbers). Expand all and Collapse all intentionally update that Set,
+and `syncExpandedState()` applies it to the tree. The Index panel has no
+search control or temporary filtering; header full-book search lives in
+`src/reader-search.js`.
 
 Chapter titles navigate; chevrons only expand/collapse. Revision shortcuts
 point to the real revision heading; definitions and memory aids link to
@@ -573,19 +572,17 @@ valid identity for this test because removing dozens of earlier revision zones
 necessarily changes global document height. Test the same section's
 *viewport-relative* position and the drawer's focus/scroll state instead.
 
-### Search, keyboard and mobile
+### Index tree, keyboard and mobile
 
-`addLink()` stores plain-text `data-label` values. `applySearch()` matches
-chapter titles/numbers, section headings and shortcut names, displays counts,
-renders text-only `mark` highlights, shows an empty state on zero results,
-and reveals a clear control only for nonempty queries. Search expansion is
-temporary and does not mutate the manual-expanded Set. While searching, global
-Expand all/Collapse all are disabled. Escape clears focused nonempty search
-first; a subsequent Escape closes the modal. A single document keydown handler
-traps Tab and manages Escape. The mobile chapter label stays visible and the
-UI uses approximately 44px touch targets, an independent drawer scroll region
-and dynamic viewport units. `main#screenView` is a landmark and a keyboard
-skip link is available.
+The Index panel is navigation-only: chapter links, individual section toggles,
+learning shortcuts and Expand all / Collapse all buttons. `addLink()` creates
+plain-text anchors, `updateExpanded()` reads `manualExpanded`, and
+`syncExpandedState()` synchronizes visibility plus ARIA attributes after
+TOC rebuild or manual changes. There is **no Index search/filter**. Escape
+closes the modal directly; a single document keydown handler traps Tab. The
+mobile chapter label stays visible and the UI uses approximately 44px touch
+targets, independent panel scroll regions and dynamic viewport units.
+`main#screenView` remains a landmark and keyboard skip-link target.
 
 ### Regression suite
 
@@ -594,9 +591,10 @@ Run:
 `python src/tests/smoke_reader_interactions.py`
 `python src/tests/smoke_phase_a.py`
 
-The new Phase B suite checks search counts/highlights/empty results, keyboard
-close/clear/focus, export scroll unlock, viewport-relative reading preservation
-on revision toggles, mobile touch target sizes and overflow. It does not modify
+The Phase B suite now checks navigation-only Index controls, keyboard
+close/focus, export scroll unlock, viewport-relative reading preservation
+on revision toggles, mobile touch target sizes and overflow. The header search
+has separate whole-book interaction tests. It does not modify
 any chapter content or the fixed 1280×720 PDF page measurements.
 
 ---
@@ -657,7 +655,7 @@ copies of this contract aligned when new functional assets are introduced.
 
 ## Batch 3: Manual edition checks and readable saved identifiers
 
-`src/offline-reader.js` identifies a **complete saved** cache by the established `whd-edition-` prefix and required reader assets, showing its 12-character suffix in `#offlineEditionId`. The `#offlineCheckUpdate` button invokes a manual service-worker `registration.update()` even inside the ordinary one-minute background-check throttle, announcing offline, error, no-new-version and update-in-progress states in `#offlineCheckResult`. `controllerchange` retains the existing user-controlled reload prompt and updates the saved-edition label; it does not automatically reload or touch the bookmark. Contents search remains implemented in `src/reader-ui.js` as heading/shortcut filtering, not body-text search.
+`src/offline-reader.js` identifies a **complete saved** cache by the established `whd-edition-` prefix and required reader assets, showing its 12-character suffix in `#offlineEditionId`. The `#offlineCheckUpdate` button invokes a manual service-worker `registration.update()` even inside the ordinary one-minute background-check throttle, announcing offline, error, no-new-version and update-in-progress states in `#offlineCheckResult`. `controllerchange` retains the existing user-controlled reload prompt and updates the saved-edition label; it does not automatically reload or touch the bookmark. The former contents-only search in `src/reader-ui.js` has been removed; header full-book search is implemented in `src/reader-search.js`.
 
 ## 2026-11-06 — Reader Index / Tools tab model
 
@@ -669,7 +667,7 @@ activates a view. Opening Contents defaults to Index. The floating opener,
 background inert isolation, Escape/backdrop dismissal and focus return remain.
 
 `focusables()` explicitly excludes inactive tab buttons and inert descendants
-from the modal trap. Index owns `#tocSearch`, `#navToc` and tree expansion.
+from the modal trap. Index owns `#navToc` and tree expansion (no search).
 Tools owns `#includeRevisionChk`, `#navExportPanel`, `#rangeInput`,
 `#printBtn`, the prebuilt PDF link and offline status/actions. The revision
 switch **still affects BOTH screen and custom-print composition**; the
@@ -689,8 +687,8 @@ No new localStorage key or scroll tracker is introduced.
 
 The independent `src/reader-search.js` is inlined by `src/build.py` at
 `/*__READER_SEARCH__*/` in `src/shell.html`. The existing `src/reader-ui.js`
-still owns the Index tab's **contents-only** chapter/section filter, the
-modal Contents drawer, the reading bookmark and active-section highlighting.
+still owns the navigation-only Index tab, the modal Contents drawer,
+the reading bookmark and active-section highlighting.
 Neither the pagination engine nor authored source chapters are modified.
 
 `WHDReaderSearch.buildIndex(document)` creates a lazy, local text corpus
@@ -735,3 +733,8 @@ Rebuild `index.html` and the service worker together. Test browser
 search, deep links, mobile widths, revision-hidden jump, results paging
 and the existing Index filter separately. Any edits to this JS file
 must update `src/JS_DOC.md` in the same change.
+
+
+## 2026-11-06 — Remove sidebar contents filter
+
+`src/reader-ui.js` no longer resolves `#tocSearch`, `#tocClearSearch`, `#tocSearchStatus`, or `#tocNoResults`. `applySearch()`, `highlightLink()`, and its local `normalize()` were deleted; no content search or text highlights run inside the Contents drawer. The chapter tree is unchanged: `syncExpandedState()` renders `manualExpanded` decisions through `updateExpanded()`, and Expand all / Collapse all remain always available. Escape simply dismisses the drawer and restores opener focus. The independent header `src/reader-search.js` still performs complete-book text matching and deep links; neither chapter source nor PDF pagination changes. Browser tests should confirm old Index search controls are absent and header search still works.

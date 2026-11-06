@@ -8,9 +8,9 @@ It does **not** alter the chapter source modules or 16:9 PDF pagination.
 
 ### Index and Tools views — 2026-11-06
 
-The drawer has two screen-only accessible tabs. **Index** hosts chapter and
-section searching (contents only), Expand/Collapse and chapter-colour
-navigation. **Tools** hosts a locally saved Continue Reading shortcut
+The drawer has two screen-only accessible tabs. **Index** hosts the chapter
+and section navigation tree, Expand/Collapse and chapter-colour navigation;
+it has no search field. **Tools** hosts a locally saved Continue Reading shortcut
 (when available), revision visibility, collapsible ordered PDF export,
 the complete bookmarked PDF link, and offline/update controls.
 Both tabs have 44px touch targets. Click, Left/Right arrows, Home and End
@@ -28,19 +28,15 @@ chapter data or original reading positions.
   drawer; the mobile layout fills the viewport behind a backdrop.
 - Chapter titles are **links to chapters**, separate from their chevrons.
   Chevron buttons expand/collapse nested section and study-shortcut links.
-- Search matches chapter numbers, titles, section/revision headings, and study
-  shortcuts. Results highlight matched phrases, distinguish matching chapter
-  and section counts, and offer a clear control and zero-results message.
-  Filtering temporarily expands matching branches without altering manually
-  chosen expansion. A focused search clears on the first Escape and the
-  drawer closes on a second Escape.
+- The sidebar has no search field. Use the full-text search in the sticky
+  reading header to find text, headings, tables and study aids.
 - Expand all and Collapse all deliberately set the chapter states.
 - The current chapter and section are highlighted as reading progresses;
   `aria-current="location"` marks the active link. Scrolling never expands
   a branch automatically.
 - The drawer is a single-owner modal dialog: Escape/backdrop closes it,
-  focus returns to the opener, Tab/Shift+Tab remain inside, and hidden
-  branches are unfocusable. Expand/collapse is disabled while filtering.
+  focus returns to the opener, Tab/Shift+Tab remain inside, and collapsed
+  branches are unfocusable. Expand/Collapse remains available at all times.
   On mobile, tap targets are approximately 44px; the drawer scrolls
   independently over the book.
 
@@ -126,7 +122,7 @@ Run `python src/tests/smoke_phase_c.py` for the accompanying publication/layout 
 
 ## Edition identification and contents-only search (Batch 3)
 
-The Contents drawer explicitly labels its search as **contents only**. It filters chapter numbers/titles, section and revision headings, and study shortcuts; it does **not** index paragraph, table, or other full-chapter text. The scope hint remains visible before and after searching, and the input references it with `aria-describedby`.
+The earlier contents-only filter was removed from the Contents drawer; there is now one comprehensive search in the reading header. The Index panel is strictly a chapter/section navigation tree.
 
 The Offline edition panel displays the short identifier of a complete saved cache, or “Not saved yet” where no verified complete cache exists. “Check for updates” bypasses the one-minute **automatic** check throttle, reports offline/error/no-new-version and download states, and never forces a reload or alters reading position. An installed update still uses the existing user-controlled reload notice. The identifier identifies a saved *offline* edition, not the currently visible (potentially older) tab.
 
@@ -134,8 +130,8 @@ The Offline edition panel displays the short identifier of a complete saved cach
 ## Full-book search — November 2026
 
 The **Search all notes…** field in the sticky navy reading header
-searches actual content of Chapters 00–32, independently of
-Contents → Index's chapter/section-only filter. A local,
+searches actual content of Chapters 00–32. It is the reader's only
+search control; Contents → Index is navigation-only. A local,
 self-contained `src/reader-search.js` module indexes the original
 chapter source DOM (not PDF clones). Results include text in
 paragraphs, tables/captions, concepts, definitions, diagram labels,
@@ -159,3 +155,8 @@ keys are cloned into `#screenView` on the standard
 `whd:screen-will-render`/`whd:screen-rendered` lifecycle,
 surviving revision toggles with no second position tracker.
 No change to chapter source text or the PDF engine.
+
+
+## Sidebar simplification — 2026-11-06
+
+Removed the redundant search input, clear control, count, and empty state from the Index tab. The Index view retains its full chapter and section tree, manual expansion, reading-location highlights and study shortcuts. Expand all / Collapse all remain functional; Escape dismisses the modal without a search-clearing stage. The full-text search field stays in the fixed header and continues to search all 33 chapters including revisions. No change to HTML chapter content, print engine or saved reading checkpoint.

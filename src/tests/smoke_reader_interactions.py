@@ -60,27 +60,17 @@ def main() -> None:
             page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.id") == "navClose"
 
-            # Search has semantic counts, safe highlights, a true empty state,
-            # and an Escape-to-clear-then-Escape-to-close keyboard sequence.
-            page.locator('.nav-chapter[data-chapter="1"] .nav-chapter-toggle').click()
-            assert page.locator('.nav-chapter[data-chapter="1"] .nav-chapter-toggle').get_attribute("aria-expanded") == "true"
-            page.locator("#tocSearch").fill("globalization")
-            assert page.locator("#navToc .nav-search-match").count() > 0
-            assert "matching chapter" in page.locator("#tocSearchStatus").inner_text()
-            assert "section" in page.locator("#tocSearchStatus").inner_text()
-            assert page.locator("#tocExpandAll").is_disabled()
-            assert page.locator("#tocCollapseAll").is_disabled()
-            assert page.locator("#tocClearSearch").is_visible()
-            page.locator("#tocSearch").fill("zzzzzyyy-nothing")
-            assert page.locator("#tocNoResults").is_visible()
-            assert page.locator('.nav-chapter:not([hidden])').count() == 0
-            page.locator("#tocSearch").focus()
-            page.keyboard.press("Escape")
-            assert page.locator("#tocSearch").input_value() == ""
-            assert page.locator("#navPanel").get_attribute("aria-hidden") == "false"
-            assert page.locator("#tocNoResults").is_hidden()
-            assert page.locator("#tocExpandAll").is_enabled()
-            assert page.locator('.nav-chapter[data-chapter="1"] .nav-chapter-toggle').get_attribute("aria-expanded") == "true"
+            # Index retains chapter expansion but has no duplicate search;
+            # Escape closes the modal directly and restores opener focus.
+            assert page.locator('#tocSearch, #tocClearSearch, #tocNoResults').count() == 0
+            assert page.locator('#readerSearchInput').count() == 1
+            chapter_one = page.locator('.nav-chapter[data-chapter="1"] .nav-chapter-toggle')
+            chapter_one.click()
+            assert chapter_one.get_attribute("aria-expanded") == "true"
+            page.locator("#tocCollapseAll").click()
+            assert chapter_one.get_attribute("aria-expanded") == "false"
+            page.locator("#tocExpandAll").click()
+            assert chapter_one.get_attribute("aria-expanded") == "true"
             page.keyboard.press("Escape")
             assert page.locator("#navPanel").get_attribute("aria-hidden") == "true"
             assert page.evaluate("document.activeElement.id") == "navTab"

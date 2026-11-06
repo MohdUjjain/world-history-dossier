@@ -4,9 +4,6 @@
  */
 (function () {
   'use strict';
-  var search = document.getElementById('tocSearch');
-  var clearSearch = document.getElementById('tocClearSearch');
-  var noResults = document.getElementById('tocNoResults');
   var toc = document.getElementById('navToc');
   var panel = document.getElementById('navPanel');
   var trigger = document.getElementById('navTab');
@@ -21,7 +18,6 @@
   var toolsResumeButton = document.getElementById('navToolsResume');
   var expandButton = document.getElementById('tocExpandAll');
   var collapseButton = document.getElementById('tocCollapseAll');
-  var results = document.getElementById('tocSearchStatus');
   var ring = document.getElementById('chapterProgressRing');
   var ringText = document.getElementById('chapterProgressNumber');
   var currentLabel = document.getElementById('currentChapterLabel');
@@ -41,10 +37,6 @@
   var savedPosition = null, permitSaving = true, lastSaveAt = 0, lastReading = null;
   var userMoved = false, saveAfter = 0, deferredSaveTimer = null;
 
-  function normalize(s) {
-    var value = (s || '').toLowerCase();
-    return value.normalize ? value.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : value;
-  }
   function safeStorage(action, value) {
     try {
       if (action === 'get') return JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -160,13 +152,6 @@
     if (!panel.classList.contains('open')) return;
     if (event.key === 'Escape') {
       event.preventDefault();
-      // First Escape clears an active contents search; a second closes
-      // the dialog. This mirrors native search-field expectations.
-      if (document.activeElement === search && search.value.trim()) {
-        search.value = '';
-        applySearch();
-        return;
-      }
       closeDrawer(true);
       return;
     }
@@ -182,8 +167,8 @@
       event.preventDefault(); first.focus();
     }
   }
-  function updateExpanded(entry, searchable) {
-    var expanded = manualExpanded.has(entry.num) || searchable;
+  function updateExpanded(entry) {
+    var expanded = manualExpanded.has(entry.num);
     entry.wrap.classList.toggle('expanded', expanded);
     entry.toggle.setAttribute('aria-expanded', String(expanded));
     entry.toggle.setAttribute('aria-label',
@@ -191,65 +176,14 @@
     entry.sections.hidden = !expanded;
     entry.shortcuts.hidden = !expanded || !entry.shortcuts.childElementCount;
   }
-  function highlightLink(link, term) {
-    var label = link.dataset.label || link.textContent;
-    if (!term) { link.textContent = label; return; }
-    // Text-only construction: the search term is never interpreted as HTML.
-    var pos = normalize(label).indexOf(term);
-    if (pos < 0) { link.textContent = label; return; }
-    var hit = document.createElement('mark');
-    hit.className = 'nav-search-match';
-    hit.textContent = label.slice(pos, pos + term.length);
-    link.replaceChildren(
-      document.createTextNode(label.slice(0, pos)), hit,
-      document.createTextNode(label.slice(pos + term.length))
-    );
-  }
-  function applySearch() {
-    var term = normalize(search.value.trim());
-    var shown = 0, sectionCount = 0, shortcutCount = 0;
-    chapterRows.forEach(function(entry) {
-      var chapterMatch = !!term &&
-        normalize('ch ' + entry.num + ' chapter ' + entry.num + ' ' + entry.title).includes(term);
-      var visibleChild = false;
-      highlightLink(entry.link, term);
-      entry.sections.querySelectorAll('a[data-target]').forEach(function(a) {
-        var directMatch = !!term && normalize(a.dataset.label).includes(term);
-        a.hidden = !!term && !chapterMatch && !directMatch;
-        highlightLink(a, term);
-        if (directMatch) sectionCount++;
-        if (!a.hidden) visibleChild = true;
-      });
-      entry.shortcuts.querySelectorAll('a[data-target]').forEach(function(a) {
-        var directMatch = !!term && normalize(a.dataset.label).includes(term);
-        a.hidden = !!term && !chapterMatch && !directMatch;
-        highlightLink(a, term);
-        if (directMatch) shortcutCount++;
-        if (!a.hidden) visibleChild = true;
-      });
-      var visible = !term || chapterMatch || visibleChild;
-      entry.wrap.hidden = !visible;
-      if (visible) shown++;
-      updateExpanded(entry, !!term && visible);
-    });
-    clearSearch.hidden = !term;
-    noResults.hidden = !term || shown > 0;
-    // Manual expand/collapse choices are preserved through a temporary search.
-    expandButton.disabled = !!term;
-    collapseButton.disabled = !!term;
-    if (!term) results.textContent = chapterRows.length + ' chapters';
-    else if (!shown) results.textContent = 'No matching chapters or sections.';
-    else results.textContent = shown + ' matching chapter' + (shown===1?'':'s') +
-      ' · ' + sectionCount + ' section' + (sectionCount===1?'':'s') +
-      (shortcutCount ? ' · ' + shortcutCount + ' study shortcut' +
-        (shortcutCount===1?'':'s') : '');
+  function syncExpandedState() {
+    chapterRows.forEach(updateExpanded);
   }
   function addLink(host, label, id, cls) {
     var a = document.createElement('a');
     a.href = '#' + id;
     a.dataset.target = id;
     a.className = cls;
-    a.dataset.label = label;
     a.textContent = label;
     host.appendChild(a);
     return a;
@@ -287,7 +221,7 @@
       toggle.addEventListener('click', function(){
         if (manualExpanded.has(num)) manualExpanded.delete(num);
         else manualExpanded.add(num);
-        applySearch();
+        syncExpandedState();
       });
       top.prepend(dot);
       top.appendChild(toggle);
@@ -323,7 +257,7 @@
       toc.appendChild(wrap);
       chapterRows.push({num:num,title:title,wrap:wrap,link:link,toggle:toggle,sections:list,shortcuts:shortcuts});
     });
-    applySearch();
+    syncExpandedState();
     applyActiveReading();
     rebuilding = false;
     requestReadingUpdate();
@@ -583,19 +517,13 @@
     event.stopImmediatePropagation();
     goTo(link.dataset.target,true);
   }, true);
-  search.addEventListener('input',applySearch);
-  clearSearch.addEventListener('click',function(){
-    search.value = '';
-    applySearch();
-    search.focus();
-  });
   expandButton.addEventListener('click',function(){
     chapterRows.forEach(function(row){manualExpanded.add(row.num);});
-    applySearch();
+    syncExpandedState();
   });
   collapseButton.addEventListener('click',function(){
     manualExpanded.clear();
-    applySearch();
+    syncExpandedState();
   });
   document.addEventListener('whd:drawer-close',function(event) {
     closeDrawer(!event.detail || event.detail.restoreFocus !== false);
