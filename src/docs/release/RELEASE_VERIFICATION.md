@@ -133,3 +133,22 @@ For a change to the 245-page source edition, compare the full candidate PDF
 to the committed edition using both the visual evidence and the structural
 QA report. A newly intentional page-count difference requires a documented
 editorial review rather than bypassing the check silently.
+
+## Batch 1 — correctness and resilience cross-repository regression
+
+The release workflow runs `node src/tests/test_optional_precache.mjs`
+after the established cache lifecycle suite. It deliberately fails one
+optional social-preview fetch and asserts that the complete reader still
+activates; it separately rejects a missing core `index.html` and confirms
+that the previous edition is not replaced.
+
+`python src/tests/smoke_batch1_dialog_notices.py` runs in desktop and
+390px mobile Chromium, seeds an actual saved reading position, verifies
+background inertness and focus restoration while the Contents modal is open,
+then reproduces an edition notification through consecutive service-worker
+`controllerchange` events. The update notice must take priority over the
+resume card; dismissing the update returns the resume suggestion without
+clearing the saved checkpoint. Both tests are regression gates, not visual
+redesign work. A failed optional asset must not be misreported as an
+incomplete offline book, and preserving the previous install remains
+mandatory when core precaching fails.
