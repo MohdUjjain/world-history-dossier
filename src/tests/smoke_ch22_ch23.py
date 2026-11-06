@@ -51,12 +51,12 @@ with sync_playwright() as pw:
  # Verify the live export workflow on the two-chapter test fixture.
  p.emulate_media(media='screen')
  p.locator('#navTab').click()
- p.locator('#includeRevisionChk').uncheck()
+ p.locator('#navToolsTab').click();p.locator('#includeRevisionChk').uncheck()
  assert p.locator('#screenView .revision-flow').count()==0
  p.locator('#includeRevisionChk').check()
  assert p.locator('#screenView .revision-flow').count()==2
  p.evaluate('window.print=function(){}')
- p.locator('#rangeInput').fill('23,22,23')
+ p.locator('#navExportPanel summary').click();p.locator('#rangeInput').fill('23,22,23')
  p.locator('#printBtn').click()
  p.emulate_media(media='print')
  assert p.locator('#printView .hero-title').all_text_contents()==[CASES[n]['title'] for n in (23,22,23)]
