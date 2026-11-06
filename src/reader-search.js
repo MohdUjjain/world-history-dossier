@@ -143,7 +143,12 @@
         if (!stream) return;
         var sectionKey = 'intro', revision = false;
         Array.from(stream.children).forEach(function (block) {
-          if (block.getAttribute('data-revision-start') === 'true') revision = true;
+          // The hidden boundary is the first revision marker OR its section
+          // identity. Follow it through the rest of each authored stream,
+          // including cards without an explicit data-revision-start flag.
+          if (block.getAttribute('data-revision-start') === 'true' ||
+              block.getAttribute('data-section-key') === 'revision' ||
+              block.getAttribute('data-for-section') === 'revision') revision = true;
           if (inMain && block.getAttribute('data-kind') === 'section-head')
             sectionKey = block.getAttribute('data-section-key') || sectionKey;
           var key = inMain ? sectionKey : (block.getAttribute('data-for-section') || 'intro');
@@ -289,8 +294,9 @@
       var original = target.getAttribute('tabindex');
       if (original === null) target.setAttribute('tabindex', '-1');
       requestAnimationFrame(function () {
-        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        target.scrollIntoView({block: 'center', behavior: reduce ? 'instant' : 'smooth'});
+        // A search result should land deterministically, even if a previous
+        // smooth animation or a chapter-visibility rebuild is in flight.
+        target.scrollIntoView({block: 'center', behavior: 'instant'});
         target.focus({preventScroll: true});
         highlightTimer = setTimeout(function () {
           if (highlighted === target) clearHighlight();
