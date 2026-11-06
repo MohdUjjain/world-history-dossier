@@ -54,6 +54,20 @@ def main():
             assert page.locator('#navPanel').get_attribute('aria-hidden') == 'false'
             assert page.locator('#navTab').get_attribute('aria-expanded') == 'true'
             assert page.evaluate("document.activeElement.id") == 'navClose'
+            assert page.locator('#navIndexTab').get_attribute('aria-selected') == 'true'
+            assert page.locator('#navToolsPanel').is_hidden()
+            page.locator('#navIndexTab').focus()
+            page.keyboard.press('ArrowRight')
+            assert page.locator('#navToolsTab').get_attribute('aria-selected') == 'true'
+            assert page.locator('#navIndexPanel').is_hidden()
+            assert page.evaluate("document.activeElement.id") == 'navToolsTab'
+            page.keyboard.press('Home')
+            assert page.locator('#navIndexTab').get_attribute('aria-selected') == 'true'
+            page.keyboard.press('End')
+            assert page.locator('#navToolsTab').get_attribute('aria-selected') == 'true'
+            page.keyboard.press('ArrowLeft')
+            assert page.locator('#navIndexPanel').is_visible()
+            assert page.locator('#navToolsPanel').is_hidden()
             page.keyboard.press('Escape')
             assert page.locator('#navPanel').get_attribute('aria-hidden') == 'true'
             assert page.evaluate("document.activeElement.id") == 'navTab'
@@ -105,13 +119,26 @@ def main():
             # Invalid print ranges cannot generate a partial PDF; ordered
             # reversed ranges and repeated chapters remain supported.
             page.locator('#navTab').click()
+            page.locator('#navToolsTab').click()
             page.locator('#navExportPanel summary').click()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator('#rangeInput').fill('999,1')
             assert page.locator('#printBtn').is_disabled()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator('#rangeInput').fill('1,,2')
             assert page.locator('#printBtn').is_disabled()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator('#rangeInput').fill('1x,2')
             assert page.locator('#printBtn').is_disabled()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator('#rangeInput').fill('6-5,1,6')
             assert page.locator('#printBtn').is_enabled()
             page.evaluate('window.print=()=>{}')
@@ -146,11 +173,14 @@ def main():
 
             # Revision toggle rebuilds screen nav without losing functionality.
             other.locator('#navTab').click()
+            other.locator('#navToolsTab').click()
             other.locator('#navExportPanel summary').click()
+            other.locator('#navToolsTab').click()
             other.locator('#includeRevisionChk').uncheck()
             other.wait_for_timeout(100)
             assert other.locator('#navToc .nav-chapter-link').count() == 33
             assert other.locator('.nav-shortcut',has_text='Revision').count() == 0
+            other.locator('#navToolsTab').click()
             other.locator('#includeRevisionChk').check()
             other.wait_for_timeout(100)
             assert other.locator('.nav-shortcut',has_text='Revision').count() == 33
