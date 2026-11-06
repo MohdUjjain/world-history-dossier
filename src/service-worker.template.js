@@ -5,10 +5,12 @@
 const CACHE_PREFIX = 'whd-edition-';
 const CACHE_NAME = CACHE_PREFIX + '__REVISION__';
 const FONT_CACHE = 'whd-google-fonts-v1';
-const SHELL = [
-  './index.html', './manifest.webmanifest', './icons/icon-192.png',
-  './icons/icon-512.png', './og-image.jpg', './404.html',
-  './sitemap.xml', './robots.txt'
+// The flowing HTML book is a required atomic unit; auxiliary web metadata
+// and imagery must never block a complete edition from being installed.
+const CORE_ASSETS = ['./index.html', './manifest.webmanifest'];
+const OPTIONAL_ASSETS = [
+  './icons/icon-192.png', './icons/icon-512.png', './og-image.jpg',
+  './404.html', './sitemap.xml', './robots.txt'
 ];
 const SCOPE = new URL(self.registration.scope);
 
@@ -19,10 +21,13 @@ function isGoogleFont(url) {
 }
 
 self.addEventListener('install', (event) => {
-  // A failed/incomplete download never replaces a working older edition.
-  event.waitUntil(caches.open(CACHE_NAME)
-    .then((cache) => cache.addAll(SHELL))
-    .then(() => self.skipWaiting()));
+  // An incomplete core never replaces a working older edition.
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(CORE_ASSETS);
+    await Promise.allSettled(OPTIONAL_ASSETS.map(path => cache.addAll([path])));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
