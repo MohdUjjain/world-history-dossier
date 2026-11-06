@@ -104,7 +104,11 @@ def main() -> None:
             # Use eight chapters: enough to check every identity pair without
             # the expense of repaginating the full 33-chapter book repeatedly.
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#navExportPanel summary").click()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator("#rangeInput").fill("0-7")
             page.evaluate("window.print=()=>{}")
             page.locator("#printBtn").click()
@@ -167,6 +171,7 @@ def main() -> None:
             # A real input change, unlike a duplicate beforeprint, must rebuild.
             page.emulate_media(media="screen")
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#includeRevisionChk").uncheck()
             changed = page.evaluate("""() => {
               const old=document.querySelector('#printView .page-slot');
