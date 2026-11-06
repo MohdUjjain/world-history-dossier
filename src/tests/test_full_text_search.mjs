@@ -18,4 +18,10 @@ const fixtures = [
 const found = search.find(fixtures,'imperial');
 assert.deepEqual(found.map(x=>x.entry.index),[0,1]);
 assert.equal(search.find(fixtures,'nonexistent').length,0);
+const hiddenFixtures = fixtures.concat([
+  {index:3,chapter:'3',normalized:search.normalize('Revision summary of empire'),
+   text:'Revision summary of empire',kind:'passage',revision:true}
+]);
+assert.equal(search.find(hiddenFixtures,'revision',{includeRevision:false}).length,0);
+assert.equal(search.find(hiddenFixtures,'revision',{includeRevision:true}).length,1);
 console.log('PASS: full-book case/accent matching, excerpts and relevance');
