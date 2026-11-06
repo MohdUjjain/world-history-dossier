@@ -24,4 +24,10 @@ const hiddenFixtures = fixtures.concat([
 ]);
 assert.equal(search.find(hiddenFixtures,'revision',{includeRevision:false}).length,0);
 assert.equal(search.find(hiddenFixtures,'revision',{includeRevision:true}).length,1);
+// A visibility change can be applied to the same immutable source index;
+// hidden revision records must be absent before ranking or paging.
+assert.equal(search.find(hiddenFixtures,'empire',{includeRevision:false})
+  .some(hit=>hit.entry.revision),false);
+assert.equal(search.find(hiddenFixtures,'empire',{includeRevision:true})
+  .some(hit=>hit.entry.revision),true);
 console.log('PASS: full-book case/accent matching, excerpts and relevance');
