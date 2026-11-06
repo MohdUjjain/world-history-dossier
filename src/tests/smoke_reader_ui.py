@@ -140,12 +140,11 @@ def main():
             page.locator('#tocCollapseAll').click()
             assert page.locator('.nav-chapter-toggle[aria-expanded="false"]').count() == 33
 
-            # Searching opens only matching branches; clearing restores manual state.
-            page.locator('#tocSearch').fill('globalization')
-            assert page.locator('.nav-chapter:not([hidden])').count() >= 1
-            assert page.locator('.nav-chapter:not([hidden])').count() < 33
-            assert page.locator('.nav-chapter:not([hidden]) .nav-chapter-toggle[aria-expanded="true"]').count() >= 1
-            page.locator('#tocSearch').fill('')
+            # Index is a navigation tree only; full-book search belongs in the header.
+            assert page.locator('#tocSearch, #tocClearSearch, #tocSearchStatus').count() == 0
+            assert page.locator('#navIndexPanel .nav-tree-controls button').count() == 2
+            assert page.locator('#navToc .nav-chapter:not([hidden])').count() == 33
+            assert page.locator('#readerSearchInput').count() == 1
             assert page.locator('.nav-chapter-toggle[aria-expanded="false"]').count() == 33
 
             # Chevron is independent of the chapter link and keyboard-operable.
