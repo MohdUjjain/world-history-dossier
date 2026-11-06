@@ -33,7 +33,9 @@ def main():
     # Visibility is a transient reading choice, not a checkpoint rewrite.
     old=page.evaluate("key=>JSON.parse(localStorage.getItem(key)).chapter",FIX['key'])
     page.locator('#navTab').click()
+    page.locator('#navToolsTab').click()
     page.locator('#navExportPanel summary').click()
+    page.locator('#navToolsTab').click()
     page.locator('#includeRevisionChk').uncheck()
     assert page.locator('#chapter-'+FIX['chapter']+' .revision-flow').count()==0
     assert page.evaluate("key=>JSON.parse(localStorage.getItem(key)).chapter",FIX['key'])==old
