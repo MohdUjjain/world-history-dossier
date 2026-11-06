@@ -20,12 +20,12 @@ def main():
             for width in (390,1360):
                 context=browser.new_context(viewport={'width':width,'height':844},
                                             reduced_motion='reduce',service_workers='block')
-                context.add_init_script("""() => localStorage.setItem('whd-reading-place-v1',
+                context.add_init_script("""localStorage.setItem('whd-reading-place-v1',
                   JSON.stringify({chapter:'16',section:null,chapterRatio:0.25,
-                                  sectionRatio:0,savedAt:Date.now()}))""")
+                                  sectionRatio:0,savedAt:Date.now()}));""")
                 page=context.new_page()
                 page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='load')
-                page.locator('#navToc .nav-chapter-link').first.wait_for()
+                page.locator('#navToc .nav-chapter-link').first.wait_for(state='attached')
                 page.locator('#resumeReaderPrompt').wait_for(state='visible',timeout=6000)
                 page.locator('#navTab').click()
                 assert page.locator('#navPanel').get_attribute('aria-modal')=='true'
