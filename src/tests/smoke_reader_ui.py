@@ -92,6 +92,17 @@ def main():
             page.locator('#includeRevisionChk').uncheck()
             page.keyboard.press('Escape')
             assert page.locator('#screenView .revision-flow').count() == 0
+            # A previously shared result URL into revision material must not
+            # override the explicit Hide summaries setting either.
+            old_revision_fragment = page.evaluate("""() => {
+              const entry=window.WHDReaderSearch.buildIndex(document).find(e=>e.revision);
+              if(!entry)throw Error('Missing indexed revision passage');
+              return entry.fragment;
+            }""")
+            page.evaluate("fragment => { location.hash='#'+fragment; }",old_revision_fragment)
+            page.wait_for_function("() => !!document.querySelector('#screenView .reader-search-target')")
+            assert page.locator('#screenView .revision-flow').count() == 0
+            assert not page.locator('#includeRevisionChk').is_checked()
             page.locator('#readerSearchInput').fill('Summary of Twentieth-Century Imperial Evolutions')
             page.wait_for_function("document.querySelector('#readerSearchStatus').textContent.includes('No matches')")
             assert page.locator('#readerSearchHits .reader-search-hit').count() == 0
