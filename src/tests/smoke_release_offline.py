@@ -89,8 +89,10 @@ def main():
             assert page.locator('#offlineEditionId').text_content().strip() == ORIGINAL, (
                 page.locator('#offlineEditionId').text_content(), ORIGINAL, initial["caches"])
             page.locator('#navTab').click()
-            assert page.locator('#tocSearchScope').is_visible()
-            assert 'not the full text' in page.locator('#tocSearchScope').inner_text()
+            # Contents no longer has a redundant search box or a stale
+            # contents-only scope label. Full-text search lives in the header.
+            assert page.locator('#tocSearch, #tocSearchScope').count() == 0
+            assert page.locator('#readerSearchInput').is_visible()
             page.locator('#navToolsTab').click()
             page.locator('#offlineCheckUpdate').click()
             page.wait_for_function("""() => /No newer edition detected|An update is being prepared/.test(
