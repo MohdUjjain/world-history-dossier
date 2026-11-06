@@ -19,7 +19,7 @@ function simulate(breakInstall = false) {
     fetches++;
     const url = urlOf(request);
     if (!online) throw Error('offline');
-    if (breakInstall && url.endsWith('/404.html')) throw Error('interrupted download');
+    if (breakInstall && url.endsWith('/index.html')) throw Error('interrupted download');
     return new Response(url.endsWith('/index.html') ? 'FULL 33-CHAPTER READER' : 'asset: ' + url);
   };
   class MockCache {
