@@ -178,10 +178,14 @@
     });
     return corpus;
   }
-  function find(index, query) {
+  function find(index, query, options) {
     var phrase = normalize(query), found = [];
     if (!phrase) return found;
+    var includeRevision = !options || options.includeRevision !== false;
     index.forEach(function (entry) {
+      // The source index is immutable, but visible search scope follows
+      // Contents → Tools → Include chapter summaries on every query.
+      if (!includeRevision && entry.revision) return;
       var where = locate(entry.normalized, phrase);
       if (!where) return;
       var score = (where.exact ? 140 : 0) +
@@ -241,25 +245,20 @@
       if (entry.selector) return chapter.querySelector(entry.selector);
       return chapter.querySelector('[data-whd-search-key="' + entry.key + '"]');
     }
-    function reveal(entry) {
-      var toggle = doc.getElementById('includeRevisionChk');
-      if (entry.revision && toggle && !toggle.checked) {
-        toggle.checked = true;
-        toggle.dispatchEvent(new Event('change', {bubbles: true}));
-        if (feedback) {
-          feedback.textContent = 'Chapter summaries are now shown to reveal this search result. Hide them again under Contents → Tools.';
-          feedback.hidden = false;
-          setTimeout(function () { feedback.hidden = true; }, 6500);
-        }
-      }
+    function revisionAllowed(entry) {
+      var checkbox = doc.getElementById('includeRevisionChk');
+      return !entry.revision || !checkbox || checkbox.checked;
     }
     function navigate(entry, fromHash) {
+      if (!revisionAllowed(entry) && !fromHash) {
+        render(); return; // stale search result cannot change Tools preference
+      }
       hide();
       invalidate();
-      suppressFragment = true;
-      reveal(entry);
-      suppressFragment = false;
-      var target = targetFor(entry);
+      // Old passage URLs remain safe: when revision is hidden, land on its
+      // chapter instead of silently enabling summaries or changing settings.
+      var target = revisionAllowed(entry) ? targetFor(entry) :
+        doc.getElementById('chapter-' + entry.chapter);
       if (!target) return;
       clearHighlight();
       var anchor = target.id || entry.fragment;
@@ -348,7 +347,9 @@
       shown = 0; found = []; more.hidden = true;
       clear.hidden = !currentQuery;
       if (!currentQuery || doc.body.classList.contains('drawer-open')) { hide(); return; }
-      found = find(ensure(), currentQuery);
+      found = find(ensure(), currentQuery, {
+        includeRevision: revisionAllowed({revision:true})
+      });
       appendPage(); show();
     }
     input.addEventListener('input', function () {
@@ -420,6 +421,7 @@
     });
     doc.addEventListener('whd:screen-rendered', function () {
       if (!screenRenderedOnce) { screenRenderedOnce = true; maybeFollowHash(); }
+      else if (!popup.hidden && input.value.trim()) render();
     });
     window.addEventListener('hashchange', maybeFollowHash);
     window.addEventListener('popstate', maybeFollowHash);
