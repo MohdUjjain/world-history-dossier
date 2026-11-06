@@ -63,7 +63,8 @@
         if (results.every(Boolean)) {
           ready = true;
           savedEdition = name.slice(PREFIX.length);
-          break;
+          // CacheStorage lists older editions first during activation;
+          // prefer the newest complete edition without trusting partial caches.
         }
       }
       if (editionId) editionId.textContent = savedEdition || 'Not saved yet';
