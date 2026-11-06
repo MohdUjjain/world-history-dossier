@@ -88,7 +88,11 @@ def main() -> None:
             # Export closes through the same modal handler; body never remains
             # scroll-locked and keyboard focus returns to the Contents control.
             page.locator("#navTab").click()
+            page.locator('#navToolsTab').click()
             page.locator("#navExportPanel summary").click()
+            page.locator('#navToolsTab').click()
+            if not page.locator('#navExportPanel').evaluate('(e)=>e.open'):
+                page.locator('#navExportPanel summary').click()
             page.locator("#rangeInput").fill("4,3")
             page.evaluate("window.print=()=>{}")
             page.locator("#printBtn").click()
@@ -114,6 +118,7 @@ def main() -> None:
             assert before["scroll"] > 10000, before
             page.locator("#navTab").click()
             assert page.locator("#navExportPanel").evaluate("(e)=>e.open")
+            page.locator('#navToolsTab').click()
             page.locator("#includeRevisionChk").uncheck()
             page.wait_for_timeout(130)
             without = page.evaluate("""id => ({
@@ -129,6 +134,7 @@ def main() -> None:
             )
             assert without["drawer"] and without["focus"] == "includeRevisionChk"
             assert page.locator(".nav-shortcut", has_text="Revision").count() == 0
+            page.locator('#navToolsTab').click()
             page.locator("#includeRevisionChk").check()
             page.wait_for_timeout(130)
             restored = page.evaluate("""id => ({
