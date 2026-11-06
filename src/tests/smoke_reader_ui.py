@@ -85,20 +85,42 @@ def main():
             assert page.locator('#screenView .reader-search-target').count() == 1
             assert page.evaluate("location.hash.startsWith('#whd-hit-')")
 
-            # An excerpt in an excluded revision can still be found; opening
-            # it uses the existing Tools toggle and re-renders the target.
+            # Search respects the Tools boundary; hidden summaries cannot be
+            # retrieved and selecting hits must never silently re-enable them.
             page.locator('#navTab').click()
             page.locator('#navToolsTab').click()
             page.locator('#includeRevisionChk').uncheck()
             page.keyboard.press('Escape')
             assert page.locator('#screenView .revision-flow').count() == 0
+            # A previously shared result URL into revision material must not
+            # override the explicit Hide summaries setting either.
+            old_revision_fragment = page.evaluate("""() => {
+              const entry=window.WHDReaderSearch.buildIndex(document).find(e=>e.revision);
+              if(!entry)throw Error('Missing indexed revision passage');
+              return entry.fragment;
+            }""")
+            page.evaluate("fragment => { location.hash='#'+fragment; }",old_revision_fragment)
+            page.wait_for_function("() => !!document.querySelector('#screenView .reader-search-target')")
+            assert page.locator('#screenView .revision-flow').count() == 0
+            assert not page.locator('#includeRevisionChk').is_checked()
             page.locator('#readerSearchInput').fill('Summary of Twentieth-Century Imperial Evolutions')
+            page.wait_for_function("document.querySelector('#readerSearchStatus').textContent.includes('No matches')")
+            assert page.locator('#readerSearchHits .reader-search-hit').count() == 0
+            assert not page.locator('#includeRevisionChk').is_checked()
+            assert page.locator('#screenView .revision-flow').count() == 0
+            # Ordinary authored paragraphs still return search results.
+            page.locator('#readerSearchInput').fill('Pan-Turanianism')
             page.locator('#readerSearchHits .reader-search-hit').first.wait_for(state='visible')
             page.locator('#readerSearchHits .reader-search-hit').first.click()
-            assert page.locator('#includeRevisionChk').is_checked()
-            assert page.locator('#screenView .revision-flow').count() == 33
-            assert page.locator('#readerSearchFeedback').is_visible()
-            assert page.locator('#screenView .reader-search-target').count() == 1
+            assert not page.locator('#includeRevisionChk').is_checked()
+            assert page.locator('#screenView .revision-flow').count() == 0
+            page.locator('#navTab').click()
+            page.locator('#navToolsTab').click()
+            page.locator('#includeRevisionChk').check()
+            page.keyboard.press('Escape')
+            page.locator('#readerSearchInput').fill('Summary of Twentieth-Century Imperial Evolutions')
+            page.locator('#readerSearchHits .reader-search-hit').first.wait_for(state='visible')
+            assert page.locator('#readerSearchHits .reader-search-hit').count() > 0
 
             # Slash shortcut and Escape remain independent of the Contents
             # modal and leave the typed full-book query intact.

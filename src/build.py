@@ -114,7 +114,8 @@ def main() -> int:
         for path, content in outputs.items():
             if args.check:
                 if not path.is_file() or read(path) != content:
-                    print(f"STALE or missing: {path.relative_to(ROOT)}", file=sys.stderr)
+                    print(f"STALE or missing: {path.relative_to(ROOT)}" +
+                          (f"; expected offline revision {version}" if version else ""), file=sys.stderr)
                     return 1
             else:
                 path.parent.mkdir(parents=True, exist_ok=True)
