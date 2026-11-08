@@ -1,0 +1,103 @@
+{
+  "description": "Second-pass grammar and residual editorial-insertion repairs",
+  "edits": [
+    {
+      "chapter": 5,
+      "old": "“Today” in supplied notes; no year stated",
+      "new": "“Today” (year unspecified)",
+      "count": 1,
+      "reason": "Remove input provenance; preserve missing year"
+    },
+    {
+      "chapter": 13,
+      "old": "; territorial details in the account require checking.",
+      "new": "",
+      "count": 1,
+      "reason": "Remove unrequested historical verification caveat"
+    },
+    {
+      "chapter": 15,
+      "old": "the briefing also places fortification restrictions here (check treaty attribution).",
+      "new": "fortification restrictions are also listed here.",
+      "count": 1,
+      "reason": "Remove unauthorized source-check parenthesis"
+    },
+    {
+      "chapter": 18,
+      "old": "in the account’s account their very existence",
+      "new": "in this interpretation even their very existence",
+      "count": 1,
+      "reason": "Repair tautology from earlier meta removal"
+    },
+    {
+      "chapter": 23,
+      "old": "Consequence in the source argument",
+      "new": "Consequence",
+      "count": 1,
+      "reason": "Remove artificial input label in comparison table"
+    },
+    {
+      "chapter": 23,
+      "old": "Source reality",
+      "new": "Political reality",
+      "count": 1,
+      "reason": "Replace provenance label with substantive contrast"
+    },
+    {
+      "chapter": 25,
+      "old": "The account summarize the arrangement as",
+      "new": "The institutional rule is summarized as",
+      "count": 1,
+      "reason": "Fix grammar; remove intrusive provenance narrator"
+    },
+    {
+      "chapter": 26,
+      "old": "Territories described in the source",
+      "new": "Territories described",
+      "count": 1,
+      "reason": "Remove input meta from comparison table"
+    },
+    {
+      "chapter": 26,
+      "old": "Independent in the source’s regional comparison",
+      "new": "Independent in the regional comparison",
+      "count": 1,
+      "reason": "Remove source-output label"
+    },
+    {
+      "chapter": 27,
+      "old": "Explanations of Britain’s postwar decline in the source",
+      "new": "Explanations of Britain’s postwar decline",
+      "count": 1,
+      "reason": "Remove source-meta table title"
+    },
+    {
+      "chapter": 27,
+      "old": "Result emphasized in the source",
+      "new": "Result",
+      "count": 1,
+      "reason": "Remove source-label column heading"
+    },
+    {
+      "chapter": 27,
+      "old": "as summarized in the source",
+      "new": "in the historical account",
+      "count": 1,
+      "reason": "Remove input-provenance metadata"
+    },
+    {
+      "chapter": 29,
+      "old": "in the supplied chronology",
+      "new": "in the summit chronology",
+      "count": 1,
+      "reason": "Remove input-note title"
+    },
+    {
+      "chapter": 31,
+      "old": "in the account’s account of <em>The Lexus and the Olive Tree</em>",
+      "new": "in the discussion of <em>The Lexus and the Olive Tree</em>",
+      "count": 1,
+      "reason": "Remove doubled provenance phrase"
+    }
+  ]
+}

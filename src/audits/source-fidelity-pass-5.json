@@ -1,0 +1,117 @@
+{
+  "description": "Second sweep of residual editorial intrusions and grammar",
+  "edits": [
+    {
+      "chapter": 24,
+      "old": "The proportions in the supplied 1945 and 1980 figures; a decisive gain in voting presence.",
+      "new": "The 1945 and 1980 figures show the rise in Afro-Asian voting presence.",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 27,
+      "old": "the account also treat <strong>Israel</strong> as an important strategic asset",
+      "new": "Israel also became an important strategic asset",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 27,
+      "old": "The briefing argues that military spending encouraged his external <strong>hubris</strong>",
+      "new": "Military spending encouraged the Shah’s external <strong>hubris</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 27,
+      "old": "The account criticize the ensuing handling of <strong>Shiite and Kurdish uprisings</strong>",
+      "new": "The subsequent suppression of <strong>Shiite and Kurdish uprisings</strong> exposed a contradiction in the coalition’s policy",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 27,
+      "old": "The source’s central lesson is that the region was <strong>not merely a superpower chessboard</strong>.",
+      "new": "The region was <strong>not merely a superpower chessboard</strong>: local states actively shaped the rival powers’ policies.",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 28,
+      "old": "The loan promised to China as part of the 1950 alliance package, as stated in the briefing.",
+      "new": "The loan promised to China as part of the 1950 alliance package.",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 29,
+      "old": "the account also describe destruction of vineyards in <strong>Armenia</strong>",
+      "new": "the campaign also involved destruction of vineyards in <strong>Armenia</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 29,
+      "old": "The briefing recounts a personal crisis and public humiliation in <strong>1987</strong>",
+      "new": "He underwent a personal crisis and public humiliation in <strong>1987</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 30,
+      "old": "US economic integration in the 1990s (figures as supplied)",
+      "new": "US economic integration in the 1990s",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 31,
+      "old": "the account illustrate a rise from roughly <strong>15 to 700 tons per hour</strong>",
+      "new": "port throughput rose in the example from roughly <strong>15 to 700 tons per hour</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 31,
+      "old": "the briefing describes over <strong>60,000 transnational corporations</strong>",
+      "new": "the figures show over <strong>60,000 transnational corporations</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 31,
+      "old": "The briefing names the US external deficit and geopolitical competition over <strong>Taiwan</strong> among sources of vulnerability.",
+      "new": "The US external deficit and geopolitical competition over <strong>Taiwan</strong> were among the vulnerabilities discussed.",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 32,
+      "old": "The briefing describes al-Qaeda as a network that cooperated closely with the <strong>Taliban</strong> regime",
+      "new": "Al-Qaeda cooperated closely with the <strong>Taliban</strong> regime",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 32,
+      "old": "The account describes a dispersed landscape of loosely connected or ideologically inspired cells.",
+      "new": "",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 32,
+      "old": "It also states <strong>“over 3,000” deaths</strong>, the count given in the account.",
+      "new": "It also gives the death toll as <strong>“over 3,000.”</strong>",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    },
+    {
+      "chapter": 32,
+      "old": "the briefing identifies a shift to some extremist religious or “transcendental” groups",
+      "new": "a shift occurred toward some extremist religious or “transcendental” groups",
+      "count": 1,
+      "reason": "Remove editorial meta/disclaimer; repair grammar and duplicate source text"
+    }
+  ]
+}

@@ -1,0 +1,411 @@
+{
+  "basis": "Drive historical briefing documents 14,16,18,19,20,22,24,25,26,28",
+  "edits": [
+    {
+      "chapter": 14,
+      "old": "chronology from the supplied briefing",
+      "new": "chronology of the interwar financial breakdown",
+      "count": 1,
+      "reason": "Remove source-generation phrase in table title"
+    },
+    {
+      "chapter": 14,
+      "old": "(verification needed)",
+      "new": "",
+      "count": 1,
+      "reason": "Remove unrequested external verification instruction"
+    },
+    {
+      "chapter": 14,
+      "old": "The supplied interpretation:",
+      "new": "Historical interpretation:",
+      "count": 1,
+      "reason": "Restore the historical position directly"
+    },
+    {
+      "chapter": 14,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 14,
+      "old": "The notes instead",
+      "new": "The account instead",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 14,
+      "old": "the notes give",
+      "new": "the account gives",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 14,
+      "old": "The supplied account",
+      "new": "The account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 14,
+      "old": "The source highlights",
+      "new": "The account highlights",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 16,
+      "old": "as these notes argue",
+      "new": "in this analysis",
+      "count": 1,
+      "reason": "Remove notebook self-reference"
+    },
+    {
+      "chapter": 16,
+      "old": "Official deaths quoted in these notes",
+      "new": "Reported deaths at Amritsar",
+      "count": 1,
+      "reason": "Remove self-qualification in statistic"
+    },
+    {
+      "chapter": 16,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "The notes challenge",
+      "new": "The account challenges",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "the notes to",
+      "new": "the account to",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "The notes describe",
+      "new": "The account describes",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "the notes cite",
+      "new": "the account cites",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "the notes stress",
+      "new": "the account stresses",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 16,
+      "old": "the supplied account",
+      "new": "the account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 16,
+      "old": "in these notes",
+      "new": "in the account",
+      "reason": "Remove notes self-reference"
+    },
+    {
+      "chapter": 18,
+      "old": "The supplied account does not attribute this solely",
+      "new": "The explanation does not attribute this solely",
+      "count": 1,
+      "reason": "Preserve specific source contrast"
+    },
+    {
+      "chapter": 18,
+      "old": "The notes emphasize",
+      "new": "The account emphasizes",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 18,
+      "old": "The notes argue",
+      "new": "The account argues",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 18,
+      "old": "The supplied account",
+      "new": "The account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 18,
+      "old": "The source emphasizes",
+      "new": "The account emphasizes",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 18,
+      "old": "the source’s account",
+      "new": "the account’s account",
+      "reason": "Remove input-context qualifier"
+    },
+    {
+      "chapter": 18,
+      "old": "the source’s interpretation",
+      "new": "the account’s interpretation",
+      "reason": "Remove input-context qualifier"
+    },
+    {
+      "chapter": 19,
+      "old": "The source argues",
+      "new": "The account argues",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 19,
+      "old": "The source stresses",
+      "new": "The account stresses",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 19,
+      "old": "The source traces",
+      "new": "The account traces",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 20,
+      "old": "the notes with",
+      "new": "the account with",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 20,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 20,
+      "old": "The supplied account",
+      "new": "The account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 20,
+      "old": "The source emphasizes",
+      "new": "The account emphasizes",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 20,
+      "old": "The source distinguishes",
+      "new": "The account distinguishes",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 22,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 24,
+      "old": "SOURCE QUALIFICATION",
+      "new": "HISTORICAL DISTINCTION",
+      "count": 1,
+      "reason": "Replace warning label with historical content type"
+    },
+    {
+      "chapter": 24,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 24,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 24,
+      "old": "The notes argue",
+      "new": "The account argues",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 24,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 24,
+      "old": "the supplied account",
+      "new": "the account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 24,
+      "old": "the supplied account",
+      "new": "the account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 25,
+      "old": "as quoted in the supplied notes",
+      "new": "as quoted in the account",
+      "count": 1,
+      "reason": "Remove notebook label in attribution"
+    },
+    {
+      "chapter": 25,
+      "old": "the notes portray",
+      "new": "the account portray",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 25,
+      "old": "The notes summarize",
+      "new": "The account summarize",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 25,
+      "old": "The notes argue",
+      "new": "The account argues",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 25,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "In the source, communist-led movements could also be <strong>authentically nationalist</strong>.",
+      "new": "Communist-led movements could also be <strong>authentically nationalist</strong>.",
+      "count": 1,
+      "reason": "Present the historical conclusion directly"
+    },
+    {
+      "chapter": 26,
+      "old": "The source explicitly says both China and the USSR sometimes pressed Hanoi toward outcomes it did not fully want.",
+      "new": "China and the USSR sometimes pressed Hanoi toward outcomes it did not fully want.",
+      "count": 1,
+      "reason": "Remove intrusive metacommentary"
+    },
+    {
+      "chapter": 26,
+      "old": "The notes describe",
+      "new": "The account describes",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes describe",
+      "new": "the account describes",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes emphasize",
+      "new": "the account emphasizes",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes characterize",
+      "new": "the account characterize",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "The notes stress",
+      "new": "The account stresses",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "The notes contrast",
+      "new": "The account contrasts",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes to",
+      "new": "the account to",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 26,
+      "old": "the supplied briefing",
+      "new": "the account",
+      "reason": "Remove artificial source qualifier"
+    },
+    {
+      "chapter": 26,
+      "old": "The source emphasizes",
+      "new": "The account emphasizes",
+      "reason": "Replace model-source self-reference"
+    },
+    {
+      "chapter": 28,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 28,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 28,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 28,
+      "old": "The notes report",
+      "new": "The account reports",
+      "reason": "Remove input-source label"
+    },
+    {
+      "chapter": 28,
+      "old": "the supplied interpretation",
+      "new": "the account",
+      "reason": "Remove artificial source qualifier"
+    }
+  ]
+}

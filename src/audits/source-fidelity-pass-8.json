@@ -1,0 +1,138 @@
+{
+  "description": "Direct historical exposition in readings 16–31",
+  "edits": [
+    {
+      "chapter": 16,
+      "old": "The account challenges that linear picture.",
+      "new": "The linear progression from elite nationalism to mass mobilization was not universal.",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 16,
+      "old": "The account describes it as the only genuinely independent Middle Eastern case",
+      "new": "Turkey is presented as the only genuinely independent Middle Eastern case",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 17,
+      "old": "The account presents this brutality as a prelude to the later destruction of civilian life",
+      "new": "This brutality foreshadowed the destruction of civilian life",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 17,
+      "old": "The account sees Ethiopia as a hinge between older colonial conquest",
+      "new": "Ethiopia became a hinge between older colonial conquest",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 18,
+      "old": "The account emphasizes the paradox of a state previously seeking security",
+      "new": "The paradox was that a state previously seeking security",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 19,
+      "old": "The account traces the intellectual foundations of settlement policy back to",
+      "new": "The intellectual foundations of settlement policy lay in",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 20,
+      "old": "The account presents the scare as a powerful justification",
+      "new": "The scare became a powerful justification",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 20,
+      "old": "The account emphasizes how the language of defensive security accompanied territorial expansion.",
+      "new": "The language of defensive security accompanied territorial expansion.",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 21,
+      "old": "The account describes a patrol boundary at the <strong>26th meridian</strong>",
+      "new": "The patrol boundary reached the <strong>26th meridian</strong>",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 23,
+      "old": "The account interprets the end as <strong>asymmetric</strong>",
+      "new": "The end was <strong>asymmetric</strong>",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 23,
+      "old": "The account contrasts earlier optimism",
+      "new": "This contrasts earlier optimism",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 24,
+      "old": "The account argues that these ambitions were largely frustrated",
+      "new": "These ambitions were largely frustrated",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 25,
+      "old": "The account argues the relationship was not so simple",
+      "new": "The relationship was not so simple",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 26,
+      "old": "the account describes a variety of national revolutions",
+      "new": "these were varied national revolutions",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 27,
+      "old": "The account challenges the idea that the region simply followed superpower instructions",
+      "new": "The region did not simply follow superpower instructions",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 27,
+      "old": "The account calls the measure hurried and insufficiently attentive",
+      "new": "The measure was hurried and insufficiently attentive",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 29,
+      "old": "The account’s interpretation emphasizes contingency.",
+      "new": "The collapse was contingent on interacting political and economic developments.",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 31,
+      "old": "The account estimates a marked fall in transport costs",
+      "new": "Transport costs fell markedly",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    },
+    {
+      "chapter": 31,
+      "old": "The account associates the retreat with heightened security fears and imperial competition.",
+      "new": "The retreat was linked to security fears and imperial competition.",
+      "count": 1,
+      "reason": "Convert mechanical attribution into the source's historical claim"
+    }
+  ]
+}

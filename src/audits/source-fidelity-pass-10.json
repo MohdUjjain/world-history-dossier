@@ -1,0 +1,26 @@
+{
+  "description": "Final cohesion and grammar repairs",
+  "edits": [
+    {
+      "chapter": 23,
+      "old": "This contrasts earlier optimism about rapidly achieving advanced socialist prosperity with later, more cautious conceptions of continuing socialist development.",
+      "new": "Later Soviet conceptions of continuing socialist development were more cautious than earlier promises of rapid prosperity.",
+      "count": 1,
+      "reason": "Correct sentence continuity after removal of editorial metacommentary"
+    },
+    {
+      "chapter": 27,
+      "old": "The subsequent suppression of <strong>Shiite and Kurdish uprisings</strong> exposed a contradiction in the coalition’s policy, whose suppression was permitted despite the earlier victory over Iraqi occupation of Kuwait.",
+      "new": "The subsequent suppression of <strong>Shiite and Kurdish uprisings</strong> exposed a contradiction in the coalition’s policy despite the earlier victory over Iraqi occupation of Kuwait.",
+      "count": 1,
+      "reason": "Correct sentence continuity after removal of editorial metacommentary"
+    },
+    {
+      "chapter": 31,
+      "old": "Its cited high growth in <strong>FDI</strong> during the late 1990s reflects",
+      "new": "The surge in <strong>FDI</strong> during the late 1990s reflects",
+      "count": 1,
+      "reason": "Correct sentence continuity after removal of editorial metacommentary"
+    }
+  ]
+}

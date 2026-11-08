@@ -35,6 +35,8 @@ jobs:
         run: python src/build.py -o index.html --check
       - name: Validate 33 authored chapter modules
         run: python src/tests/validate_structure.py
+      - name: Enforce source-fidelity and editorial-insertion regressions
+        run: python src/tests/test_source_fidelity.py
       - name: Validate publication metadata, assets and offline UI
         run: python src/tests/verify_publication.py
       - name: Validate source-documentation coupling and release notes

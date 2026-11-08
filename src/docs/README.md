@@ -38,6 +38,10 @@ The following original reports document chapter-specific source cautions, struct
 - [Chapters 28–29](editorial/CH28_CH29_EDITORIAL_NOTES.md)
 - [Chapters 30–32](editorial/CH30_CH32_EDITORIAL_NOTES.md)
 
+## Editorial source-fidelity audit
+
+- [World History Dossier: chapter-by-chapter source-fidelity audit (8 November 2026)](../audits/SOURCE_FIDELITY_2026-11-08.md) — source-based audit of all 33 published chapters; 245 traceable corrections and explicit limits for the four chapters with no corresponding briefing in the owner-provided Drive folder.
+
 ## Project history
 
 - [Migration and release status log](history/MIGRATION_STATUS.md)

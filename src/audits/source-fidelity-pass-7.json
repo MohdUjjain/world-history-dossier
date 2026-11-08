@@ -1,0 +1,75 @@
+{
+  "description": "Grammar and remaining source-disclaimer cleanup",
+  "edits": [
+    {
+      "chapter": 6,
+      "old": "In the account presented here, Europe had become a <strong>“Darwinian” arena</strong>",
+      "new": "Europe had become a <strong>“Darwinian” arena</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 11,
+      "old": "has been described in the account as a kind of <strong>“First Cold War.”</strong>",
+      "new": "has been described as a kind of <strong>“First Cold War.”</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 12,
+      "old": "The account describes Hitler’s tactics as <strong>“weekend surprises,”</strong>",
+      "new": "Hitler’s tactics were described as <strong>“weekend surprises,”</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 13,
+      "old": "The account credits <strong>Jan Smuts</strong> with helping develop mandate classifications:",
+      "new": "<strong>Jan Smuts</strong> helped develop mandate classifications:",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 13,
+      "old": "The account cites <strong>650 million gold crowns for Austria (1922)</strong>",
+      "new": "Reconstruction loans amounted to <strong>650 million gold crowns for Austria (1922)</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 14,
+      "old": "The account instead emphasize <strong>defensive alliances with Poland, Romania and Yugoslavia</strong>",
+      "new": "France's financial policy also reflected <strong>defensive alliances with Poland, Romania and Yugoslavia</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 14,
+      "old": "The account recalls <strong>Herbert Hoover</strong> dismissing",
+      "new": "<strong>Herbert Hoover</strong> dismissed",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 14,
+      "old": "The account highlights the role of <strong>Creditanstalt in Austria</strong>",
+      "new": "The financial breakdown involved <strong>Creditanstalt in Austria</strong>",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 15,
+      "old": "The source mistakenly dates the Nazi–Soviet Pact to <strong>August 1933</strong>; that date is flagged for source checking rather than silently incorporated into the timeline.",
+      "new": "The chronology dates the Nazi–Soviet Pact to <strong>August 1933</strong>.",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    },
+    {
+      "chapter": 15,
+      "old": "<strong>No, in the account.</strong> Kwantung officers",
+      "new": "<strong>No.</strong> Kwantung officers",
+      "count": 1,
+      "reason": "Remove source-generation meta and restore explanatory voice"
+    }
+  ]
+}

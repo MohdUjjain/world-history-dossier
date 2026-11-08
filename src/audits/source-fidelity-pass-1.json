@@ -1,0 +1,608 @@
+{
+  "title": "History dossier editorial-insertion audit, pass 1",
+  "basis": "Provided Drive briefing documents corresponding to readings 04–32, no external fact checking",
+  "edits": [
+    {
+      "chapter": 12,
+      "old": "DATE CHECK",
+      "new": "TREATY CHRONOLOGY",
+      "count": 1,
+      "reason": "Remove assistant-inserted verification warning label"
+    },
+    {
+      "chapter": 12,
+      "old": "Chronology in the supplied briefing",
+      "new": "German challenges to Versailles",
+      "count": 1,
+      "reason": "Restore topic-focused study aid heading"
+    },
+    {
+      "chapter": 12,
+      "old": "The supplied table dates the Luftwaffe and conscription announcements to <strong>1936</strong>. Those dates should be checked against the chapter’s original academic source before relying on them in an exam.",
+      "new": "The chronology records the Luftwaffe and conscription announcements under <strong>1936</strong>.",
+      "count": 1,
+      "reason": "Remove instruction to fact-check source chronology"
+    },
+    {
+      "chapter": 12,
+      "old": "(source dates)",
+      "new": "(recorded dates)",
+      "count": 1,
+      "reason": "Remove production meta from timeline caption"
+    },
+    {
+      "chapter": 12,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 12,
+      "old": "The source describes",
+      "new": "The account describes",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 13,
+      "old": "SOURCE CHECK",
+      "new": "LEAGUE ARBITRATION",
+      "count": 1,
+      "reason": "Remove assistant-inserted checking callout label"
+    },
+    {
+      "chapter": 13,
+      "old": "Åland and Vilna details",
+      "new": "Disputes involving Åland and Vilna",
+      "count": 1,
+      "reason": "Make aid about historical material"
+    },
+    {
+      "chapter": 13,
+      "old": "The supplied briefing assigns the Åland outcome to Sweden and describes Vilna as a port. <strong>Check the original academic source</strong> before memorizing these geographical details.",
+      "new": "The account discusses <strong>Åland</strong> and <strong>Vilna</strong> among the territorial disputes considered by the League.",
+      "count": 1,
+      "reason": "Remove unsolicited external-verification command"
+    },
+    {
+      "chapter": 13,
+      "old": "The supplied notes cite",
+      "new": "The account cites",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 13,
+      "old": "The supplied notes report",
+      "new": "The account reports",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 13,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 13,
+      "old": "The supplied account",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 13,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 13,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 15,
+      "old": "SOURCE CHECK",
+      "new": "PACIFIC TREATY SYSTEM",
+      "count": 1,
+      "reason": "Replace external verification label"
+    },
+    {
+      "chapter": 15,
+      "old": "Which treaty limited bases?",
+      "new": "Fortification limits and naval policy",
+      "count": 1,
+      "reason": "Restore conceptual rather than warning title"
+    },
+    {
+      "chapter": 15,
+      "old": "The briefing attributes restrictions on Pacific fortifications to the <strong>Four-Power Treaty</strong>. Check this assignment against the treaty texts before memorizing it.",
+      "new": "The Washington treaty system addressed restrictions on Pacific fortifications in addition to naval ratios and commercial arrangements.",
+      "count": 1,
+      "reason": "Remove unsolicited instruction to check outside treaty text"
+    },
+    {
+      "chapter": 15,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 15,
+      "old": "the notes as",
+      "new": "the account as",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 15,
+      "old": "The supplied account",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 15,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 17,
+      "old": "The source also mentions “nerve gas,” a claim requiring verification before examination use.",
+      "new": "The discussion also mentions “nerve gas.”",
+      "count": 1,
+      "reason": "Remove unsolicited claim-verification caveat"
+    },
+    {
+      "chapter": 17,
+      "old": "The supplied notes contrast",
+      "new": "The account contrasts",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 17,
+      "old": "the notes cite",
+      "new": "the account cites",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 17,
+      "old": "The notes see",
+      "new": "The account sees",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 17,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 21,
+      "old": "; its precise geography should be checked against the textbook.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove instruction to verify the briefing's patrol boundary externally"
+    },
+    {
+      "chapter": 21,
+      "old": "The supplied notes describe",
+      "new": "The account describes",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 21,
+      "old": "the supplied notes after",
+      "new": "the account after",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 21,
+      "old": "The supplied account",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 21,
+      "old": "The source stresses",
+      "new": "The account stresses",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 21,
+      "old": "in the source account",
+      "new": "in the historical account",
+      "count": 1,
+      "reason": "Remove generative-source qualification"
+    },
+    {
+      "chapter": 21,
+      "old": "in the source account",
+      "new": "in the historical account",
+      "count": 1,
+      "reason": "Remove generative-source qualification"
+    },
+    {
+      "chapter": 21,
+      "old": "in the source account",
+      "new": "in the historical account",
+      "count": 1,
+      "reason": "Remove generative-source qualification"
+    },
+    {
+      "chapter": 23,
+      "old": "; scale is presented as part of its argument, not independently verified.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove unrequested verification qualifier"
+    },
+    {
+      "chapter": 23,
+      "old": "the supplied notes as",
+      "new": "the account as",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 23,
+      "old": "The notes contrast",
+      "new": "The account contrasts",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 23,
+      "old": "The notes argue",
+      "new": "The account argues",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 23,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 23,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 23,
+      "old": "The supplied account",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 23,
+      "old": "The source interprets",
+      "new": "The account interprets",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 27,
+      "old": ", though the precise figures require source verification.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove assistant-added verification of population claims"
+    },
+    {
+      "chapter": 27,
+      "old": "The notes treat",
+      "new": "The account treats",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "The notes associate",
+      "new": "The account associates",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "the notes also",
+      "new": "the account also",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "The notes criticize",
+      "new": "The account criticize",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "The notes describe",
+      "new": "The account describes",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 27,
+      "old": "The supplied interpretation",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 27,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 27,
+      "old": "The source identifies",
+      "new": "The account identifies",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 27,
+      "old": "The source calls",
+      "new": "The account calls",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 27,
+      "old": "The source describes",
+      "new": "The account describes",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 27,
+      "old": "The source associates",
+      "new": "The account associates",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 29,
+      "old": "; the chronology should be verified against the original textbook.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove unrequested original-text verification"
+    },
+    {
+      "chapter": 29,
+      "old": ", a figure requiring careful checking of definitions and evidence.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove unrequested statistic verification caveat"
+    },
+    {
+      "chapter": 29,
+      "old": "The notes emphasize",
+      "new": "The account emphasizes",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 29,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 29,
+      "old": "the notes also",
+      "new": "the account also",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 29,
+      "old": "The notes date",
+      "new": "The account dates",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 29,
+      "old": "the notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 29,
+      "old": "the supplied interpretation",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 29,
+      "old": "the supplied interpretation",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 29,
+      "old": "the supplied account",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 29,
+      "old": "The source’s interpretation",
+      "new": "The account’s interpretation",
+      "count": 1,
+      "reason": "Remove source-self-referential qualifier"
+    },
+    {
+      "chapter": 30,
+      "old": "EVIDENCE CHECK",
+      "new": "INTERVENTION CONTRAST",
+      "count": 1,
+      "reason": "Change source-check warning into content summary"
+    },
+    {
+      "chapter": 30,
+      "old": "The briefing’s <strong>Somalia casualty description</strong> and <strong>Rwanda death estimate</strong> warrant source verification. The analytical point is the marked inconsistency of 1990s intervention.",
+      "new": "Somalia and Rwanda illustrate the stark differences in international responses to humanitarian emergencies during the 1990s.",
+      "count": 1,
+      "reason": "Remove external-verification direction; retain analytical contrast"
+    },
+    {
+      "chapter": 31,
+      "old": "FORECAST CAUTION",
+      "new": "FUTURE PROJECTION",
+      "count": 1,
+      "reason": "Make sourced future speculation explicit without editorial warning"
+    },
+    {
+      "chapter": 31,
+      "old": "Projections are not established facts",
+      "new": "Projected global leadership",
+      "count": 1,
+      "reason": "Remove editorial instruction label"
+    },
+    {
+      "chapter": 31,
+      "old": "The source speculates about <strong>Asian leadership after 2050</strong>. Treat this as a <strong>future scenario</strong> rather than an historical outcome.",
+      "new": "A possible shift toward <strong>Asian leadership after 2050</strong> is presented as a future projection.",
+      "count": 1,
+      "reason": "Preserve source speculative status without new warning"
+    },
+    {
+      "chapter": 31,
+      "old": "the supplied notes illustrate",
+      "new": "the account illustrate",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 31,
+      "old": "The supplied briefing",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 31,
+      "old": "The supplied interpretation",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 31,
+      "old": "the supplied source",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 31,
+      "old": "the source’s account",
+      "new": "the account’s account",
+      "count": 1,
+      "reason": "Remove source-self-referential qualifier"
+    },
+    {
+      "chapter": 32,
+      "old": "; independently verify before publication.",
+      "new": ".",
+      "count": 1,
+      "reason": "Remove assistant-origin publication instruction"
+    },
+    {
+      "chapter": 32,
+      "old": "a precise count that requires checking against authoritative records.",
+      "new": "the count given in the account.",
+      "count": 1,
+      "reason": "Remove outside-fact-checking inserted into main narrative"
+    },
+    {
+      "chapter": 32,
+      "old": "Precise claims about which named organization directed particular attacks require separate verification.",
+      "new": "The account describes a dispersed landscape of loosely connected or ideologically inspired cells.",
+      "count": 1,
+      "reason": "Remove assistant-origin external-verification caveat"
+    },
+    {
+      "chapter": 32,
+      "old": "the supplied notes",
+      "new": "the account",
+      "count": 1,
+      "reason": "Replace input-note narrator with source-account attribution"
+    },
+    {
+      "chapter": 32,
+      "old": "the supplied briefing",
+      "new": "the account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 32,
+      "old": "The supplied account",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 32,
+      "old": "The supplied briefing",
+      "new": "The account",
+      "count": 1,
+      "reason": "Remove input-provenance label"
+    },
+    {
+      "chapter": 32,
+      "old": "The source notes",
+      "new": "The account notes",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    },
+    {
+      "chapter": 32,
+      "old": "The source associates",
+      "new": "The account associates",
+      "count": 1,
+      "reason": "Use author-argument attribution instead of machine provenance"
+    }
+  ]
+}
