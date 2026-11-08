@@ -52,8 +52,9 @@ def main() -> None:
         assert not re.search(r"\bexplainer(?:s)?\b", content, re.I), (
             f"{path.name}: input-generation term 'explainer' in study prose")
         uses = re.findall(r"\bsupplied\b", content, re.I)
+        plain = " ".join(re.sub(r"<[^>]+>", " ", content).split())
         if n in NATURAL_SUPPLIED:
-            assert len(uses) == 1 and NATURAL_SUPPLIED[n] in content, (
+            assert len(uses) == 1 and NATURAL_SUPPLIED[n] in plain, (
                 f"{path.name}: review the ordinary historical use of 'supplied'")
             observed[n] = 1
         else:

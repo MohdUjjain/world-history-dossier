@@ -12,6 +12,7 @@ are pending or failing.
 | Area | Automated gate | Evidence / acceptance rule |
 | --- | --- | --- |
 | Source integrity | `python src/build.py -o index.html --check`, structural + publication validators | 33 authored chapters, deterministic single HTML and content-hashed worker |
+| Source fidelity | `python src/tests/test_source_fidelity.py` | No unauthorized source-check warnings or input-label insertions; 245 traceable chapter corrections; six legitimate historical uses of “supplied”; 29 matching Drive briefings, with 00–03 explicitly not source-verified |
 | Responsive interaction | `smoke_release_browser.py` and Phases A–C Playwright suites | 1440×900, 1024×768, 768×1024, 390×844, 320×720; no horizontal page overflow; accurate current chapter, modal focus |
 | Accessibility | `smoke_release_accessibility.py` with pinned axe-core 4.10.3 | Scans cover, Chapter 00, desktop and phone Contents drawer; **zero serious or critical WCAG 2.0/2.1 A/AA findings**, saved JSON; keyboard/ARIA behavior is also exercised by the other browser suites |
 | Visual regression | `smoke_release_browser.py --baseline` | Compares 17 deterministic viewport screenshots against the **PR base commit's** published HTML, not against a regenerated copy of the candidate. Differences greater than 3.5% changed pixels fail unless an intentional visual change is documented and explicitly approved. Uploads baseline, candidate, diff images |
@@ -27,6 +28,8 @@ Tests aim to catch regressions, not introduce new content.
 The CI installs pinned axe-core 4.10.3 using a restored npm download cache and a bounded 150-second install, in a separate step from Chromium. This isolates upstream registry failures from website defects and prevents a hung package download from consuming the entire verification window.
 
 ## CI gate and screenshots
+
+The 8 November source-fidelity audit is documented in [the source-fidelity review](../../audits/SOURCE_FIDELITY_2026-11-08.md). When source notes are used to correct the dossier, commit the exact per-chapter replacements to numbered manifests under `src/audits/`. The accompanying `test_source_fidelity.py` runs in CI so removed editorial warnings cannot silently return. The full-book PDF remains a separate manually regenerated publication artifact.
 
 `.github/workflows/verify-pages.yml` supplies:
 

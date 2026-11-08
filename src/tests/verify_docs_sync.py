@@ -98,6 +98,7 @@ def main() -> None:
         "smoke_release_browser.py", "smoke_release_accessibility.py",
         "smoke_release_offline.py",
         "smoke_release_ranges.py", "verify_docs_sync.py",
+        "test_source_fidelity.py",
         "inspect_pdf_release.py",
     )
     for test in tests:
