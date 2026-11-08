@@ -1,0 +1,96 @@
+{
+  "description": "Direct source-derived exposition and elimination of remaining artificial attribution",
+  "edits": [
+    {
+      "chapter": 1,
+      "old": "as described in the account.",
+      "new": "under the colonial arrangements.",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 2,
+      "old": "Tension identified in the account",
+      "new": "Political and religious tensions",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 5,
+      "old": "The account gives the following figures from different years, which should <em>not</em> be read as a single synchronized comparison.",
+      "new": "Foreign-service staffing expanded substantially across the different benchmark years.",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 5,
+      "old": "In the account presented here, war became something diplomacy should prevent rather than merely serve.",
+      "new": "War increasingly became something diplomacy sought to prevent rather than merely serve.",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 6,
+      "old": "associated in the account with <strong>Bernhard von Bülow</strong>",
+      "new": "associated with <strong>Bernhard von Bülow</strong>",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 9,
+      "old": "the account reports that Russia surrendered",
+      "new": "Russia surrendered",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 9,
+      "old": "Shares reportedly lost by Russia in the account.",
+      "new": "Russia's reported territorial and industrial losses.",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 10,
+      "old": "The account emphasizes Britain's strategic calculation:",
+      "new": "Britain's strategic calculation was that",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 10,
+      "old": "The account estimates that",
+      "new": "The figures estimate that",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 12,
+      "old": "in the account.</td>",
+      "new": "as assessed in 1921.</td>",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 13,
+      "old": "League arbitration: selected episodes in the account",
+      "new": "League arbitration: selected episodes",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 15,
+      "old": "The account describes this compromise as the “orderly exploitation” of China",
+      "new": "This compromise amounted to the “orderly exploitation” of China",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    },
+    {
+      "chapter": 15,
+      "old": "Main terms in the account",
+      "new": "Principal treaty terms",
+      "count": 1,
+      "reason": "Restore historical exposition rather than editor-source commentary"
+    }
+  ]
+}
