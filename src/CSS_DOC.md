@@ -416,3 +416,10 @@ remains distinct.
 ## 2026-11-06 — Remove duplicate sidebar search
 
 `src/shell.html` no longer has the Index-only `#tocSearch`, its clear button, scope hint, result counter or empty state. The `.nav-tools` section now contains only `#tocExpandAll` and `#tocCollapseAll`; `src/styles.css` removes obsolete `.nav-search-*` and `#toc*Search*` rules while keeping all tree-control keyboard focus and touch sizing. **Full-book search remains in the sticky reading header** (`#readerSearchInput` and `.reader-search-results`) and is unaffected. This is a screen-only cleanup; the print engine, page measurements, and physical PDF are unchanged.
+
+
+## 2026-11-08 — Accessible text selection on parchment
+
+The original global `::selection` used `--gold-lt` (#F1E3C3) on `--parchment` (#ECE4CE), which was nearly invisible on ordinary HTML reading pages. **Light reader surfaces** (narrative prose, quotes, definitions, concepts, figure/table bodies, and tinted revision panels) now use a **navy `--ink` highlight with `--paper` text**. This is a visual text-selection change only; it does not change the underlying parchment, chapter palette, layout, text content, or pagination measurements.
+
+**Dark surfaces** retain the established pale-gold selection and navy text using scoped `:is(...)::selection` / `:is(...) ::selection` overrides: the screen cover, sticky site header, sidebar header/tab, chapter banner, print title and hero, print running headers/footers, revision badge, dark flowchart nodes, and dark table header cells. Match those declarations with `::-moz-selection` for Firefox. The two scopes are intentional: do not restore a global pale-gold selection, or it becomes invisible against parchment again. The CSS source is inlined by `src/build.py`, so rebuild `index.html` **and its content-hashed `service-worker.js`** together whenever this rule changes.

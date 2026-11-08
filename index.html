@@ -92,7 +92,14 @@ a{ color:var(--oxblood); text-decoration:none; }
 .no-script-note{max-width:650px;margin:28px auto;padding:18px 24px;
   font:1rem/1.6 var(--font-label);background:var(--paper);
   border:1px solid var(--parchment-dk);border-radius:var(--r-sm);}
-::selection{ background:var(--gold-lt); color:var(--ink); }
+/* Parchment has almost the same tone as --gold-lt. Use an ink selection on
+   light reader surfaces; reserve pale gold for text on dark surfaces. */
+::selection{ background:var(--ink); color:var(--paper); }
+::-moz-selection{ background:var(--ink); color:var(--paper); }
+:is(.title-page,.site-header,.nav-head,#navTab,.banner,.page.type-title,.hero-content,.page-header-bar,.page-footer-bar,.revision-badge,.flow .node,table.compare th)::selection,
+:is(.title-page,.site-header,.nav-head,#navTab,.banner,.page.type-title,.hero-content,.page-header-bar,.page-footer-bar,.revision-badge,.flow .node,table.compare th) ::selection{ background:var(--gold-lt); color:var(--ink); }
+:is(.title-page,.site-header,.nav-head,#navTab,.banner,.page.type-title,.hero-content,.page-header-bar,.page-footer-bar,.revision-badge,.flow .node,table.compare th)::-moz-selection,
+:is(.title-page,.site-header,.nav-head,#navTab,.banner,.page.type-title,.hero-content,.page-header-bar,.page-footer-bar,.revision-badge,.flow .node,table.compare th) ::-moz-selection{ background:var(--gold-lt); color:var(--ink); }
 
 /* ============================================================
    SITE HEADER (screen only) — single slim bar + thin progress rail
