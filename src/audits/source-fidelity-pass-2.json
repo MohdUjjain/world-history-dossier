@@ -1,0 +1,106 @@
+{
+  "basis": "Drive briefings 04–11; no corresponding documents for 00–03; edits to 00–03 are restricted to obvious text-generation metadata",
+  "edits": [
+    {
+      "chapter": 1,
+      "old": "as described in these notes",
+      "new": "as described in the account",
+      "count": 1,
+      "reason": "Remove meta input label"
+    },
+    {
+      "chapter": 1,
+      "old": "(as dated in the notes)",
+      "new": "",
+      "count": 1,
+      "reason": "Remove unnecessary provenance parenthesis"
+    },
+    {
+      "chapter": 2,
+      "old": "National and religious identities in the supplied examples",
+      "new": "National and religious identities in the examples",
+      "count": 1,
+      "reason": "Restore descriptive comparison title"
+    },
+    {
+      "chapter": 2,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 2,
+      "old": "the notes",
+      "new": "the account",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 3,
+      "old": "(figure from supplied notes)",
+      "new": "(1946–1990 total in this account)",
+      "count": 1,
+      "reason": "Replace input-label on Cold War veto comparison"
+    },
+    {
+      "chapter": 5,
+      "old": "The supplied notes give",
+      "new": "The account gives",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 6,
+      "old": "the notes with",
+      "new": "the account with",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 8,
+      "old": "in these notes",
+      "new": "in the account",
+      "reason": "Remove notes self-reference"
+    },
+    {
+      "chapter": 9,
+      "old": "the supplied notes report",
+      "new": "the account reports",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 9,
+      "old": "the supplied notes",
+      "new": "the account",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 10,
+      "old": "the source's interpretation",
+      "new": "the interpretation",
+      "count": 1,
+      "reason": "Avoid source-output reference"
+    },
+    {
+      "chapter": 10,
+      "old": "The supplied notes estimate",
+      "new": "The account estimates",
+      "reason": "Remove assistant input-source label"
+    },
+    {
+      "chapter": 10,
+      "old": "The supplied account",
+      "new": "The account",
+      "reason": "Replace provenance qualifier"
+    },
+    {
+      "chapter": 11,
+      "old": "the supplied account",
+      "new": "the account",
+      "reason": "Replace provenance qualifier"
+    },
+    {
+      "chapter": 11,
+      "old": "the supplied account",
+      "new": "the account",
+      "reason": "Replace provenance qualifier"
+    }
+  ]
+}
