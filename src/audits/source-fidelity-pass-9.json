@@ -1,0 +1,19 @@
+{
+  "description": "Final grammar fixes",
+  "edits": [
+    {
+      "chapter": 25,
+      "old": "Yet the account portray the OEEC as <strong>ineffective as an engine of integration</strong>",
+      "new": "Yet the OEEC proved <strong>ineffective as an engine of integration</strong>",
+      "count": 1,
+      "reason": "Repair grammar introduced by source label cleanup"
+    },
+    {
+      "chapter": 26,
+      "old": "the account characterize the war as a <strong>Sino-American proxy struggle</strong>",
+      "new": "the war had become a <strong>Sino-American proxy struggle</strong>",
+      "count": 1,
+      "reason": "Repair grammar introduced by source label cleanup"
+    }
+  ]
+}
