@@ -68,3 +68,9 @@ The definitions are collected into the separate, **print-safe** revision table. 
 - Build/rebuild and browser regression should be run in repository GitHub Actions before accepting or merging. Review print packing and visual diffs independently; no font shrinking or compositor retuning merely to fit a page target.
 
 **Editorial measure of success:** a student can explain *why* nationhood seems natural, *how* modern institutions taught it, *why* universalism struggled against it, and *what* Bosworth sees as its enduring contradiction. Reducing page count alone is not a success criterion.
+
+## Responsive visual review (12 November 2026)
+
+The GitHub Actions run `43164473757` passed source, build, structural, navigation, accessibility, touch, search and offline checks but flagged the 390px **Chapter 12** screenshot at **3.988% changed pixels**, marginally exceeding the unchanged 3.5% visual guardrail. The reference screenshot is of an **untouched chapter**, not Chapter 02. I downloaded and compared `phase-d-browser-evidence/screens/baseline/390-chapter.png` and `candidate/390-chapter.png` side by side. The header, chapter boundaries, thesis panel, title line breaks, year chips and Contents launcher coincide; changes are visible as text-edge rasterization rather than layout movement. The 320px, 768px, 1024px and 1440px chapter screenshots were under threshold, and there was no horizontal overflow at any tested width. Original CSS and compositor files were not edited.
+
+The review is recorded in PR #18's discussion with the original GitHub Actions artifact reference, and the repository's existing `reviewed-visual-change` label was applied **after comparing the screenshots**. The label allows the existing CI rule to recognize a reviewed difference without changing the visual threshold or creating a design exception. The PR remains a **draft** awaiting editorial approval, irrespective of the eventual CI result.
