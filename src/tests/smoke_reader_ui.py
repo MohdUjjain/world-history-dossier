@@ -289,7 +289,7 @@ def main():
                 glossary.on('pageerror',lambda e: errors.append(str(e)))
                 glossary.goto(url, wait_until='load')
                 gloss = glossary.locator('#screenView .glossary-term')
-                assert gloss.count() == 44
+                assert gloss.count() == 62
                 first_term = gloss.first
                 first_term.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
@@ -306,7 +306,7 @@ def main():
                 assert first_term.get_attribute('aria-expanded') == 'true'
                 glossary.keyboard.press('Escape')
                 assert glossary.locator('#whd-glossary-tooltip').is_hidden()
-                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 44
+                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 62
                 ch02 = glossary.locator('#screenView #chapter-2 .glossary-term')
                 assert ch02.count() == 14
                 ch02.first.hover()
@@ -319,6 +319,12 @@ def main():
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
                 assert 'states and societies' in glossary.locator('#whd-glossary-tooltip').inner_text()
                 assert glossary.locator('#chapterData [data-chapter="3"] .glossary-revision tbody tr').count() == 16
+                ch04 = glossary.locator('#screenView #chapter-4 .glossary-term')
+                assert ch04.count() == 18
+                ch04.first.hover()
+                glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
+                assert 'continuing growth' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
+                assert glossary.locator('#chapterData [data-chapter="4"] .glossary-revision tbody tr').count() == 18
                 glossary.keyboard.press('Escape')
 
             with browser.new_context(viewport={'width':390,'height':844},
