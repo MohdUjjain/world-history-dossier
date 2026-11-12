@@ -68,6 +68,33 @@ def main():
         main_markup = text.split('<div class="src-main">', 1)[1].split('<div class="src-side">', 1)[0]
         if 'data-kind="concept"' in main_markup:
             warnings.append(f'{fn.name}: verify all concept blocks are authored in .src-side (automatic fallback exists)')
+        # Contextual popovers own compact definitions; the sidebar must
+        # contribute a different teaching function, not the same definition.
+        # Revision glossaries are intentionally exempt (retrieval + print).
+        def term_key(term):
+            term = re.sub(r'<[^>]+>', '', html.unescape(term))
+            term = re.sub(r'^(the|a|an)\s+', '', term.strip().casefold())
+            return re.sub(r'[^\w\s-]+', '', ' '.join(term.split())).strip()
+
+        glossary = [
+            term_key(label)
+            for label in re.findall(
+                r'<button\b[^>]*class="[^"]*\bglossary-term\b[^"]*"[^>]*>(.*?)</button>',
+                main_markup, re.S)
+        ]
+        if len(glossary) != len(set(glossary)):
+            errors.append(f'{fn.name}: repeated popup definition of the same term')
+        side_markup = text.split('<div class="src-side">', 1)[1]
+        titles = re.findall(
+            r'<div class="block"[^>]*data-kind="def"[^>]*>'
+            r'(?:(?!<div class="block").)*?'
+            r'<div class="learning-title">([^<]+)</div>',
+            side_markup, re.S)
+        for title in titles:
+            if term_key(title) in glossary:
+                errors.append(
+                    f'{fn.name}: redundant definition for {title!r} '
+                    '(both popup and sidebar card)')
         print(f'Checked {fn.name}: chapter {num}, {a.get("data-title")}')
     for msg in warnings: print('WARNING:',msg)
     for msg in errors: print('ERROR:',msg)

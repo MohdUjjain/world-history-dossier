@@ -73,3 +73,36 @@
 **Source and teaching integrity:** technical terms remain verbatim, the prose still explains their causal role, and the *splendid isolation* passage still explicitly closes its argument. The inline prose is no longer interrupted by bracket definitions. A pre-existing grammatical problem in the nationalist-movements sentence was corrected without changing the historical point. The six semantic side-note categories and their existing content remain present.
 
 **Verification:** local desktop pointer, click-pinning, keyboard/Escape and 390px touchscreen tests passed with no JS errors and on-screen tooltip bounds kept inside the narrow viewport. The project's `smoke_reader_ui.py` also exercises the new UI on the assembled site. Full repo CI, print-packing and screenshot review remain required before merging the pilot.
+## Redundancy audit: contextual popups versus sidebars
+
+The 14 popup definitions were compared against all 15 existing Chapter 01
+sidebar cards. Three cards **repeated the definition rather than advancing
+the author's reasoning**, so they were removed without replacing them with
+another version of the same claim:
+
+| Term | Removed sidebar | Information retained |
+| --- | --- | --- |
+| **Great Game** | Section 2: a second definition of British–Russian rivalry | Main prose connects Persia/Afghanistan and India to the 1907 agreement; popup defines the rivalry |
+| **Mandate system** | Section 3: a second account of League-supervised administration | Main text describes the post-1918 redistribution with British/French examples; popup defines the institution |
+| **Dyarchy** | Section 4: another explanation of divided Indian governing powers | Main text explains the 1935 Act's political consequences; popup gives the compact definition |
+
+**12 sidebar cards remain**, including the chartered-company definition
+(which has no popup). The *splendid isolation* memory timeline is retained
+because it teaches the **sequence of events that ended the policy**,
+rather than simply defining the policy. The formal/informal/protectorate
+comparison, interwar paradox, exam comparisons, and the Partition and
+post-imperial insights likewise contribute distinct functions.
+
+The 14-term revision glossary is intentionally retained for examination
+retrieval and accessible print/PDF study; it is not a competing sidebar
+definition. There are still **14 first-use dotted glossary triggers**,
+all six sidebar learning-aid categories, five main section keys and one
+revision marker. No historical evidence, causes, or chronology was removed
+from the explanatory passages, and no print geometry or popover behavior
+was changed.
+
+**Future-chapter rule:** definition popup owns the concise meaning;
+main prose owns the explanation; sidebar owns distinct teaching value;
+revision owns retrieval. Identical definitions may not simultaneously
+appear in a popup and a sidebar card. A static check in
+`src/tests/validate_structure.py` enforces that rule.
