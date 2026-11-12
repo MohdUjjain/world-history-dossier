@@ -52,13 +52,13 @@ All **18 definitions** appear in the existing print-safe **revision glossary tab
 
 ## Semantic duplication audit — completed before release
 
-The chapter has **13 section-linked sidebar cards** across all six categories (`def`, `concept`, `hy`, `memory`, `mistake`, `tip`): 12 related to the four main sections and one revision-specific memory prompt. All were compared against neighboring main paragraphs, tables, popovers and the revision blocks.
+After the second-pass semantic review, the chapter has **11 section-linked sidebar cards** across all six categories (`def`, `concept`, `hy`, `memory`, `mistake`, `tip`): 10 related to the four main sections and one revision-specific memory prompt. All were compared against neighboring main paragraphs, tables, popovers and the revision blocks.
 
-- **Kept because they transform the main evidence:** Mackinder-versus-local-autonomy as a comparison; trade-before-peace as a counterexample test; cable chronology as a sequence; a trading-price decision as an application; Titanic-versus-Zimmermann as contrasting evidence; invention-versus-access as an exam caution; Pan Am as a question about strategic influence; Ford’s production method as a causal test; a one-invention/two-outcomes essay framework.
+- **Kept because they transform the main evidence:** trade-before-peace as a counterexample test; cable chronology as a sequence; a trading-price decision as an application; Titanic-versus-Zimmermann as contrasting evidence; an invention-versus-access application scenario; Pan Am as a question about strategic influence; Ford’s production method as a causal test; a one-invention/two-outcomes essay framework.
 - **Not introduced:** a side card merely reprinting the 1925/1983 telephone cost, 1946/1960 television ownership numbers, or the final “technology is neutral” sentence—these are explained once in the main text, then selectively recalled in the revision table.
 - **Print/revision exception:** the final terminology table and compact evidence table deliberately make retrieval possible without hover. They remain in the revision zone and are not inserted as repetitive brackets throughout the main explanation.
 
-**Final structure:** five total section keys (`s1`–`s4` plus `revision`), 18 first-use popovers, 18 print glossary rows, 13 cards with six semantic types, no popup/definition-card overlap, and unmodified CSS/JS/compositor. All contents continue to be authored from the primary source and the established seven-part editorial method.
+**Final structure:** five total section keys (`s1`–`s4` plus `revision`), 18 first-use popovers, 18 print glossary rows, 11 cards with six semantic types, no popup/definition-card overlap, and unmodified CSS/JS/compositor. All contents continue to be authored from the primary source and the established seven-part editorial method.
 
 ## Validation and release checklist
 
@@ -69,3 +69,18 @@ The chapter has **13 section-linked sidebar cards** across all six categories (`
 - [ ] GitHub Actions: strict source/compiled parity, 33 chapter assembly and cache hash.
 - [ ] GitHub Actions: reader keyboard/touch, accessibility, print, responsive, checkpoint and offline regressions.
 - [ ] Draft PR editorial and visual approval; live `main` not updated before that approval.
+
+## Second-pass semantic duplication audit (12 November 2026)
+
+The first review verified that no glossary popup repeated the title of a definition-only sidebar. A second, **teaching-function** pass compared every sidebar with its adjacent main paragraph, table and revision aid. Two cards did not earn their separate place:
+
+| Sidebar | Duplicate function | Action |
+| --- | --- | --- |
+| **Mackinder and the opposite outcome** (`s1`) | Rephrased the existing paragraph contrasting centralizing railways with the use of wider communications for local autonomy | **Removed**; the primary explanation and its causal qualification remain in `s1` |
+| **Avoid a pollution overstatement** (`s3`) | Repeated the exact qualification already given alongside the 1952 London smog example | **Removed**; multiple causes remain explicit in `s3` |
+
+One potential overlap warranted **transformation**, not deletion. **Do not equate invention with access** (`s2`) repeated the telephone-access paragraph and its general warning. Its replacement, **Test access, not just invention**, asks students to assess a hypothetical comparison using cost, availability, permission and surveillance. It is now an application of Engel’s claim rather than a restatement. The scenario is expressly hypothetical; it is not presented as a new historical case.
+
+Other repeated subjects serve distinct educational operations: the cable and flight timelines transform dispersed dates into a recall sequence; the telegraph trading example tests a decision; the Titanic–Zimmermann card juxtaposes opposite consequences; the Ford and Pan Am cards require causal explanation; the `s4` card supplies an essay-answer framework. The revision glossary and evidence table provide deliberate **print and examination retrieval** rather than a second narrative.
+
+**Audited outcome:** **11 sidebar cards** (10 in main sections, 1 in revision) across all six semantic categories; **18** unique first-use popups, **18** matching print glossary rows, five section keys including `revision`, no same-term popup/definition-card duplication, and no historical explanation removed from main prose. No shared CSS, JS, compositor, or other chapters changed.
