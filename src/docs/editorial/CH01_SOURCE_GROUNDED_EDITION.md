@@ -16,7 +16,7 @@
 | Commitment | Chapter-level implementation |
 | --- | --- |
 | Original-source authority | The main narrative follows MacKenzie's sequence and restores omitted interwar and postwar mechanisms. No claims taken solely from the simplified guide were added. |
-| Terminological fidelity | Retains **imperial power, formal empire, informal empire, protectorate, chartered company, dominion, two-power standard, splendid isolation, Great Game, imperial preference, mandate, dyarchy, decolonization**; brief explanations accompany first meaningful use. |
+| Terminological fidelity | Retains **imperial power, formal empire, informal empire, protectorate, chartered company, dominion, two-power standard, splendid isolation, Great Game, imperial preference, mandate, dyarchy, nationalist bourgeoisie, decolonization**; brief explanations accompany first meaningful use. |
 | Accessible language | Replaces abstract phrases such as “absolute zenith,” “loss of equilibrium” and “fundamental divide” with clear language that still names the scholarly concepts. |
 | Causal completeness | Connects the Boer War's military victory to its long-term social and political costs, naval rivalry to Britain's alliance changes, war costs and nationalist mobilization to different patterns of withdrawal. |
 | Conceptual closure | The *splendid isolation* discussion ends by explaining why the alliances ended it; each world-war discussion resolves the specific question it opens; the chapter ends by returning to formal sovereignty versus continuing influence. |
@@ -48,7 +48,7 @@
 - The interwar exhibition/trade/imperial-preference measures, Balfour Declaration/Statute of Westminster, depression and League failure.
 - The WWII Asian collapse, differentiated nationalist resistance and postwar financial exhaustion.
 - India and Partition, the Southeast Asian cases, Palestine, Ghana, Algeria, Congo, settler regimes, Portugal, Namibia and South Africa.
-- The partial/contested character of post-1945 decolonization and the long afterlife of economic and demographic structures.
+- The partial/contested character of post-1945 decolonization and the long afterlife of economic and demographic structures, including MacKenzie’s “nationalist bourgeoisie” emphasis.
 
 ## Boundaries of this change
 
