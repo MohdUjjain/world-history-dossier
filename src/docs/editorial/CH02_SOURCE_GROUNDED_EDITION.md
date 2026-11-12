@@ -44,7 +44,7 @@ Fourteen **first meaningful occurrences** get screen-reader definition popovers 
 
 **nationalism; ethnic cleansing; nation-state; invented tradition; imagined community; native soil; usable past; nationalization of the masses; popular sovereignty; civic religion; self-determination; socialist internationalism; Zionism; decolonization.**
 
-The definitions are collected into the separate, **print-safe** revision table. A glossary popup is not duplicated by a definition-only sidebar. There are **12 section-linked sidebar cards** across all six semantic colors/types. The standalone **civil service** sidebar definition is deliberately **not** also a popup. The other callouts add memory sequences, interpretive distinctions and exam cautions rather than definition duplicates.
+The definitions are collected into the separate, **print-safe** revision table. A glossary popup is not duplicated by a definition-only sidebar. After the semantic deduplication pass, there are **10 section-linked sidebar cards** across all six semantic colors/types. The standalone **civil service** sidebar definition is deliberately **not** also a popup. The other callouts add memory sequences, interpretive distinctions and exam cautions rather than definition duplicates.
 
 **Print behavior:** the popup itself is hidden in print; the revision glossary preserves the meaning of all 14 terms when revision material is included. If the user explicitly excludes revision material, the prose still uses the specialist terms but does not carry the glossary table (the same agreed limitation as the Chapter 01 pilot).
 
@@ -74,3 +74,21 @@ The definitions are collected into the separate, **print-safe** revision table. 
 The GitHub Actions run `43164473757` passed source, build, structural, navigation, accessibility, touch, search and offline checks but flagged the 390px **Chapter 12** screenshot at **3.988% changed pixels**, marginally exceeding the unchanged 3.5% visual guardrail. The reference screenshot is of an **untouched chapter**, not Chapter 02. I downloaded and compared `phase-d-browser-evidence/screens/baseline/390-chapter.png` and `candidate/390-chapter.png` side by side. The header, chapter boundaries, thesis panel, title line breaks, year chips and Contents launcher coincide; changes are visible as text-edge rasterization rather than layout movement. The 320px, 768px, 1024px and 1440px chapter screenshots were under threshold, and there was no horizontal overflow at any tested width. Original CSS and compositor files were not edited.
 
 The review is recorded in PR #18's discussion with the original GitHub Actions artifact reference, and the repository's existing `reviewed-visual-change` label was applied **after comparing the screenshots**. The label allows the existing CI rule to recognize a reviewed difference without changing the visual threshold or creating a design exception. The PR remains a **draft** awaiting editorial approval, irrespective of the eventual CI result.
+
+## Second-pass semantic duplication audit
+
+Compared the opener, main paragraphs, theory table, **14 unique first-use popups**, **12 original sidebar aids** and revision zone. No identical popup/sidebar definition pair existed, but four sidebars overlapped nearby teaching functions.
+
+| Sidebar | Finding | Treatment |
+| --- | --- | --- |
+| **Languages are not states** (s2) | Repeats the exact 6,800:230 figures and conclusion from the language paragraph | **Remove**; period-estimate qualification stays in main notes |
+| **Return to the chapter’s paradox** (s7) | Rephrases the chapter's already explicit concluding argument | **Remove**; retain full conceptual closure |
+| **Do not merge the theorists** (s1) | Re-lists a four-scholar table plus prose | **Transform** into a question-driven exercise applying four theories to evidence |
+| **Why national rituals matter** (s3) | Duplicates the nearby explanation that rituals generate national attachment | **Transform** into a Gellner-versus-Mosse comparison: institutional coordination versus emotional attachment |
+
+The paragraph following the four-scholar table also no longer re-lists all four positions. It instead distinguishes **historical construction** from **genuine popular belonging** and introduces Bosworth’s question about evidence.
+
+**Result:** 10 distinct sidebar aids across **all six semantic kinds**, 14 first-use popups and 14 revision-print definitions. The remaining memory flows and misconception/exam cards intentionally **transform** main evidence into recall sequences, comparisons or error checks. The glossary table is intentionally retained for printed reference. No original-source facts, qualifications, or chronology were deleted from the main explanations.
+
+The editorial criterion for future chapters is semantic, not merely literal: **does a card help the learner do something different** (apply, compare, recall, distinguish, challenge a misconception)? Restating the same figure or conclusion in a colored box is not sufficient.
+
