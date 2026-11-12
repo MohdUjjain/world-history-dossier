@@ -281,6 +281,46 @@ def main():
             mobile.keyboard.press('Escape')
             assert mobile.evaluate("document.activeElement.id") == 'navTab'
 
+
+            # Accessible glossary — contextual definitions without disrupting prose.
+            # Test in an isolated context: navigation/resume state above is unchanged.
+            with browser.new_context(viewport={'width':1100,'height':820}) as glossary_context:
+                glossary = glossary_context.new_page()
+                glossary.on('pageerror',lambda e: errors.append(str(e)))
+                glossary.goto(url, wait_until='load')
+                gloss = glossary.locator('#screenView .glossary-term')
+                assert gloss.count() == 14
+                first_term = gloss.first
+                first_term.hover()
+                assert glossary.locator('#whd-glossary-tooltip').is_visible()
+                assert 'political, military' in glossary.locator('#whd-glossary-tooltip').inner_text()
+                first_term.click()
+                assert first_term.get_attribute('aria-expanded') == 'true'
+                first_term.click()
+                assert glossary.locator('#whd-glossary-tooltip').is_hidden()
+                glossary.evaluate('document.activeElement.blur()')
+                first_term.focus()
+                assert glossary.locator('#whd-glossary-tooltip').is_visible()
+                first_term.press('Enter')
+                assert first_term.get_attribute('aria-expanded') == 'true'
+                glossary.keyboard.press('Escape')
+                assert glossary.locator('#whd-glossary-tooltip').is_hidden()
+                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 14
+
+            with browser.new_context(viewport={'width':390,'height':844},
+                                     is_mobile=True,has_touch=True) as touch_context:
+                touch = touch_context.new_page()
+                touch.on('pageerror',lambda e: errors.append(str(e)))
+                touch.goto(url, wait_until='load')
+                touch.locator('#screenView .glossary-term').first.tap()
+                tip = touch.locator('#whd-glossary-tooltip')
+                assert tip.is_visible()
+                bounds = tip.bounding_box()
+                visible_width = touch.evaluate('document.documentElement.clientWidth')
+                assert bounds and bounds['x'] >= 0 and bounds['x'] + bounds['width'] <= visible_width+1
+                touch.keyboard.press('Escape')
+                assert tip.is_hidden()
+
             assert not errors, errors
             print(json.dumps({'chapterCount':33,'printSequence':[6,5,1,6],
                               'studyShortcuts':True,'search':True,'resume':True,

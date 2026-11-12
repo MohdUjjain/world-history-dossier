@@ -52,8 +52,8 @@
 
 ## Boundaries of this change
 
-- **Only Chapter 01 content** and this editorial audit are intentionally changed. Existing five section keys `s1`–`s5`, the `revision` key, semantic sidebar kinds, and revision start markers are preserved.
-- No change to shared CSS, print compositor, JS, PWA behavior, other chapters or study-note color categories.
+- **Chapter 01 content**, the editorial audit and the reusable inline-glossary UI are intentionally changed. Existing five section keys `s1`–`s5`, the `revision` key, semantic sidebar kinds, and revision start markers are preserved.
+- Shared `src/styles.css` and `src/reader-ui.js` gain only the reusable popup interaction; the print compositor, chapter palettes, other 32 chapter source modules and PWA worker template remain unchanged.
 - The simplified guide supplies stylistic inspiration only; MacKenzie remains the substantive authority. External historical references, where consulted to avoid carrying forward a known date error, are identified in this report rather than silently replacing the original source.
 
 **Pilot acceptance:** validate chapter structure; verify active chapter contents are represented in the built HTML; confirm that the offline service-worker content hash changes when the source changes; run the existing source-fidelity and browser regressions before merging to the live `main` branch. Because Chapter 1 has substantial textual changes, compare print and screen evidence visually rather than enforcing unchanged screenshots.
@@ -63,3 +63,13 @@
 - Nelson Mandela Foundation, *Timeline*: https://www.nelsonmandela.org/timeline-2 (11 February 1990 release, April 1994 election).
 - United Nations, *On Freedom* (speech on release, 11 February 1990): https://www.un.org/en/events/mandeladay/speech_on_his_release_from_prison.shtml
 - Nehru Memorial Museum and Library / Prime Ministers Museum and Library, *Institutional Collections* (Muslim League launched December 1906): https://pmml.nic.in/downloadArchive/15
+
+## Glossary interaction refinement (Chapter 01 pilot)
+
+**Decision:** keep the original terminology in place, but remove parenthetical definitions from the *screen-reading prose*. Exactly **14 first-use terms** now have dotted-underlined, keyboard-focusable definition triggers, e.g. **imperial power**, **two-power standard**, **splendid isolation**, **mandate system**, **dyarchy**, and **westernized nationalist bourgeoisie**.
+
+**Interaction:** fine-pointer hover, mouse click, touch tap, and keyboard focus/Enter/Space. A short, plain-language tooltip explains only the selected word. Escape, second click, outside click and scrolling close it. The tooltip is screen-only; the same definitions appear in a compact **revision-zone key-terms table** for print, including when the user saves as PDF.
+
+**Source and teaching integrity:** technical terms remain verbatim, the prose still explains their causal role, and the *splendid isolation* passage still explicitly closes its argument. The inline prose is no longer interrupted by bracket definitions. A pre-existing grammatical problem in the nationalist-movements sentence was corrected without changing the historical point. The six semantic side-note categories and their existing content remain present.
+
+**Verification:** local desktop pointer, click-pinning, keyboard/Escape and 390px touchscreen tests passed with no JS errors and on-screen tooltip bounds kept inside the narrow viewport. The project's `smoke_reader_ui.py` also exercises the new UI on the assembled site. Full repo CI, print-packing and screenshot review remain required before merging the pilot.
