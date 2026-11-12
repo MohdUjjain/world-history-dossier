@@ -307,7 +307,7 @@ def main():
                 glossary.keyboard.press('Escape')
                 assert glossary.locator('#whd-glossary-tooltip').is_hidden()
                 assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 28
-                ch02 = glossary.locator('#screenView [data-chapter="2"] .glossary-term')
+                ch02 = glossary.locator('#screenView #chapter-2 .glossary-term')
                 assert ch02.count() == 14
                 ch02.first.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
