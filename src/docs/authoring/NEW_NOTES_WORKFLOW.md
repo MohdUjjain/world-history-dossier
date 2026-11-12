@@ -91,3 +91,8 @@ all popup terms with sidebar definition titles, review any near-matches
 semantically, and run `python src/tests/validate_structure.py`. The
 structural check rejects the same named term in both a popup and a
 sidebar definition card (ignoring an initial "the", "a" or "an").
+
+### Semantic duplication review beyond exact matches
+
+Automated validation catches identical glossary-term and sidebar-definition titles, not repeated *teaching functions*. Compare each sidebar to the main paragraph, opener, tables and revision material. Remove fact/number/conclusion recaps; repurpose cards into applications, instructive comparisons or mistake checks when supported by the primary text. Keep purposeful memory transformations, exam cautions and the print-revision glossary. Ask **whether each repeated concept performs a distinct intellectual operation**, not merely whether its wording differs. Never delete the main explanation just to preserve a callout.
+
