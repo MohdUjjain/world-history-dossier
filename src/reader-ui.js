@@ -625,7 +625,7 @@
     heading.textContent = term.textContent.trim();
     body.textContent = term.dataset.definition;
     tip.hidden = false;
-    term.setAttribute('aria-expanded', String(pinned));
+    term.setAttribute('aria-expanded', 'true');
     term.setAttribute('aria-describedby', tip.id);
     position();
   }
@@ -666,7 +666,7 @@
     dismiss();
     if (document.activeElement === term) event.stopPropagation();
   });
-  window.addEventListener('scroll', dismiss, {passive: true});
+  window.addEventListener('scroll', function () { if (active) position(); }, {passive: true});
   window.addEventListener('resize', function () { if (active) position(); });
   document.addEventListener('whd:screen-will-render', dismiss);
   window.addEventListener('beforeprint', dismiss);

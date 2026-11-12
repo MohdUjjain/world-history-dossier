@@ -68,7 +68,7 @@
 
 **Decision:** keep the original terminology in place, but remove parenthetical definitions from the *screen-reading prose*. Exactly **14 first-use terms** now have dotted-underlined, keyboard-focusable definition triggers, e.g. **imperial power**, **two-power standard**, **splendid isolation**, **mandate system**, **dyarchy**, and **westernized nationalist bourgeoisie**.
 
-**Interaction:** fine-pointer hover, mouse click, touch tap, and keyboard focus/Enter/Space. A short, plain-language tooltip explains only the selected word. Escape, second click, outside click and scrolling close it. The tooltip is screen-only; the same definitions appear in a compact **revision-zone key-terms table** for print, including when the user saves as PDF.
+**Interaction:** fine-pointer hover, mouse click, touch tap, and keyboard focus/Enter/Space. A short, plain-language tooltip explains only the selected word. Escape, second click and outside click close it; scrolling repositions the popup until the term leaves the viewport. The tooltip is screen-only; the same definitions appear in a compact **revision-zone key-terms table** for print, including when the user saves as PDF.
 
 **Source and teaching integrity:** technical terms remain verbatim, the prose still explains their causal role, and the *splendid isolation* passage still explicitly closes its argument. The inline prose is no longer interrupted by bracket definitions. A pre-existing grammatical problem in the nationalist-movements sentence was corrected without changing the historical point. The six semantic side-note categories and their existing content remain present.
 

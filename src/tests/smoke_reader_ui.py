@@ -292,7 +292,8 @@ def main():
                 assert gloss.count() == 14
                 first_term = gloss.first
                 first_term.hover()
-                assert glossary.locator('#whd-glossary-tooltip').is_visible()
+                glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
+                assert first_term.get_attribute('aria-expanded') == 'true'
                 assert 'political, military' in glossary.locator('#whd-glossary-tooltip').inner_text()
                 first_term.click()
                 assert first_term.get_attribute('aria-expanded') == 'true'
