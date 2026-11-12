@@ -289,7 +289,7 @@ def main():
                 glossary.on('pageerror',lambda e: errors.append(str(e)))
                 glossary.goto(url, wait_until='load')
                 gloss = glossary.locator('#screenView .glossary-term')
-                assert gloss.count() == 14
+                assert gloss.count() == 28
                 first_term = gloss.first
                 first_term.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
@@ -306,7 +306,14 @@ def main():
                 assert first_term.get_attribute('aria-expanded') == 'true'
                 glossary.keyboard.press('Escape')
                 assert glossary.locator('#whd-glossary-tooltip').is_hidden()
-                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 14
+                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 28
+                ch02 = glossary.locator('#screenView [data-chapter="2"] .glossary-term')
+                assert ch02.count() == 14
+                ch02.first.hover()
+                glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
+                assert 'nation' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
+                assert glossary.locator('#chapterData [data-chapter="2"] .glossary-revision tbody tr').count() == 14
+                glossary.keyboard.press('Escape')
 
             with browser.new_context(viewport={'width':390,'height':844},
                                      is_mobile=True,has_touch=True) as touch_context:
