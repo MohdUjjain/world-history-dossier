@@ -926,3 +926,44 @@ table.compare tr:nth-child(even) td{ background:var(--parchment-lt); }
 @media(prefers-reduced-motion:reduce) {
   #screenView .reader-search-target {scroll-behavior:auto;}
 }
+
+/* Contextual term definitions — visually subtle, accessible with keyboard and tap.
+   Only interactive in the screen reader. The existing revision glossary supplies
+   the same complete definitions in non-interactive print/PDF output. */
+/* Baseline reset applies to the measured print DOM even while the browser
+   is in screen media. This avoids UA button padding changing page packing. */
+.glossary-term {
+  display:inline; margin:0; padding:0; border:0; border-radius:0;
+  appearance:none; color:inherit; background:transparent;
+  font:inherit; line-height:inherit; vertical-align:baseline;
+  text-transform:inherit; text-align:inherit;
+  text-decoration-line:underline; text-decoration-style:dotted;
+  text-decoration-thickness:1.5px; text-underline-offset:.18em;
+  cursor:help; -webkit-tap-highlight-color:transparent;
+}
+@media screen {
+  #screenView .glossary-term:hover,
+  #screenView .glossary-term[aria-expanded="true"] {
+    text-decoration-style:solid;
+  }
+  #screenView .glossary-term:focus-visible {
+    outline:2px solid var(--chapter-ink, var(--ink));
+    outline-offset:3px; border-radius:2px;
+  }
+  .whd-glossary-tooltip {
+    position:fixed; z-index:12000; display:block;
+    box-sizing:border-box; width:max-content;
+    max-width:min(340px, calc(100vw - 24px));
+    padding:12px 15px; border:1px solid var(--gold-line);
+    border-radius:8px; background:var(--paper); color:var(--ink);
+    box-shadow:0 6px 25px rgba(12,22,43,.25);
+    font:400 .86rem/1.5 var(--font-label);
+    overflow-wrap:anywhere; pointer-events:none;
+  }
+  .whd-glossary-tooltip[hidden] { display:none!important; }
+  .whd-glossary-heading { display:block; font-weight:700; margin:0 0 4px; }
+  .whd-glossary-description { display:block; }
+}
+@media print {
+  .whd-glossary-tooltip { display:none!important; }
+}

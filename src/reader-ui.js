@@ -564,3 +564,110 @@
     }
   });
 })();
+
+/* Inline academic definitions for screen reading.
+   Chapter terms live in the authored HTML; this controller never mutates the
+   pristine #chapterData, the print compositor or user reading preferences. */
+(function () {
+  'use strict';
+  var selector = '#screenView button.glossary-term[data-definition]';
+  var active = null;
+  var pinned = false;
+  var tip = document.createElement('div');
+  tip.id = 'whd-glossary-tooltip';
+  tip.className = 'whd-glossary-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.setAttribute('hidden', '');
+  var heading = document.createElement('strong');
+  heading.className = 'whd-glossary-heading';
+  var body = document.createElement('span');
+  body.className = 'whd-glossary-description';
+  tip.appendChild(heading);
+  tip.appendChild(body);
+  document.body.appendChild(tip);
+
+  function termFrom(target) {
+    return target && typeof target.closest === 'function' ? target.closest(selector) : null;
+  }
+  function dismiss() {
+    if (active) {
+      active.setAttribute('aria-expanded', 'false');
+      active.removeAttribute('aria-describedby');
+    }
+    active = null;
+    pinned = false;
+    tip.hidden = true;
+  }
+  function position() {
+    if (!active || tip.hidden) return;
+    var rect = active.getBoundingClientRect();
+    var visibleWidth = document.documentElement.clientWidth || window.innerWidth;
+    var visibleHeight = document.documentElement.clientHeight || window.innerHeight;
+    // If a chapter is hidden/rebuilt or the reference has scrolled away,
+    // do not leave an orphaned definition over unrelated reading content.
+    if (!active.isConnected || rect.bottom < 0 || rect.top > visibleHeight) {
+      dismiss(); return;
+    }
+    var edge = 12;
+    var size = tip.getBoundingClientRect();
+    var left = Math.min(Math.max(edge, rect.left), Math.max(edge, visibleWidth - size.width - edge));
+    var below = rect.bottom + 9;
+    var above = rect.top - size.height - 9;
+    var top = below + size.height <= visibleHeight - edge ? below : Math.max(edge, above);
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+  function show(term, makePinned) {
+    if (!term || !term.dataset.definition) return;
+    if (active && active !== term) dismiss();
+    active = term;
+    pinned = !!makePinned;
+    heading.textContent = term.textContent.trim();
+    body.textContent = term.dataset.definition;
+    tip.hidden = false;
+    term.setAttribute('aria-expanded', 'true');
+    term.setAttribute('aria-describedby', tip.id);
+    position();
+  }
+  var preciseHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)');
+  document.addEventListener('pointerover', function (event) {
+    var term = termFrom(event.target);
+    if (!term || pinned || !preciseHover || !preciseHover.matches) return;
+    if (term.contains(event.relatedTarget)) return;
+    show(term, false);
+  });
+  document.addEventListener('pointerout', function (event) {
+    if (!active || pinned || !preciseHover || !preciseHover.matches) return;
+    if (active.contains(event.relatedTarget)) return;
+    var term = termFrom(event.target);
+    if (term === active) dismiss();
+  });
+  document.addEventListener('focusin', function (event) {
+    var term = termFrom(event.target);
+    if (term) show(term, false);
+  });
+  document.addEventListener('focusout', function (event) {
+    var previous = active;
+    if (!previous || event.target !== previous) return;
+    window.requestAnimationFrame(function () {
+      if (active === previous && document.activeElement !== previous) dismiss();
+    });
+  });
+  document.addEventListener('click', function (event) {
+    var term = termFrom(event.target);
+    if (term) {
+      if (active === term && pinned) dismiss();
+      else show(term, true);
+    } else if (active) dismiss();
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape' || !active) return;
+    var term = active;
+    dismiss();
+    if (document.activeElement === term) event.stopPropagation();
+  });
+  window.addEventListener('scroll', function () { if (active) position(); }, {passive: true});
+  window.addEventListener('resize', function () { if (active) position(); });
+  document.addEventListener('whd:screen-will-render', dismiss);
+  window.addEventListener('beforeprint', dismiss);
+}());

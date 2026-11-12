@@ -66,3 +66,28 @@ future chapters in the catalogue are not clickable, imaginary pages.
 For example, chapter 01 is officially **Imperialism**, while its notes subtitle
 remains **The Imperial Century — Rise, Crisis, and the Global Transition to the
 Nation-State**. Chapter 00 carries the full official Introduction heading.
+
+## Contextual definitions: one concept, one explanatory owner
+
+For each chapter written from the original source, preserve the author's
+essential terms. On **first meaningful use only**, an unfamiliar technical
+term can receive a dotted-underline glossary button with a short plain-language
+definition on hover, click, touch tap or keyboard focus. Do not sprinkle the
+same tooltip over repeated occurrences.
+
+**Avoid redundant learning aids:** when the popup defines a term, do not add
+a `data-kind="def"` sidebar card merely repeating the same definition.
+Keep a sidebar card on that topic only when it performs a *different* task:
+a causal explanation, instructive comparison, worked example, historical
+qualification, memory sequence, or exam application. If it adds no new
+learning value, remove it rather than replacing it with decorative wording.
+A sidebar definition for another term with **no popup** is still appropriate.
+
+The chapter's revision glossary is a deliberate exception: its compact
+definitions enable independent examination review and ensure that printing
+the dossier does not make meanings disappear. It must not substitute for the
+main narrative's explanations of cause and effect. Before release, compare
+all popup terms with sidebar definition titles, review any near-matches
+semantically, and run `python src/tests/validate_structure.py`. The
+structural check rejects the same named term in both a popup and a
+sidebar definition card (ignoring an initial "the", "a" or "an").
