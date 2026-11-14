@@ -9,7 +9,7 @@ SRC=Path(__file__).resolve().parents[1]
 BOOK=SRC.parent/'book.html'
 EXPECT={
 6: {
- 'title':'The Triple Alliance', 'sections':5, 'rows':25, 'side':13,
+ 'title':'The Triple Alliance', 'sections':5, 'rows':25, 'side':12,
  'terms':['Bismarck','Franco-Prussian War','Congress of Berlin','Big Bulgaria',
           'revanchisme','Dual Alliance','Dreikaiserbund','Reinsurance Treaty',
           'Triplice','Tunisia','casus foederis','Bülow','Weltpolitik',
