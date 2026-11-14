@@ -9,7 +9,7 @@ SRC=Path(__file__).resolve().parents[1]
 BOOK=SRC.parent/'book.html'
 EXPECT={
 6: {
- 'title':'The Triple Alliance', 'sections':5, 'rows':10, 'side':10,
+ 'title':'The Triple Alliance', 'sections':5, 'rows':25, 'side':13,
  'terms':['Bismarck','Franco-Prussian War','Congress of Berlin','Big Bulgaria',
           'revanchisme','Dual Alliance','Dreikaiserbund','Reinsurance Treaty',
           'Triplice','Tunisia','casus foederis','Bülow','Weltpolitik',
@@ -38,6 +38,11 @@ def sources():
         assert len(soup.select('.src-main [data-section-key]'))==exp['sections']
         assert len(soup.select('.src-main tbody tr'))==exp['rows']
         assert len(soup.select('.src-side > .block'))==exp['side']
+        if n == 6:
+            buttons = soup.select('.src-main .glossary-term')
+            glossary_rows = soup.select('.src-main .glossary-revision tbody tr')
+            assert len(buttons) == len(glossary_rows) == 15
+            assert len(set(b.get_text(' ', strip=True).casefold() for b in buttons)) == 15
         assert len(soup.select('.src-side [data-revision-start=true]'))==1
         assert len(soup.select('.src-main [data-revision-start=true]'))==1
         keys={x['data-section-key'] for x in soup.select('.src-main [data-section-key]')}
