@@ -9,6 +9,7 @@ These sixteen reports preserve editorial decisions, historical-source caveats an
 - [Chapter 05 — Source-grounded Changing Diplomatic World pilot](CH05_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 06 — Source-grounded Triple Alliance revision](CH06_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 07 — Source-grounded Ententes revision](CH07_SOURCE_GROUNDED_EDITION.md)
+- [Chapter 08 — Source-grounded July Crisis revision](CH08_SOURCE_GROUNDED_EDITION.md)
 - [Chapters 02–03](CH02_CH03_EDITORIAL_NOTES.md)
 - [Chapters 04–05](CH04_CH05_EDITORIAL_NOTES.md)
 - [Chapters 06–07](CH06_CH07_EDITORIAL_NOTES.md)
