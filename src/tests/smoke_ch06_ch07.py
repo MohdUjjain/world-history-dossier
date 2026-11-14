@@ -18,7 +18,7 @@ EXPECT={
           'Hohenzollern','Habsburg','coalition'],
 },
 7: {
- 'title':'The Ententes, 1894–1914', 'sections':7,'rows':11,'side':11,
+ 'title':'The Ententes, 1894–1914', 'sections':7,'rows':34,'side':12,
  'terms':['Congress of Vienna','Franco-Russian Alliance','1894','1861 and 1914',
           'capital','Russia','splendid isolation','Risk Fleet','Tirpitz','Dreadnought',
           'Fashoda Crisis','Sino-Japanese War','Anglo-Japanese Alliance',
@@ -38,11 +38,17 @@ def sources():
         assert len(soup.select('.src-main [data-section-key]'))==exp['sections']
         assert len(soup.select('.src-main tbody tr'))==exp['rows']
         assert len(soup.select('.src-side > .block'))==exp['side']
-        if n == 6:
+        if n == 7:
+            assert soup.select_one('.chapter-source')['data-author']=='Keith Neilson'
+            assert 'no automatic' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower() or 'without first promising' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower()
+            assert '23 August 1911' in txt
+            assert 'not' in soup.select_one('[data-section-key="s5"]').get_text(' ',strip=True).lower() or 'contingent' in txt.lower()
+        if n in (6, 7):
             buttons = soup.select('.src-main .glossary-term')
             glossary_rows = soup.select('.src-main .glossary-revision tbody tr')
-            assert len(buttons) == len(glossary_rows) == 15
-            assert len(set(b.get_text(' ', strip=True).casefold() for b in buttons)) == 15
+            expected = 15 if n == 6 else 20
+            assert len(buttons) == len(glossary_rows) == expected
+            assert len(set(b.get_text(' ', strip=True).casefold() for b in buttons)) == expected
         assert len(soup.select('.src-side [data-revision-start=true]'))==1
         assert len(soup.select('.src-main [data-revision-start=true]'))==1
         keys={x['data-section-key'] for x in soup.select('.src-main [data-section-key]')}
