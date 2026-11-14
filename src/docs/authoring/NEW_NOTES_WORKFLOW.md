@@ -7,6 +7,48 @@ relaunch deliberately archives, rather than builds, the older chapter texts.
 The next submitted, shorter chapter notes become the chapter's primary text.
 **Do not resurrect or merge older notes without asking.**
 
+## Current programme: original-source-grounded teaching revision (November 2026)
+
+**This takes precedence over the earlier concise-brief rule above whenever an original academic textbook chapter is available.** The earlier reset explains how the 33-chapter baseline was assembled; it is not the source-of-truth rule for the deeper chapter-by-chapter refinement now being undertaken.
+
+### Source hierarchy
+
+1. **Original academic chapter** — authoritative for the historian’s thesis, argument order, evidence, dates, terminology, interpretation and qualifications.
+2. **`11- 20TH CENTURY HISTORY.pdf` simplified course guide** — reference for accessible phrasing and common student comprehension difficulties; never an authority for an unsupported claim or a correction to the academic chapter.
+3. **Existing `src/chapters/chNN.html`** — the text and semantic architecture to improve while keeping stable section anchors, six sidebar categories, reading interaction, revision toggles and print fidelity.
+
+If the academic chapter is unavailable, do not label the work a three-source verification or silently substitute general historical knowledge. Keep the existing chapter intact until a source-grounded pass can be made. Clearly identify any provisional audit based only on the current notes and simplified guide.
+
+### Seven editorial commitments
+
+1. **Original-source authority** — reconstruct what the specific author argues and how evidence supports it.
+2. **Terminological fidelity** — keep academic terms such as *imperial power*, *collective security* or *informal empire*, even when explaining the surrounding sentence in simpler language.
+3. **Accessible prose** — shorter, explicit causal sentences; define unfamiliar terms at first meaningful mention with the existing dotted-underline popup mechanism rather than repeated parentheses.
+4. **Causal completeness** — explain *what, why, how and with what consequence*, not just a list of events.
+5. **Conceptual closure** — return to the problem introduced in a paragraph, section or chapter when its resolution is educationally important. Close the causal circle rather than repeating the opening mechanically.
+6. **Intelligent compression** — remove duplicated exposition, not distinct evidence, qualifications, examples or reasoning. No hard five-page or word-count cutoff: learning quality determines length.
+7. **Source-grounded verification** — check chronology, actors, substantive claims, interpretive limitations, omitted links and source disagreements before approving.
+
+### Five-stage editorial process
+
+1. Reconstruct the original author’s complete intellectual progression and the evidence behind it.
+2. Compare original PDF, simplified guide and existing chapter module; flag gaps, overstatements and misconceptions.
+3. Rewrite for understandable, terminologically faithful teaching and explicit conceptual closure.
+4. Audit **semantic** repetition across hero, main notes, popup terms, sidebar aids, tables and revision material.
+5. Verify again against the original and record what was removed, changed, corrected, retained deliberately and tested in `src/docs/editorial/CHNN_SOURCE_GROUNDED_EDITION.md`.
+
+### One conceptual owner per layer
+
+- **Hero/opening:** orientation and one clear central argument; do not repeat the full hero roadmap in the first main paragraph.
+- **Main notes:** a self-contained explanation of historical causes, mechanisms, evidence, comparisons, limitations and consequences.
+- **First-use popups:** short, faithful academic definitions that do not disrupt sentence flow.
+- **Sidebar:** a distinct operation—comparison, application, classification, memory cue, misconception diagnosis or examination technique. Remove any fact-only card that merely restates nearby prose.
+- **Revision:** independent recall and a print-safe terminology reference. Repetition is purposeful when the learning task changes, but whole explanations should not be copied.
+
+Structural validation rejects identical popup/definition-sidecard terms; a **human semantic audit** remains required because reworded duplication is not detectable by name matching. Count and describe removals and rewritten cards in the chapter’s editorial record.
+
+**Print policy:** Keep the existing opt-in revision glossary as the source of definitions when printing with revision content. Printing with revision material disabled follows the established current behavior; do not reintroduce parenthetical definitions in the main notes or alter the compositor without a separate requirement.
+
 ## Processing each pasted chapter
 
 1. Read the full pasted chapter notes. Retain their academic content, names,
