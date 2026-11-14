@@ -3,7 +3,7 @@
  * The pre-rendered PDF is deliberately not precached.
  */
 const CACHE_PREFIX = 'whd-edition-';
-const CACHE_NAME = CACHE_PREFIX + 'bd7719e938ae';
+const CACHE_NAME = CACHE_PREFIX + '71a2afc6a1d9';
 const FONT_CACHE = 'whd-google-fonts-v1';
 // The flowing HTML book is a required atomic unit; auxiliary web metadata
 // and imagery must never block a complete edition from being installed.

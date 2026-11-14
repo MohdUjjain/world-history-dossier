@@ -289,7 +289,7 @@ def main():
                 glossary.on('pageerror',lambda e: errors.append(str(e)))
                 glossary.goto(url, wait_until='load')
                 gloss = glossary.locator('#screenView .glossary-term')
-                assert gloss.count() == 99
+                assert gloss.count() == 119
                 first_term = gloss.first
                 first_term.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
@@ -306,7 +306,7 @@ def main():
                 assert first_term.get_attribute('aria-expanded') == 'true'
                 glossary.keyboard.press('Escape')
                 assert glossary.locator('#whd-glossary-tooltip').is_hidden()
-                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 99
+                assert glossary.locator('#chapterData .glossary-revision tbody tr').count() == 119
                 ch02 = glossary.locator('#screenView #chapter-2 .glossary-term')
                 assert ch02.count() == 14
                 ch02.first.hover()
@@ -339,6 +339,14 @@ def main():
                 ch06.first.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
                 assert 'hungarian' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
+                glossary.keyboard.press('Escape')
+                ch07 = glossary.locator('#screenView #chapter-7 .glossary-term')
+                assert ch07.count() == 20
+                assert glossary.locator('#chapterData [data-chapter="7"] .glossary-revision tbody tr').count() == 20
+                assert glossary.locator('#chapterData [data-chapter="7"] .src-side > .block').count() == 12
+                ch07.first.hover()
+                glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
+                assert 'alsace-lorraine' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
                 glossary.keyboard.press('Escape')
 
             with browser.new_context(viewport={'width':390,'height':844},
