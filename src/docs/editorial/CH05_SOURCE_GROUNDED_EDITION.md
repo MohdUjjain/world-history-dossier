@@ -54,10 +54,44 @@ Diplomacy grew organizationally while traditional foreign ministries lost inform
 - All original stable section keys remain: **`s1`** (drivers), **`s2`** (professionalization and expansion), **`s3`** (specialization/centralization), **`s4`** (the end-of-diplomacy question), and **`revision`**.
 - The chapter uses **22 first-meaningful-occurrence dotted-underlined popup definitions**. Each source term is introduced once only; repeated mentions do not add more buttons.
 - The optional revision section contains **22 corresponding print-safe table definitions**, ensuring paper/PDF revision does not depend on hover interaction. Existing print settings concerning optional revision material continue to apply.
-- **15 sidebar cards** cover the six established semantic categories: `concept`, `hy`, `memory`, `tip`, `mistake`, and `def`. The sole definition-only sidebar is **Quai d’Orsay**, a name which **does not** have a popup. No popup term is repeated in a definition-only card.
+- **14 sidebar cards** cover the six established semantic categories: `concept`, `hy`, `memory`, `tip`, `mistake`, and `def`. The sole definition-only sidebar is **Quai d’Orsay**, a name which **does not** have a popup. No popup term is repeated in a definition-only card.
 - Main prose carries every causal explanation and qualification. A sidebar stays only when it asks for a different intellectual operation: classifying evidence, contrasting national mechanisms, testing a misconception, building an examination answer, recalling a date sequence, or checking source time windows.
 - The source contains purposeful repetition across contexts (e.g., telegram-induced centralization explained first as a **driver** and later as an **administrative response**). Both stages are necessary to follow the argument, and neither is reduced merely to avoid repeating a word.
 - The **revision reference** is an intentional retrieval aid, not an extra sidebar definition. No bracketed glossary explanations are restored to the reading text.
+
+## Second-pass semantic duplication audit — 14 November 2026
+
+**Result:** 15 → **14 sidebar cards**. One was removed, seven were transformed into genuine exercises, and seven remain as distinct forms of reinforcement. All 22 first-use terminology popups and their 22 printable revision-glossary definitions are preserved.
+
+### The opener versus the first main paragraph
+
+The first body paragraph repeated the hero’s guiding question, three-driver/four-response roadmap and final paradox. It now states the more specific and non-duplicative scholarly scope: Blessing studies the *administration of foreign relations* and compares France, Germany, Britain and the US without implying that their histories represent all countries. The full causal argument remains in the chapter.
+
+### Individual sidebar dispositions
+
+| Card | Decision | What the student now does |
+| --- | --- | --- |
+| Apply the three-cause model | **Rewrite** | Classify simultaneous technology, NGO and economic-ministry pressures in a compound scenario, and explain their interaction. |
+| Wilson’s peace logic | **Keep** | Recall a three-step hypothesis with question marks rather than repeat the explanation. |
+| “New” diplomacy displaced power politics | **Rewrite** | Challenge a false inference about collective security using Blessing’s necessary condition on relative capabilities. |
+| A test is not equal opportunity | **Remove** | Its content duplicated the existing discussion of merit rules, unpaid posts and social exclusion. |
+| Put these career reforms in order | **Keep** | Recall a chronological sequence after reading the causal account. |
+| Handle staffing figures carefully | **Rewrite** | Identify what differently dated and differently defined staffing figures can and cannot demonstrate. |
+| Quai d’Orsay | **Keep** | Institutional definition, not duplicated by a popup. |
+| What did combining services actually change? | **Keep** | Apply a diplomatic/consular merger to a hypothetical trade dispute. |
+| Which reform model fits the example? | **Rewrite** | Infer national institutional models and coordination trade-offs from two different postings. |
+| Two publics, two tasks | **Keep** | Contrast foreign-facing cultural diplomacy with domestic scrutiny in a memory format. |
+| The attaché problem is coordination | **Rewrite** | Propose a hypothetical reporting arrangement and explain the specialist-versus-coordinator trade-off using the naval attaché case. |
+| Two routes to central control | **Keep** | Compare supervision by telegraph with bypass by ministers’ direct conferences. |
+| Declining monopoly means no diplomacy | **Rewrite** | Diagnose the confusion between diplomatic work and a particular institution’s monopoly; supply an example. |
+| Argue both sides of the final question | **Rewrite** | Construct a three-part qualifying examination conclusion instead of repeating the chapter’s closing facts. |
+| Recall the four institutional responses | **Keep** | Revision-only retrieval sequence that belongs to a separate educational layer. |
+
+### Necessary recurrences, not wasteful duplication
+
+Technology appears in the *drivers* section and again under *centralization* because one teaches the cause, the other the administrative result. Public opinion is first a pressure on foreign policy, later a problem handled through press offices and propaganda. The final paragraph closes the question posed in the hero; this is conceptual closure. Repeated terminology in the optional revision glossary is deliberate print/retrieval support, not a second popup or sidebar definition.
+
+**Rule carried forward:** every card must demonstrably add classification, comparison, application, retrieval, misconception diagnosis or examination technique. Merely restating neighboring prose is not a learning aid.
 
 ## Structural and regression contract
 

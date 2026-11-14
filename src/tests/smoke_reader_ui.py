@@ -327,6 +327,7 @@ def main():
                 assert glossary.locator('#chapterData [data-chapter="4"] .glossary-revision tbody tr').count() == 18
                 ch05 = glossary.locator('#screenView #chapter-5 .glossary-term')
                 assert ch05.count() == 22
+                assert glossary.locator('#chapterData [data-chapter="5"] .src-side > .block').count() == 14
                 ch05.first.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
                 assert 'career officials' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
