@@ -18,7 +18,7 @@ EXPECT={
           'Hohenzollern','Habsburg','coalition'],
 },
 7: {
- 'title':'The Ententes, 1894–1914', 'sections':7,'rows':34,'side':12,
+ 'title':'The Ententes, 1894–1914', 'sections':7,'rows':28,'side':12,
  'terms':['Congress of Vienna','Franco-Russian Alliance','1894','1861 and 1914',
           'capital','Russia','splendid isolation','Risk Fleet','Tirpitz','Dreadnought',
           'Fashoda Crisis','Sino-Japanese War','Anglo-Japanese Alliance',
@@ -43,6 +43,9 @@ def sources():
             assert 'no automatic' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower() or 'without first promising' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower()
             assert '23 August 1911' in txt
             assert 'civilian ministers' in txt.lower() and 'no automatic' in txt.lower()
+            assert 'The Franco-Russian bargain' not in txt
+            assert 'Three agreements, different legal characters' not in txt
+            assert 'Two problems, two partners' in soup.get_text(' ',strip=True)
         if n in (6, 7):
             buttons = soup.select('.src-main .glossary-term')
             glossary_rows = soup.select('.src-main .glossary-revision tbody tr')
