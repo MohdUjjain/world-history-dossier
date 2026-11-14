@@ -1,12 +1,13 @@
 # Chapter editorial reports
 
-These fifteen reports preserve editorial decisions, historical-source caveats and layout considerations for the 33-chapter edition. They are source-interpretation notes, **not** an independent scholarly fact-check.
+These sixteen reports preserve editorial decisions, historical-source caveats and layout considerations for the 33-chapter edition. They are source-interpretation notes, **not** an independent scholarly fact-check.
 
 - [Chapter 01 — Original-source clarity pilot](CH01_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 02 — Source-grounded Nationalism pilot](CH02_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 03 — Source-grounded Internationalism pilot](CH03_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 04 — Source-grounded Shrinking World pilot](CH04_SOURCE_GROUNDED_EDITION.md)
 - [Chapter 05 — Source-grounded Changing Diplomatic World pilot](CH05_SOURCE_GROUNDED_EDITION.md)
+- [Chapter 06 — Source-grounded Triple Alliance revision](CH06_SOURCE_GROUNDED_EDITION.md)
 - [Chapters 02–03](CH02_CH03_EDITORIAL_NOTES.md)
 - [Chapters 04–05](CH04_CH05_EDITORIAL_NOTES.md)
 - [Chapters 06–07](CH06_CH07_EDITORIAL_NOTES.md)
