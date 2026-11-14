@@ -42,7 +42,7 @@ def sources():
             assert soup.select_one('.chapter-source')['data-author']=='Keith Neilson'
             assert 'no automatic' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower() or 'without first promising' in soup.select_one('.src-hero .hthesis').get_text(' ',strip=True).lower()
             assert '23 August 1911' in txt
-            assert 'not' in soup.select_one('[data-section-key="s5"]').get_text(' ',strip=True).lower() or 'contingent' in txt.lower()
+            assert 'civilian ministers' in txt.lower() and 'no automatic' in txt.lower()
         if n in (6, 7):
             buttons = soup.select('.src-main .glossary-term')
             glossary_rows = soup.select('.src-main .glossary-revision tbody tr')
