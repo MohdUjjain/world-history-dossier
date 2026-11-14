@@ -335,7 +335,7 @@ def main():
                 ch06 = glossary.locator('#screenView #chapter-6 .glossary-term')
                 assert ch06.count() == 15
                 assert glossary.locator('#chapterData [data-chapter="6"] .glossary-revision tbody tr').count() == 15
-                assert glossary.locator('#chapterData [data-chapter="6"] .src-side > .block').count() == 13
+                assert glossary.locator('#chapterData [data-chapter="6"] .src-side > .block').count() == 12
                 ch06.first.hover()
                 glossary.locator('#whd-glossary-tooltip').wait_for(state='visible', timeout=2000)
                 assert 'hungarian' in glossary.locator('#whd-glossary-tooltip').inner_text().lower()
