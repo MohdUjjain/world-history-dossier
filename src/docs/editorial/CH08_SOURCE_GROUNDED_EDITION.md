@@ -41,7 +41,7 @@ The chapter opens with **28 July**, Emperor Franz Joseph's declaration of war; i
 
 **Tables:** no table interrupts the main exposition simply to restate recently taught facts. The stage chart and country-decision chart are **only in the revision section**, as compact stand-alone retrieval aids; they do not compete with narrative paragraphs.
 
-**Sidebars:** 12 cards each require an operation: counterfactual prediction, distinguishing domestic and international scales, assessing degrees of knowledge, separating trigger from causes, reasoning about the blank cheque, interpreting institutional delay, classifying military orders, understanding sovereignty, explaining deployment logistics, cabinet politics, evaluating unequal responsibility, and a short revision framework. They are not passive restatements of the same timeline.
+**Sidebars:** 12 cards use at least five presentation modes (plain question, comparison, contrast, timeline and structured revision steps), each requiring an operation: counterfactual prediction, distinguishing domestic and international scales, assessing degrees of knowledge, separating trigger from causes, reasoning about the blank cheque, interpreting institutional delay, classifying military orders, understanding sovereignty, explaining deployment logistics, cabinet politics, evaluating unequal responsibility, and a short revision framework. They are not passive restatements of the same timeline.
 
 **Definitions:** the 22 first-use `glossary-term` popups each correspond to exactly one printable glossary row. The print copy is necessary for export, not an inadvertent duplicate. Terms retain specific historical meanings and source qualifications.
 
