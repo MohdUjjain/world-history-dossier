@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 SRC=Path(__file__).resolve().parents[1]
 BOOK=SRC.parent/'book.html'
 CASES={
- 8:{'title':'The July Crisis','sections':6,'rows':15,'side':10,
+ 8:{'title':'The July Crisis','sections':6,'rows':34,'side':12,
     'terms':['Agadir','Joffre','Poincaré','136,000','Balkan League','Albania','Berchtold','Pašić','Apis',
       'Princip','Grabež','Čabrinović','28 June','5–6 July','blank cheque','48-hour','30 July',
       'general mobilization','Belgium','August','Harvest Leave','Plan B','Fischer','Versailles','advertent',
@@ -31,6 +31,13 @@ def main():
   assert len(doc.select('.src-main [data-section-key]'))==x['sections']
   assert len(doc.select('.src-main tbody tr'))==x['rows']
   assert len(doc.select('.src-side > .block'))==x['side']
+  if n==8:
+   assert doc.select_one('.chapter-source')['data-author']=='Samuel R. Williamson Jr.'
+   assert len(doc.select('.src-main .glossary-term'))==22
+   assert len(doc.select('.src-main .glossary-revision tbody tr'))==22
+   assert len(set(b.get_text(' ',strip=True).casefold() for b in doc.select('.src-main .glossary-term')))==22
+   assert '24 July' in txt and '30 July' in txt and 'no hard evidence' in txt.lower()
+   assert 'chief' in txt.lower() or 'paramount' in txt.lower()
   assert len(doc.select('.src-main [data-revision-start=true]'))==1
   assert len(doc.select('.src-side [data-revision-start=true]'))==1
   keys={s['data-section-key'] for s in doc.select('.src-main [data-section-key]')}
